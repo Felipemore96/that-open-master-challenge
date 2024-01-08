@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&family=Roboto:wght@300&display=swap');
+
+:root {
+    --primary: #3ecf31;
+    --primary-100: #4a6e47;
+    --primary-200: #415A66;
+    --primary-300: #468f3f;
+    --primary-400: #50ef5e;
+    --background: #2e2e2e;
+    --background-100: #525252;
+    --background-200: #535353;
+    --font-xs: 10px;
+    --font-sm: 12px;
+    --font-base: 14px;
+    --font-lg: 16px;
+    --font-xl: 18px;
+    --font-2xl: 20px;
+    --font-3xl: 22px;
+}
+
+* {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-areas: 'sidebar content';
+    height: 100vh;
+    background-color: var(--background);
+    color: #fff;
+}
+
+/* General Style */
+
+h2 {
+    font-size: var(--font-3xl);
+}
+
+h3 {
+    font-size: var(--font-2xl);
+}
+
+h4 {
+    font-size: var(--font-xl);
+}
+
+h5 {
+    font-size: var(--font-lg);
+}
+
+button {
+    padding: 8px 15px;
+    cursor: pointer;
+    height: 40px;
+    font-size: 14px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 100px;
+    border: none;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+  }
+
+button:hover {
+    background-color: var(--primary-400)
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Sidebar Style */
+
+#sidebar {
+    background-color: var(--background-100);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+}
+
+#company-logo {
+    height: 130px;
+}
+
+#nav-buttons {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+#nav-buttons li {
+    list-style-type: none;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: var(--primary);
+    font-size: var(--font-base);
+}
+
+#nav-buttons li:hover {
+    background-color: var(--primary-100);
+}
+
+/* Content Style */
+
+#content{
+
+}
+
+header {
+    padding: 0px 40px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    align-items: start;
+    font-size: var(--font-base);
+}
+
+.card-property{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Form Styles */
+
+/* document.getElementById("new-team-modal").showModal() */
+
+dialog {
+    background-color: transparent;
+    border: none;
+    margin: auto;   
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+form {
+    width: 450px;
+    border-radius: 10px;
+    background-color: var(--background-100);
+    color: white;
+}
+
+form h2 {
+    display: flex;
+    padding: 20px;
+    border-bottom: 2px solid var(--background-200);
+    justify-content: center;
+}
+
+form .input-list {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 20px;
+    row-gap: 10px;
+    margin-bottom: 20px;
+}
+
+form .form-field-container {
+    display: flex;
+    padding: 0%;
+    flex-direction: column;
+}
+
+label {
+    font-size: var(--font-base);
+    margin-bottom: 3px;
+    font-weight: 500;
+    color: rgba(150,150,150,1);
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+
+input, textarea, select {
+    color: white;
+    background-color: var(--background);
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: var(--font-base);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--primary);
+}
+
+/* Project details page*/
+
+.dashboard-card {
+    background-color: var(--background-200);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+#project-details > .main-page-content {
+    display: grid;
+    padding: 20px 40px;
+    gap: 30px;
+    grid-template-columns: 400px 1fr;
+    height: 100%;
+}
+
+.btn-secondary {
+    background-color: transparent; 
+    outline: 2px solid #969696; 
+    width: 100px;
+    height: 30px; 
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-300); 
+    outline: none;
+}
+
+#teams-header {
+    padding: 10px 30px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin-top: 10px;
+}   
+
+#teams-list {
+    padding: 10px 30px;
+    display: flex; 
+    flex-direction: column; 
+    row-gap: 15px;
+    margin-bottom: 20px;
+}
+
+.team {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    row-gap: 20px;
+    background-color: var(--primary-300);
+    border-radius: 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-base);
+}
+  
+.team:hover {
+    background-color: var(--primary-200);
+}

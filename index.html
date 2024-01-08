@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <aside id="sidebar">
+        <img id="company-logo" src="./assets/company-logo.svg" alt="Construction Company">
+        <ul id="nav-buttons">
+            <div style="display: flex; align-items: center; column-gap: 10px;">
+                <span class="material-icons-round">search</span>
+                <input type="text" placeholder="Search Projects by name" style="width: 100%;">
+            </div>
+            <li><span class="material-icons-round">apartment</span>Project #1</li>
+            <li><span class="material-icons-round">store</span>Project #2</li>            
+            <li><span class="material-icons-round">factory</span>Project #3</li>
+            <li><span class="material-icons-round">stadium</span>Project #4</li>
+            <li><span class="material-icons-round">local_airport</span></span>Project #5</li>
+        </ul>
+    </aside>
+    <main id="content">
+        <div class="page" id="project-details">
+            <dialog id="new-team-modal">
+                <form>
+                    <h2>New Team</h2>
+                    <div class="input-list">
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">apartment</span>Name</label>
+                            <input type="text" placeholder="Name of the Company">
+                        </div>
+                        <div class="form-field-container">
+                          <label><span class="material-icons-round">assignment_ind</span>Role</label>
+                          <select>
+                            <option>BIM Manager</option>
+                            <option>Structural</option>
+                            <option>MEP</option>
+                            <option>Architect</option>
+                            <option>Contractor</option>
+                          </select>
+                        </div>
+                      <div class="form-field-container">
+                        <label><span class="material-icons-round">subject</span>Description</label>
+                        <textarea cols="30" rows="5" placeholder="General description or the role"></textarea>
+                    </div>
+                      <div class="form-field-container">
+                        <label><span class="material-icons-round">person</span>Contact</label>
+                        <div style="display: flex; flex-direction: row; row-gap: 10px;">
+                            <input placeholder="Contact Name"></input>
+                            <input placeholder="Phone Number"></input>
+                        </div>
+                      </div> 
+                      <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
+                        <button style="background-color: transparent;">Cancel</button>
+                        <button style="background-color: rgb(18, 145, 18);">Accept</button>
+                      </div>
+                    </div>
+                </form>
+            </dialog>
+            <header>
+                <div>
+                    <h2>Project #1</h2>
+                    <p style="color: #969696">Small Description of the project</p>
+                </div>
+            </header>
+            <div class="main-page-content">
+                <div style="display: flex; flex-direction: column; row-gap: 30px;">
+                    <div class="dashboard-card" style="padding: 30px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0px 30px; margin-bottom: 10px;">
+                            <h4>Project Information</h4>
+                            <button class="btn-secondary"><p style="width: 100%;">Edit</p></button>
+                        </div>
+                        <div style="padding: 0 30px;">
+                            <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                                <div class="card-content">
+                                    <div class="card-property">
+                                        <p style="color: #969696;">Status</p>
+                                        <p>Active</p>
+                                    </div>
+                                    <div class="card-property">
+                                        <p style="color: #969696;">Cost</p>
+                                        <p>$ 2 542 000</p>
+                                    </div>
+                                    <div class="card-property">
+                                        <p style="color: #969696;">Type</p>
+                                        <p>Building</p>
+                                    </div>
+                                    <div class="card-property">
+                                        <p style="color: #969696;">Address</p>
+                                        <p>Lisbon, Portugal</p>
+                                    </div>
+                                    <div class="card-property">
+                                        <p style="color: #969696;">Finish Date</p>
+                                        <p>2023-05-01</p>
+                                    </div>
+                                    <div class="card-property" style="background-color: #404040; border-radius: 9999px; overflow: auto;">
+                                        <div style="width: 80%; background-color: #468f3f; padding: 4px 0; text-align: center;">80%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card" style="flex-grow: 1;">
+                        <div id="teams-header">
+                            <h4>Teams</h4>
+                            <div style="display: flex; align-items: center; justify-content: end; column-gap: 20px;">
+                                <button class="btn-secondary"><p style="width: 100%;"><span class="material-icons-round">add</span></p></button>
+                            </div>
+                        </div>
+                        <div id="teams-list">
+                            <div class="team">
+                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">computer</span>
+                                <p>BIM Manager</p>
+                                <p>Company #1</p>
+                            </div>
+                            <div class="team">
+                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">foundation</span>
+                                <p>Structures</p>
+                                <p>Company #2</p>
+                            </div>
+                            <div class="team">
+                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">plumbing</span>
+                                <p>MEP</p>
+                                <p>Company #3</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="viewer-container" class="dashboard-card"></div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
