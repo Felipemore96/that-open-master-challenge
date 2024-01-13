@@ -25,16 +25,16 @@
     <main id="content">
         <div class="page" id="project-details">
             <dialog id="new-team-modal">
-                <form>
+                <form id="new-team-form">
                     <h2>New Team</h2>
                     <div class="input-list">
                         <div class="form-field-container">
                             <label><span class="material-icons-round">apartment</span>Name</label>
-                            <input type="text" placeholder="Name of the Company">
+                            <input name="teamName" type="text" placeholder="Name of the Company">
                         </div>
                         <div class="form-field-container">
                           <label><span class="material-icons-round">assignment_ind</span>Role</label>
-                          <select>
+                          <select name="teamRole">
                             <option>BIM Manager</option>
                             <option>Structural</option>
                             <option>MEP</option>
@@ -44,22 +44,28 @@
                         </div>
                       <div class="form-field-container">
                         <label><span class="material-icons-round">subject</span>Description</label>
-                        <textarea cols="30" rows="5" placeholder="General description or the role"></textarea>
+                        <textarea name="teamDescription" cols="30" rows="5" placeholder="General description or the role"></textarea>
                     </div>
                       <div class="form-field-container">
                         <label><span class="material-icons-round">person</span>Contact</label>
                         <div style="display: flex; flex-direction: row; row-gap: 10px;">
-                            <input placeholder="Contact Name"></input>
-                            <input placeholder="Phone Number"></input>
+                            <input name="contactName" placeholder="Contact Name"></input>
+                            <input name="contactPhone" placeholder="Phone Number"></input>
                         </div>
                       </div> 
                       <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
-                        <button style="background-color: transparent;">Cancel</button>
-                        <button style="background-color: rgb(18, 145, 18);">Accept</button>
+                        <button id="cancel-new-team-btn" type="button" style="background-color: transparent;">Cancel</button>
+                        <button id="submit-new-team-btn" type="button" style="background-color: rgb(18, 145, 18);">Accept</button>
                       </div>
                     </div>
                 </form>
             </dialog>
+            <dialog id="error-popup"> 
+                <div id="error-message"> 
+                  <p id="err"></p>
+                  <button id="close-error-popup" type="button">Close</button>
+                </div>
+              </dialog> 
             <header>
                 <div>
                     <h2>Project #1</h2>
@@ -107,25 +113,25 @@
                         <div id="teams-header">
                             <h4>Teams</h4>
                             <div style="display: flex; align-items: center; justify-content: end; column-gap: 20px;">
-                                <button class="btn-secondary"><p style="width: 100%;"><span class="material-icons-round">add</span></p></button>
+                                <button id="new-team-btn" class="btn-secondary"><p style="width: 100%;"><span class="material-icons-round">add</span></p></button>
                             </div>
                         </div>
                         <div id="teams-list">
-                            <div class="team">
+                            <!-- <div class="team-card">
                                 <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">computer</span>
                                 <p>BIM Manager</p>
                                 <p>Company #1</p>
                             </div>
-                            <div class="team">
+                            <div class="team-card">
                                 <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">foundation</span>
                                 <p>Structures</p>
                                 <p>Company #2</p>
                             </div>
-                            <div class="team">
+                            <div class="team-card">
                                 <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">plumbing</span>
                                 <p>MEP</p>
                                 <p>Company #3</p>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -133,5 +139,6 @@
             </div>
         </div>
     </main>
+    <script type="module" src="./src/index.ts"></script>
 </body>
 </html>

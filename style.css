@@ -144,8 +144,6 @@ header {
 
 /* Form Styles */
 
-/* document.getElementById("new-team-modal").showModal() */
-
 dialog {
     background-color: transparent;
     border: none;
@@ -208,6 +206,17 @@ input:focus, textarea:focus, select:focus {
     outline: 2px solid var(--primary);
 }
 
+#error-message {
+    display: flex;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: var(--background-100);
+    color: white;
+    align-items: center;
+    flex-direction: column; 
+    row-gap: 10px;
+  }
+
 /* Project details page*/
 
 .dashboard-card {
@@ -254,7 +263,7 @@ input:focus, textarea:focus, select:focus {
     margin-bottom: 20px;
 }
 
-.team {
+.team-card {
     padding: 10px;
     display: flex;
     flex-direction: row;
@@ -267,6 +276,6 @@ input:focus, textarea:focus, select:focus {
     font-size: var(--font-base);
 }
   
-.team:hover {
+.team-card:hover {
     background-color: var(--primary-200);
 }

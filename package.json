@@ -1,0 +1,19 @@
+{
+  "name": "that-open-master",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^4.5.1"
+  },
+  "description": "",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
+}
