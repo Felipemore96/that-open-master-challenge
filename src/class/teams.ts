@@ -33,10 +33,18 @@ export class Team implements ITeam {
   //creates the project card UI
   setUI() {
     if (this.ui) {return}
+    const roleToIcon: Record<TeamRole, string> = {
+      "BIM Manager": "computer",
+      "Structural": "foundation",
+      "MEP": "plumbing",
+      "Architect": "architecture",
+      "Contractor": "construction"
+    }
+    const icon = roleToIcon[this.teamRole] || "computer"
     this.ui = document.createElement("div")
     this.ui.className = "team-card"
     this.ui.innerHTML = `
-    <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">computer</span>
+    <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">${icon}</span>
     <p>${this.teamRole}</p>
     <p>${this.teamName}</p>
     `
