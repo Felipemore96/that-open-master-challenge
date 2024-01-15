@@ -10,6 +10,30 @@ export interface ITeam {
   contactPhone: string
 }
 
+export function toggleModal(id: string) {
+  const modal = document.getElementById(id)
+  if (modal && modal instanceof HTMLDialogElement) {
+    if (modal.open) {
+      modal.close()
+    } else modal.showModal()
+  } else {
+    console.warn("The provided modal wasn't found. ID: ", id)
+  }
+}
+
+const teamInfo = document.getElementById("team-info") as HTMLElement
+
+function updateTeamInfo(team: Team) {
+  if (team) {
+    teamInfo.innerHTML = `
+      <p>Company in charge: ${team.teamName}</p>
+      <p>Company's role: ${team.teamRole}</p>
+      <p>Description: ${team.teamDescription}</p>
+      <p>Contact Name: ${team.contactName}</p>
+      <p>Phone number: ${team.contactPhone}</p>`
+  }
+}
+
 export class Team implements ITeam {
 	//To satisfy ITeam
   teamName: string
@@ -28,6 +52,7 @@ export class Team implements ITeam {
     }
     this.id = uuidv4()
     this.setUI()
+    // this.updateTeamInfo()
   }
 
   //creates the project card UI
@@ -49,5 +74,13 @@ export class Team implements ITeam {
     <p>${this.teamRole}</p>
     <p>${this.teamName}</p>
     `
+    //CLICK INTERACTION
+    this.ui.addEventListener("click", (e) => {
+      e.preventDefault()
+      updateTeamInfo(this)
+      toggleModal("team-info-popup")
+    });
   }
 }
+
+

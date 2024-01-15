@@ -1,19 +1,9 @@
-import { ITeam, TeamRole } from "./class/teams"
+import { ITeam, TeamRole, toggleModal } from "./class/teams"
 import { TeamsManager } from "./class/teamsManager"
-
-function toggleModal(id: string) {
-  const modal = document.getElementById(id)
-  if (modal && modal instanceof HTMLDialogElement) {
-    if (modal.open) {
-      modal.close()
-    } else modal.showModal()
-  } else {
-    console.warn("The provided modal wasn't found. ID: ", id)
-  }
-}
 
 const teamsListUI = document.getElementById("teams-list") as HTMLElement
 const teamsManager = new TeamsManager(teamsListUI)
+
 const newTeamBtn = document.getElementById("new-team-btn")
 const teamForm = document.getElementById("new-team-form")
 const cancelNewTeamBtn = document.getElementById("cancel-new-team-btn")
@@ -65,13 +55,5 @@ const closeTeamInfoPopup = document.getElementById("close-team-info-popup")
 if (closeTeamInfoPopup) {
   closeTeamInfoPopup.addEventListener("click", () => {
     toggleModal("team-info-popup");
-  });
-}
-
-const teamModal = document.getElementById("team-card")
-if (teamModal) {
-  teamModal?.addEventListener("click", (e) => {
-    e.preventDefault()
-    toggleModal("team-info-popup")
   })
 }

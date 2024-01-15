@@ -206,7 +206,7 @@ input:focus, textarea:focus, select:focus {
     outline: 2px solid var(--primary);
 }
 
-#error-message {
+#error-message, #team-info-message {
     display: flex;
     padding: 15px;
     border-radius: 10px;
