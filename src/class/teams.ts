@@ -43,6 +43,7 @@ export class Team implements ITeam {
     const icon = roleToIcon[this.teamRole] || "computer"
     this.ui = document.createElement("div")
     this.ui.className = "team-card"
+    this.ui.id = "team-card"
     this.ui.innerHTML = `
     <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">${icon}</span>
     <p>${this.teamRole}</p>

@@ -45,7 +45,7 @@
                       <div class="form-field-container">
                         <label><span class="material-icons-round">subject</span>Description</label>
                         <textarea name="teamDescription" cols="30" rows="5" placeholder="General description or the role"></textarea>
-                    </div>
+                      </div>
                       <div class="form-field-container">
                         <label><span class="material-icons-round">person</span>Contact</label>
                         <div style="display: flex; flex-direction: row; row-gap: 10px;">
@@ -65,7 +65,13 @@
                   <p id="err"></p>
                   <button id="close-error-popup" type="button">Close</button>
                 </div>
-              </dialog> 
+            </dialog> 
+            <dialog id="team-info-popup"> 
+                <div id="team-info"> 
+                  <p>Bla Bla</p>
+                  <button id="close-team-info-popup" type="button">Close</button>
+                </div>
+            </dialog> 
             <header>
                 <div>
                     <h2>Project #1</h2>
@@ -116,23 +122,7 @@
                                 <button id="new-team-btn" class="btn-secondary"><p style="width: 100%;"><span class="material-icons-round">add</span></p></button>
                             </div>
                         </div>
-                        <div id="teams-list">
-                            <!-- <div class="team-card">
-                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">computer</span>
-                                <p>BIM Manager</p>
-                                <p>Company #1</p>
-                            </div>
-                            <div class="team-card">
-                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">foundation</span>
-                                <p>Structures</p>
-                                <p>Company #2</p>
-                            </div>
-                            <div class="team-card">
-                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">plumbing</span>
-                                <p>MEP</p>
-                                <p>Company #3</p>
-                            </div> -->
-                        </div>
+                        <div id="teams-list"></div>
                     </div>
                 </div>
                 <div id="viewer-container" class="dashboard-card"></div>

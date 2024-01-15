@@ -18,7 +18,6 @@ const newTeamBtn = document.getElementById("new-team-btn")
 const teamForm = document.getElementById("new-team-form")
 const cancelNewTeamBtn = document.getElementById("cancel-new-team-btn")
 const submitNewTeamBtn = document.getElementById("submit-new-team-btn")
-const closeErrorPopup = document.getElementById("close-error-popup")
 
 if (newTeamBtn) {
   newTeamBtn.addEventListener("click", () => {toggleModal("new-team-modal")})
@@ -26,6 +25,7 @@ if (newTeamBtn) {
   console.warn("New projects button was not found")
 }
 
+const closeErrorPopup = document.getElementById("close-error-popup")
 if (closeErrorPopup) {
   closeErrorPopup.addEventListener("click", () => {
     toggleModal("error-popup");
@@ -59,4 +59,19 @@ if (teamForm && teamForm instanceof HTMLFormElement) {
   })
 } else {
   console.warn("The project form was not found. Check the ID!")
+}
+
+const closeTeamInfoPopup = document.getElementById("close-team-info-popup")
+if (closeTeamInfoPopup) {
+  closeTeamInfoPopup.addEventListener("click", () => {
+    toggleModal("team-info-popup");
+  });
+}
+
+const teamModal = document.getElementById("team-card")
+if (teamModal) {
+  teamModal?.addEventListener("click", (e) => {
+    e.preventDefault()
+    toggleModal("team-info-popup")
+  })
 }
