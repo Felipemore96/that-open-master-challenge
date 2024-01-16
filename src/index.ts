@@ -1,5 +1,5 @@
 import { ITeam, TeamRole, toggleModal } from "./class/teams"
-import { TeamsManager } from "./class/teamsManager"
+import { TeamsManager } from "./class/projectsManager"
 
 const teamsListUI = document.getElementById("teams-list") as HTMLElement
 const teamsManager = new TeamsManager(teamsListUI)

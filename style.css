@@ -89,6 +89,16 @@ button:hover {
     height: 130px;
 }
 
+#new-project-btn {
+    border-radius: 10px;
+}
+
+#new-project-btn:hover {
+    background-color: var(--primary); 
+    outline: none;
+}
+
+
 #nav-buttons {
     display: flex;
     flex-direction: column;

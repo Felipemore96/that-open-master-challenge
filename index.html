@@ -12,14 +12,14 @@
         <img id="company-logo" src="./assets/company-logo.svg" alt="Construction Company">
         <ul id="nav-buttons">
             <div style="display: flex; align-items: center; column-gap: 10px;">
-                <span class="material-icons-round">search</span>
-                <input type="text" placeholder="Search Projects by name" style="width: 100%;">
+                <button id="new-project-btn" class="btn-secondary"><p style="width: 100%;"><span class="material-icons-round">add</span></p></button>
+                <input type="text" placeholder="Search Project" style="width: 100%;">
             </div>
-            <li><span class="material-icons-round">apartment</span>Project #1</li>
-            <li><span class="material-icons-round">store</span>Project #2</li>            
-            <li><span class="material-icons-round">factory</span>Project #3</li>
-            <li><span class="material-icons-round">stadium</span>Project #4</li>
-            <li><span class="material-icons-round">local_airport</span></span>Project #5</li>
+            <li id="nav-project1"><span class="material-icons-round">apartment</span>Project #1</li>
+            <li id="nav-project2"><span class="material-icons-round">store</span>Project #2</li>            
+            <li id="nav-project3"><span class="material-icons-round">factory</span>Project #3</li>
+            <li id="nav-project4"><span class="material-icons-round">stadium</span>Project #4</li>
+            <li id="nav-project5"><span class="material-icons-round">local_airport</span></span>Project #5</li>
         </ul>
     </aside>
     <main id="content">
@@ -74,8 +74,8 @@
             </dialog> 
             <header>
                 <div>
-                    <h2>Project #1</h2>
-                    <p style="color: #969696">Small Description of the project</p>
+                    <h2 id="project-name">Project #1</h2>
+                    <p id="project-description" style="color: #969696">Small Description of the project</p>
                 </div>
             </header>
             <div class="main-page-content">
@@ -90,26 +90,26 @@
                                 <div class="card-content">
                                     <div class="card-property">
                                         <p style="color: #969696;">Status</p>
-                                        <p>Active</p>
+                                        <p id="project-status">Active</p>
                                     </div>
                                     <div class="card-property">
                                         <p style="color: #969696;">Cost</p>
-                                        <p>$ 2 542 000</p>
+                                        <p id="project-cost">$ 2 542 000</p>
                                     </div>
                                     <div class="card-property">
                                         <p style="color: #969696;">Type</p>
-                                        <p>Building</p>
+                                        <p id="project-type">Building</p>
                                     </div>
                                     <div class="card-property">
                                         <p style="color: #969696;">Address</p>
-                                        <p>Lisbon, Portugal</p>
+                                        <p id="project-address">Lisbon, Portugal</p>
                                     </div>
                                     <div class="card-property">
                                         <p style="color: #969696;">Finish Date</p>
-                                        <p>2023-05-01</p>
+                                        <p id="project-finish-date">2023-05-01</p>
                                     </div>
                                     <div class="card-property" style="background-color: #404040; border-radius: 9999px; overflow: auto;">
-                                        <div style="width: 80%; background-color: #468f3f; padding: 4px 0; text-align: center;">80%</div>
+                                        <div id="project-progress" style="width: 80%; background-color: #468f3f; padding: 4px 0; text-align: center;">80%</div>
                                     </div>
                                 </div>
                             </div>
