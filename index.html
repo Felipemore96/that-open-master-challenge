@@ -24,6 +24,58 @@
     </aside>
     <main id="content">
         <div class="page" id="project-details">
+            <dialog id="new-project-modal">
+                <form id="new-project-form">
+                  <h2>New Project</h2>
+                  <div class="input-list">
+                    <div class="form-field-container">
+                      <label><span class="material-icons-round">apartment</span>Name</label>
+                      <input name="project-name" type="text" placeholder="What's the name of your project?">
+                      <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP: Give it a short name</p>
+                    </div>
+                    <div class="form-field-container">
+                      <label><span class="material-icons-round">subject</span>Description</label>
+                      <textarea name="project-description" cols="30" rows="5" placeholder="Project's description"></textarea>
+                    </div>
+                    <div class="form-field-container">
+                      <label><span class="material-icons-round">not_listed_location</span>Status</label>
+                      <select name="project-status">
+                        <option>Pending</option>
+                        <option>Active</option>
+                        <option>Finished</option>
+                      </select>
+                    </div>
+                    <div class="form-field-container">
+                        <label><span class="material-icons-round">euro</span>Cost</label>
+                        <input name="project-cost" type="text" placeholder="Project's cost">
+                    </div>
+                    <div class="form-field-container">
+                      <label><span class="material-icons-round">category</span>Type</label>
+                      <select name="project-type">
+                        <option>Residential</option>
+                        <option>Commercial</option>
+                        <option>Institutional</option>
+                        <option>Mixed-use</option>
+                        <option>Industrial</option>
+                        <option>Heavy civil</option>
+                      </select>
+                    </div>
+                    <div class="form-field-container">
+                        <label><span class="material-icons-round">place</span>Address</label>
+                        <input name="project-address" type="text" placeholder="Project's address">
+                    </div>
+                    <div class="form-field-container">
+                      <label for="finishDate">
+                        <span class="material-icons-round">calendar_month</span>Finish Date</label>
+                      <input name="finishDate" type="date"></input>
+                    </div>
+                    <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
+                      <button id="cancel-new-project-btn" type="button" style="background-color: transparent;">Cancel</button>
+                      <button id="submit-new-project-btn" type="button" style="background-color: rgb(18, 145, 18);">Accept</button>
+                    </div>
+                  </div>
+                </form>
+            </dialog>
             <dialog id="new-team-modal">
                 <form id="new-team-form">
                     <h2>New Team</h2>
@@ -125,7 +177,9 @@
                         <div id="teams-list"></div>
                     </div>
                 </div>
-                <div id="viewer-container" class="dashboard-card"></div>
+                <div id="viewer-container" class="dashboard-card" style="padding: 30px;"> 
+                    <h4 style="display: flex; justify-content: center;">IFC Model </h4>
+                </div>
             </div>
         </div>
     </main>
