@@ -99,13 +99,13 @@ button:hover {
 }
 
 
-#nav-buttons {
+.nav-buttons {
     display: flex;
     flex-direction: column;
     row-gap: 15px;
 }
 
-#nav-buttons li {
+.nav-buttons li {
     list-style-type: none;
     padding: 15px;
     display: flex;
@@ -119,7 +119,7 @@ button:hover {
     font-size: var(--font-base);
 }
 
-#nav-buttons li:hover {
+.nav-buttons li:hover {
     background-color: var(--primary-100);
 }
 
@@ -225,7 +225,7 @@ input:focus, textarea:focus, select:focus {
     align-items: center;
     flex-direction: column; 
     row-gap: 10px;
-  }
+}
 
 /* Project details page*/
 

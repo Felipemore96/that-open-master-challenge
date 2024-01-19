@@ -10,17 +10,11 @@
 <body>
     <aside id="sidebar">
         <img id="company-logo" src="./assets/company-logo.svg" alt="Construction Company">
-        <ul id="nav-buttons">
-            <div style="display: flex; align-items: center; column-gap: 10px;">
-                <button id="new-project-btn" class="btn-secondary"><p style="width: 100%;"><span class="material-icons-round">add</span></p></button>
-                <input type="text" placeholder="Search Project" style="width: 100%;">
-            </div>
-            <li id="nav-project1"><span class="material-icons-round">apartment</span>Project #1</li>
-            <li id="nav-project2"><span class="material-icons-round">store</span>Project #2</li>            
-            <li id="nav-project3"><span class="material-icons-round">factory</span>Project #3</li>
-            <li id="nav-project4"><span class="material-icons-round">stadium</span>Project #4</li>
-            <li id="nav-project5"><span class="material-icons-round">local_airport</span></span>Project #5</li>
-        </ul>
+        <div style="display: flex; align-items: center; column-gap: 10px;">
+            <button id="new-project-btn" class="btn-secondary"><p style="width: 100%;"><span class="material-icons-round">add</span></p></button>
+            <input type="text" placeholder="Search Project" style="width: 100%;">
+        </div>
+        <div id="projects-list" class="nav-buttons"></div>
     </aside>
     <main id="content">
         <div class="page" id="project-details">
@@ -68,6 +62,10 @@
                       <label for="finishDate">
                         <span class="material-icons-round">calendar_month</span>Finish Date</label>
                       <input name="finishDate" type="date"></input>
+                    </div>
+                    <div class="form-field-container">
+                        <label><span class="material-icons-round">published_with_changes</span>Progress</label>
+                        <input name="project-progress" type="text" placeholder="Project's progress from 0 to 100">
                     </div>
                     <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
                       <button id="cancel-new-project-btn" type="button" style="background-color: transparent;">Cancel</button>

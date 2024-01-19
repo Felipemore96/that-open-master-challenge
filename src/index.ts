@@ -1,8 +1,11 @@
+import { IProject, ProjectStatus, ProjectType} from "../src/class/projects"
 import { ITeam, TeamRole, toggleModal } from "./class/teams"
-import { TeamsManager } from "./class/projectsManager"
+import { TeamsManager, ProjectsManager } from "./class/projectsManager"
 
 const teamsListUI = document.getElementById("teams-list") as HTMLElement
 const teamsManager = new TeamsManager(teamsListUI)
+const projectsListUI = document.getElementById("projects-list") as HTMLElement
+const projectsManager = new ProjectsManager(projectsListUI)
 
 const projectForm = document.getElementById("new-project-form")
 const cancelNewProjectBtn = document.getElementById("cancel-new-project-btn")
@@ -38,14 +41,18 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
     e.preventDefault()
     const formData = new FormData(projectForm)
     const projectData: IProject = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      status: formData.get("status") as ProjectStatus,
-      userRole: formData.get("userRole") as UserRole,
-      finishDate: new Date(formData.get("finishDate") as string)
+      projectName: formData.get("project-name") as string,
+      projectDescription: formData.get("project-description") as string,
+      projectStatus: formData.get("project-status") as ProjectStatus,
+      projectCost: formData.get("project-cost") as string,
+      projectType: formData.get("project-type") as ProjectType,
+      projectAddress: formData.get("project-address") as string,
+      projectFinishDate: new Date(formData.get("finishDate") as string),
+      projectProgress: formData.get("project-progress") as string
     }
     try {
       const project = projectsManager.newProject(projectData)
+      console.log(project)
       projectForm.reset()
       toggleModal("new-project-modal")
     } catch (err) {
