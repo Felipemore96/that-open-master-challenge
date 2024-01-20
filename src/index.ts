@@ -1,5 +1,4 @@
-import { IProject, ProjectStatus, ProjectType} from "../src/class/projects"
-import { ITeam, TeamRole, toggleModal } from "./class/teams"
+import { IProject, ProjectStatus, ProjectType, ITeam, TeamRole, toggleModal} from "../src/class/projects"
 import { TeamsManager, ProjectsManager } from "./class/projectsManager"
 
 const teamsListUI = document.getElementById("teams-list") as HTMLElement

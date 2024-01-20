@@ -1,5 +1,4 @@
-import { IProject, Project } from "../class/projects"
-import { ITeam, Team } from "./teams"
+import { IProject, Project, ITeam, Team} from "../class/projects"
 
 export class ProjectsManager {
   list: Project[] = []
@@ -11,11 +10,18 @@ export class ProjectsManager {
       projectName: "Project #1",
       projectDescription: "Description of this project",
       projectStatus: "Active",
-      projectCost: "$500,000.00",
+      projectCost: "500,000.00",
       projectType: "Residential",
       projectAddress: "Madrid, Spain",
-      projectFinishDate: new Date(0o1-0o1-2025),
-      projectProgress: "50"
+      projectFinishDate: new Date("2025-01-02"),
+      projectProgress: "50",
+      projectTeams: ({
+        teamName: "X Company",
+        teamRole: "BIM Manager",
+        teamDescription: "This is just a default app team",
+        contactName: "X Name",
+        contactPhone: "123-456-789"
+      }) 
     })
   }
 
@@ -41,36 +47,68 @@ export class ProjectsManager {
     const project = new Project(data)
     this.ui.append(project.ui)
     this.list.push(project)
+    this.showProjectDetails(project)
+    console.log(project)
     return project
   } 
+
+  showProjectDetails(project: Project) {
+    const detailsPage = document.getElementById("project-details")
+    if(!detailsPage) { return }
+    const name = detailsPage.querySelector("[data-project-info='name']")
+    const description = detailsPage.querySelector("[data-project-info='description']")
+    const status = detailsPage.querySelector("[data-project-info='status']")
+    const cost = detailsPage.querySelector("[data-project-info='cost']")
+    const type = detailsPage.querySelector("[data-project-info='type']")
+    const address = detailsPage.querySelector("[data-project-info='address']")
+    const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
+    const progress = detailsPage.querySelector("[data-project-info='progress']") as HTMLElement
+    if (name) { name.textContent = project.projectName }
+    if (description) { description.textContent = project.projectDescription }
+    if (status) { status.textContent = project.projectStatus }
+    if (cost) { cost.textContent = `$${project.projectCost}` }
+    if (type) { type.textContent = project.projectType }
+    if (address) { address.textContent = project.projectAddress }
+    if (finishDate) { 
+        let finishDateString = project.projectFinishDate
+        let cardFinishDate = new Date(finishDateString)
+        finishDate.textContent = cardFinishDate.toDateString()
+    }
+    if (progress) { 
+        progress.style.width = project.projectProgress + "%"
+        progress.textContent = project.projectProgress + "%"
+    }
+  }
+
 }
 
 export class TeamsManager {
-    list: Team[] = []
-    ui: HTMLElement
-  
-    constructor(container: HTMLElement) {
-      this.ui = container
-      this.newTeam({
-        teamName: "X Company",
-        teamRole: "BIM Manager",
-        teamDescription: "This is just a default app team",
-        contactName: "X Name",
-        contactPhone: "123-456-789"
-      })
+  list: Team[] = []
+  ui: HTMLElement
+
+  constructor(container: HTMLElement) {
+    this.ui = container
+    this.newTeam({
+      teamName: "X Company",
+      teamRole: "BIM Manager",
+      teamDescription: "This is just a default app team",
+      contactName: "X Name",
+      contactPhone: "123-456-789"
+    })
+  }
+
+  newTeam(data: ITeam) {
+    const teamNames = this.list.map((team) => {
+      return team.teamName
+    })
+    const nameInUse = teamNames.includes(data.teamName)
+    if (nameInUse) {
+      throw new Error(`A project with the name "${data.teamName}" already exists`)
     }
-  
-    newTeam(data: ITeam) {
-      const teamNames = this.list.map((team) => {
-        return team.teamName
-      })
-      const nameInUse = teamNames.includes(data.teamName)
-      if (nameInUse) {
-        throw new Error(`A project with the name "${data.teamName}" already exists`)
-      }
-      const team = new Team(data)
-      this.ui.append(team.ui)
-      this.list.push(team)	
-      return team
-    }
+    const team = new Team(data)
+    this.ui.append(team.ui)
+    this.list.push(team)	
+    return team
+  }
+
 }
