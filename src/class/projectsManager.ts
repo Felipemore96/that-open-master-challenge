@@ -23,18 +23,59 @@ export class ProjectsManager {
         contactPhone: "123-456-789"
       }) 
     })
+    this.newProject({
+      projectName: "Project #2",
+      projectDescription: "Another description of a project",
+      projectStatus: "Pending",
+      projectCost: "250,000.00",
+      projectType: "Commercial",
+      projectAddress: "Lisbon, Portugal",
+      projectFinishDate: new Date("2026-06-02"),
+      projectProgress: "10",
+      projectTeams: ({
+        teamName: "Hello Company",
+        teamRole: "BIM Manager",
+        teamDescription: "This is just a default app team",
+        contactName: "XYZ Name",
+        contactPhone: "123-456-789"
+      }) 
+    })
+    this.newProject({
+      projectName: "Project #3",
+      projectDescription: "Last description of some project",
+      projectStatus: "Finished",
+      projectCost: "1,000,000.00",
+      projectType: "Institutional",
+      projectAddress: "Barcelona, Spain",
+      projectFinishDate: new Date("2022-06-02"),
+      projectProgress: "100",
+      projectTeams: (
+        {
+        teamName: "BIM Company",
+        teamRole: "BIM Manager",
+        teamDescription: "This is just a default app team",
+        contactName: "XYZ Name",
+        contactPhone: "123-456-789"
+      }{
+        teamName: "MEP Company",
+        teamRole: "MEP",
+        teamDescription: "This is just a default app team",
+        contactName: "XYZ Name",
+        contactPhone: "123-456-789"
+      })  
+    })
   }
 
-  // exportToJSON(fileName: string = "project-info") {
-  //   const json = JSON.stringify(this.list, null, 2)
-  //   const blob = new Blob([json], { type: 'application/json'})
-  //   const url = URL.createObjectURL(blob)
-  //   const a = document.createElement('a')
-  //   a.href = url
-  //   a.download = fileName
-  //   a.click()
-  //   URL.revokeObjectURL(url)
-  // }
+  exportToJSON(fileName: string = "project-info") {
+    const json = JSON.stringify(this.list, null, 2)
+    const blob = new Blob([json], { type: 'application/json'})
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fileName
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   newProject(data: IProject) {
     const projectNames = this.list.map((project) => {

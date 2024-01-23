@@ -5,34 +5,33 @@ export type ProjectType = "Residential" | "Commercial" | "Institutional" | "Mixe
 export type TeamRole = "BIM Manager" | "Structural" | "MEP" | "Architect" | "Contractor"
 
 export interface ITeam {
-    teamName: string
-    teamRole: TeamRole
-    teamDescription: string
-    contactName: string
-    contactPhone: string
+  teamName: string
+  teamRole: TeamRole
+  teamDescription: string
+  contactName: string
+  contactPhone: string
 }
 
 export interface IProject {
-    projectName: string
-    projectDescription: string
-    projectStatus: ProjectStatus
-    projectCost: string
-    projectType: ProjectType
-    projectAddress: string
-    projectFinishDate: Date
-    projectProgress: string
-    projectTeams: ITeam
+  projectName: string
+  projectDescription: string
+  projectStatus: ProjectStatus
+  projectCost: string
+  projectType: ProjectType
+  projectAddress: string
+  projectFinishDate: Date
+  projectProgress: string
 }
 
 export function toggleModal(id: string) {
-    const modal = document.getElementById(id)
-    if (modal && modal instanceof HTMLDialogElement) {
-      if (modal.open) {
-        modal.close()
-      } else modal.showModal()
-    } else {
-      console.warn("The provided modal wasn't found. ID: ", id)
-    }
+  const modal = document.getElementById(id)
+  if (modal && modal instanceof HTMLDialogElement) {
+    if (modal.open) {
+      modal.close()
+    } else modal.showModal()
+  } else {
+    console.warn("The provided modal wasn't found. ID: ", id)
+  }
 }
 
 const teamInfo = document.getElementById("team-info") as HTMLElement
@@ -48,48 +47,45 @@ function updateTeamInfo(team: Team) {
 }
 
 export class Project implements IProject {
-    // To satisfy IProject
-    projectName: string
-    projectDescription: string
-    projectStatus: "Pending" | "Active" | "Finished"
-    projectCost: string    
-    projectType: "Residential" | "Commercial" | "Institutional" | "Mixed-use" | "Industrial" | "Heavy civil"
-    projectAddress: string
-    projectFinishDate: Date
-    projectProgress: string
-    projectTeams: ITeam
-
-    // Class internals
-    ui: HTMLLIElement
-    id: string
-    
-    constructor(data: IProject) {
-        for (const key in data) {
-            this[key] = data[key]
-        }
-        this.id = uuidv4()
-        this.setUI()
+  // To satisfy IProject
+  projectName: string
+  projectDescription: string
+  projectStatus: "Pending" | "Active" | "Finished"
+  projectCost: string    
+  projectType: "Residential" | "Commercial" | "Institutional" | "Mixed-use" | "Industrial" | "Heavy civil"
+  projectAddress: string
+  projectFinishDate: Date
+  projectProgress: string
+  
+  // Class internals  
+  projectTeams: Team
+  ui: HTMLLIElement
+  id: string
+  
+  constructor(data: IProject) {
+    for (const key in data) {
+      this[key] = data[key]
     }
+    this.id = uuidv4()
+    this.setUI()
+  }
 
-
-    setUI() {    
-        if (this.ui) {return}
-        const roleToIcon: Record<ProjectType, string> = {
-            "Residential": "home",
-            "Commercial": "corporate_fare",
-            "Institutional": "school",
-            "Mixed-use": "emoji_transportation",
-            "Industrial": "factory",
-            "Heavy civil": "stadium"
-        }
-        const icon = roleToIcon[this.projectType] || "home"
-        this.ui = document.createElement("li")
-        this.ui.className = "nav-project-btn"
-        this.ui.id = "nav-project-btn"
-        this.ui.innerHTML = `<span class="material-icons-round">${icon}</span></span>${this.projectName}`
+  setUI() {    
+    if (this.ui) {return}
+    const roleToIcon: Record<ProjectType, string> = {
+      "Residential": "home",
+      "Commercial": "corporate_fare",
+      "Institutional": "school",
+      "Mixed-use": "emoji_transportation",
+      "Industrial": "factory",
+      "Heavy civil": "stadium"
     }
-
-
+    const icon = roleToIcon[this.projectType] || "home"
+    this.ui = document.createElement("li")
+    this.ui.className = "nav-project-btn"
+    this.ui.id = "nav-project-btn"
+    this.ui.innerHTML = `<span class="material-icons-round">${icon}</span></span>${this.projectName}`
+  }
 }
 
 export class Team implements ITeam {
@@ -109,11 +105,11 @@ export class Team implements ITeam {
       this[key] = data[key]
     }
     this.id = uuidv4()
-    this.setUI()
+    this.setTeamUI()
   }
 
-  //creates the project card UI
-  setUI() {
+  //creates the team card UI
+  setTeamUI() {
     if (this.ui) {return}
     const roleToIcon: Record<TeamRole, string> = {
       "BIM Manager": "computer",

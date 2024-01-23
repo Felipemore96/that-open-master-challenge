@@ -47,7 +47,7 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       projectType: formData.get("project-type") as ProjectType,
       projectAddress: formData.get("project-address") as string,
       projectFinishDate: new Date(formData.get("finishDate") as string),
-      projectProgress: formData.get("project-progress") as string
+      projectProgress: formData.get("project-progress") as string,
     }
     try {
       const project = projectsManager.newProject(projectData)
@@ -103,3 +103,12 @@ if (closeTeamInfoPopup) {
     toggleModal("team-info-popup");
   })
 }
+
+const exportProjectsBtn = document.getElementById("export-projects-btn")
+if (exportProjectsBtn) {
+  exportProjectsBtn.addEventListener("click", () => {
+    projectsManager.exportToJSON()
+  })
+}
+
+
