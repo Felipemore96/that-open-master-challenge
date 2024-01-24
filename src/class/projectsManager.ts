@@ -1,8 +1,9 @@
 import { IProject, Project, ITeam, Team} from "../class/projects"
 
 export class ProjectsManager {
-  list: Project[] = []
+  projectsList: Project[] = []
   ui: HTMLElement
+  teamList: Team[] = []
 
   constructor(container: HTMLElement) {
     this.ui = container
@@ -23,51 +24,60 @@ export class ProjectsManager {
         contactPhone: "123-456-789"
       }) 
     })
-    this.newProject({
-      projectName: "Project #2",
-      projectDescription: "Another description of a project",
-      projectStatus: "Pending",
-      projectCost: "250,000.00",
-      projectType: "Commercial",
-      projectAddress: "Lisbon, Portugal",
-      projectFinishDate: new Date("2026-06-02"),
-      projectProgress: "10",
-      projectTeams: ({
-        teamName: "Hello Company",
-        teamRole: "BIM Manager",
-        teamDescription: "This is just a default app team",
-        contactName: "XYZ Name",
-        contactPhone: "123-456-789"
-      }) 
+    this.newTeam({
+      teamName: "X Company",
+      teamRole: "BIM Manager",
+      teamDescription: "This is just a default app team",
+      contactName: "X Name",
+      contactPhone: "123-456-789"
     })
-    this.newProject({
-      projectName: "Project #3",
-      projectDescription: "Last description of some project",
-      projectStatus: "Finished",
-      projectCost: "1,000,000.00",
-      projectType: "Institutional",
-      projectAddress: "Barcelona, Spain",
-      projectFinishDate: new Date("2022-06-02"),
-      projectProgress: "100",
-      projectTeams: (
-        {
-        teamName: "BIM Company",
-        teamRole: "BIM Manager",
-        teamDescription: "This is just a default app team",
-        contactName: "XYZ Name",
-        contactPhone: "123-456-789"
-      }{
-        teamName: "MEP Company",
-        teamRole: "MEP",
-        teamDescription: "This is just a default app team",
-        contactName: "XYZ Name",
-        contactPhone: "123-456-789"
-      })  
-    })
+    // this.newProject({
+    //   projectName: "Project #2",
+    //   projectDescription: "Another description of a project",
+    //   projectStatus: "Pending",
+    //   projectCost: "250,000.00",
+    //   projectType: "Commercial",
+    //   projectAddress: "Lisbon, Portugal",
+    //   projectFinishDate: new Date("2026-06-02"),
+    //   projectProgress: "10",
+    //   projectTeams: ({
+    //     teamName: "Hello Company",
+    //     teamRole: "BIM Manager",
+    //     teamDescription: "This is just a default app team",
+    //     contactName: "XYZ Name",
+    //     contactPhone: "123-456-789"
+    //   }) 
+    // })
+    // this.newProject({
+    //   projectName: "Project #3",
+    //   projectDescription: "Last description of some project",
+    //   projectStatus: "Finished",
+    //   projectCost: "1,000,000.00",
+    //   projectType: "Institutional",
+    //   projectAddress: "Barcelona, Spain",
+    //   projectFinishDate: new Date("2022-06-02"),
+    //   projectProgress: "100",
+    //   projectTeams: (
+    //     {
+    //     teamName: "BIM Company",
+    //     teamRole: "BIM Manager",
+    //     teamDescription: "This is just a default app team",
+    //     contactName: "XYZ Name",
+    //     contactPhone: "123-456-789"
+    //   }
+    //   // {
+    //   //   teamName: "MEP Company",
+    //   //   teamRole: "MEP",
+    //   //   teamDescription: "This is just a default app team",
+    //   //   contactName: "XYZ Name",
+    //   //   contactPhone: "123-456-789"
+    //   // }
+    //   )  
+    // })
   }
 
   exportToJSON(fileName: string = "project-info") {
-    const json = JSON.stringify(this.list, null, 2)
+    const json = JSON.stringify((this.projectsList, this.teamList), null, 2)
     const blob = new Blob([json], { type: 'application/json'})
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -78,7 +88,7 @@ export class ProjectsManager {
   }
 
   newProject(data: IProject) {
-    const projectNames = this.list.map((project) => {
+    const projectNames = this.projectsList.map((project) => {
         return project.projectName
     })
     const nameInUse = projectNames.includes(data.projectName)
@@ -86,8 +96,12 @@ export class ProjectsManager {
       throw new Error(`A project with name "${data.projectName}" already exists`)
     }
     const project = new Project(data)
+    project.ui.addEventListener("click", () => {
+      this.showProjectDetails(project)
+    })
     this.ui.append(project.ui)
-    this.list.push(project)
+    this.projectsList.push(project)
+    // add teamlist too
     this.showProjectDetails(project)
     console.log(project)
     return project
@@ -121,25 +135,8 @@ export class ProjectsManager {
     }
   }
 
-}
-
-export class TeamsManager {
-  list: Team[] = []
-  ui: HTMLElement
-
-  constructor(container: HTMLElement) {
-    this.ui = container
-    this.newTeam({
-      teamName: "X Company",
-      teamRole: "BIM Manager",
-      teamDescription: "This is just a default app team",
-      contactName: "X Name",
-      contactPhone: "123-456-789"
-    })
-  }
-
   newTeam(data: ITeam) {
-    const teamNames = this.list.map((team) => {
+    const teamNames = this.teamList.map((team) => {
       return team.teamName
     })
     const nameInUse = teamNames.includes(data.teamName)
@@ -147,9 +144,12 @@ export class TeamsManager {
       throw new Error(`A project with the name "${data.teamName}" already exists`)
     }
     const team = new Team(data)
-    this.ui.append(team.ui)
-    this.list.push(team)	
+    const teamsList = document.getElementById("teams-list");
+    if (teamsList) {
+      teamsList.appendChild(team.ui);
+    }
+    this.teamList.push(team)	
     return team
   }
-
 }
+

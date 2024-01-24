@@ -21,6 +21,7 @@ export interface IProject {
   projectAddress: string
   projectFinishDate: Date
   projectProgress: string
+  projectTeams: ITeam
 }
 
 export function toggleModal(id: string) {

@@ -1,8 +1,6 @@
 import { IProject, ProjectStatus, ProjectType, ITeam, TeamRole, toggleModal} from "../src/class/projects"
-import { TeamsManager, ProjectsManager } from "./class/projectsManager"
+import { ProjectsManager } from "./class/projectsManager"
 
-const teamsListUI = document.getElementById("teams-list") as HTMLElement
-const teamsManager = new TeamsManager(teamsListUI)
 const projectsListUI = document.getElementById("projects-list") as HTMLElement
 const projectsManager = new ProjectsManager(projectsListUI)
 
@@ -27,7 +25,6 @@ if (newTeamBtn) {
   console.warn("New projects button was not found")
 }
 
-
 const closeErrorPopup = document.getElementById("close-error-popup")
 if (closeErrorPopup) {
   closeErrorPopup.addEventListener("click", () => {
@@ -48,6 +45,7 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       projectAddress: formData.get("project-address") as string,
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
+      projectTeams: []
     }
     try {
       const project = projectsManager.newProject(projectData)
@@ -80,7 +78,7 @@ if (teamForm && teamForm instanceof HTMLFormElement) {
       contactPhone: formData.get("contactPhone") as string
     }
     try {
-      const team = teamsManager.newTeam(teamData)
+      const team = projectsManager.newTeam(teamData)
       teamForm.reset()
       toggleModal("new-team-modal")
     } catch (err) {
