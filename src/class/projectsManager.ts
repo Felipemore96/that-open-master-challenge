@@ -1,12 +1,18 @@
-import { IProject, Project, ITeam, Team} from "../class/projects"
+// Import necessary modules and classes
+import { IProject, Project, ITeam, Team } from "../class/projects";
 
+// Class managing projects and teams
 export class ProjectsManager {
-  projectsList: Project[] = []
-  ui: HTMLElement
-  teamList: Team[] = []
+  // Properties to store project and team data
+  projectsList: Project[] = [];
+  ui: HTMLElement;
+  teamList: Team[] = [];
 
+  // Constructor initializes the ProjectsManager with a container element
   constructor(container: HTMLElement) {
-    this.ui = container
+    this.ui = container;
+
+    // Create an example project and team for demonstration
     this.newProject({
       projectName: "Project #1",
       projectDescription: "Description of this project",
@@ -16,140 +22,112 @@ export class ProjectsManager {
       projectAddress: "Madrid, Spain",
       projectFinishDate: new Date("2025-01-02"),
       projectProgress: "50",
-      projectTeams: ({
+      projectTeams: {
         teamName: "X Company",
         teamRole: "BIM Manager",
         teamDescription: "This is just a default app team",
         contactName: "X Name",
-        contactPhone: "123-456-789"
-      }) 
-    })
+        contactPhone: "123-456-789",
+      },
+    });
     this.newTeam({
       teamName: "X Company",
       teamRole: "BIM Manager",
       teamDescription: "This is just a default app team",
       contactName: "X Name",
-      contactPhone: "123-456-789"
-    })
-    // this.newProject({
-    //   projectName: "Project #2",
-    //   projectDescription: "Another description of a project",
-    //   projectStatus: "Pending",
-    //   projectCost: "250,000.00",
-    //   projectType: "Commercial",
-    //   projectAddress: "Lisbon, Portugal",
-    //   projectFinishDate: new Date("2026-06-02"),
-    //   projectProgress: "10",
-    //   projectTeams: ({
-    //     teamName: "Hello Company",
-    //     teamRole: "BIM Manager",
-    //     teamDescription: "This is just a default app team",
-    //     contactName: "XYZ Name",
-    //     contactPhone: "123-456-789"
-    //   }) 
-    // })
-    // this.newProject({
-    //   projectName: "Project #3",
-    //   projectDescription: "Last description of some project",
-    //   projectStatus: "Finished",
-    //   projectCost: "1,000,000.00",
-    //   projectType: "Institutional",
-    //   projectAddress: "Barcelona, Spain",
-    //   projectFinishDate: new Date("2022-06-02"),
-    //   projectProgress: "100",
-    //   projectTeams: (
-    //     {
-    //     teamName: "BIM Company",
-    //     teamRole: "BIM Manager",
-    //     teamDescription: "This is just a default app team",
-    //     contactName: "XYZ Name",
-    //     contactPhone: "123-456-789"
-    //   }
-    //   // {
-    //   //   teamName: "MEP Company",
-    //   //   teamRole: "MEP",
-    //   //   teamDescription: "This is just a default app team",
-    //   //   contactName: "XYZ Name",
-    //   //   contactPhone: "123-456-789"
-    //   // }
-    //   )  
-    // })
+      contactPhone: "123-456-789",
+    });
   }
 
+  // Export project and team data to a JSON file
   exportToJSON(fileName: string = "project-info") {
-    const json = JSON.stringify((this.projectsList, this.teamList), null, 2)
-    const blob = new Blob([json], { type: 'application/json'})
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = fileName
-    a.click()
-    URL.revokeObjectURL(url)
+    const json = JSON.stringify({ projects: this.projectsList, teams: this.teamList }, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
+  // Create a new project with the provided data
   newProject(data: IProject) {
-    const projectNames = this.projectsList.map((project) => {
-        return project.projectName
-    })
-    const nameInUse = projectNames.includes(data.projectName)
+    // Check if a project with the same name already exists
+    const nameInUse = this.projectsList.some((project) => project.projectName === data.projectName);
     if (nameInUse) {
-      throw new Error(`A project with name "${data.projectName}" already exists`)
+      throw new Error(`A project with name "${data.projectName}" already exists`);
     }
-    const project = new Project(data)
-    project.ui.addEventListener("click", () => {
-      this.showProjectDetails(project)
-    })
-    this.ui.append(project.ui)
-    this.projectsList.push(project)
-    // add teamlist too
-    this.showProjectDetails(project)
-    console.log(project)
-    return project
-  } 
 
+    // Create a new Project instance
+    const project = new Project(data);
+    // Add a click event listener to show project details when clicked
+    project.ui.addEventListener("click", () => {
+      this.showProjectDetails(project);
+    });
+    // Append project UI to the container
+    this.ui.append(project.ui);
+    // Add project to the projectsList
+    this.projectsList.push(project);
+    // Display project details
+    this.showProjectDetails(project);
+    console.log(project);
+    return project;
+  }
+
+  // Display detailed information about a project
   showProjectDetails(project: Project) {
-    const detailsPage = document.getElementById("project-details")
-    if(!detailsPage) { return }
-    const name = detailsPage.querySelector("[data-project-info='name']")
-    const description = detailsPage.querySelector("[data-project-info='description']")
-    const status = detailsPage.querySelector("[data-project-info='status']")
-    const cost = detailsPage.querySelector("[data-project-info='cost']")
-    const type = detailsPage.querySelector("[data-project-info='type']")
-    const address = detailsPage.querySelector("[data-project-info='address']")
-    const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
-    const progress = detailsPage.querySelector("[data-project-info='progress']") as HTMLElement
-    if (name) { name.textContent = project.projectName }
-    if (description) { description.textContent = project.projectDescription }
-    if (status) { status.textContent = project.projectStatus }
-    if (cost) { cost.textContent = `$${project.projectCost}` }
-    if (type) { type.textContent = project.projectType }
-    if (address) { address.textContent = project.projectAddress }
-    if (finishDate) { 
-        let finishDateString = project.projectFinishDate
-        let cardFinishDate = new Date(finishDateString)
-        finishDate.textContent = cardFinishDate.toDateString()
+    // Get the project details page element
+    const detailsPage = document.getElementById("project-details");
+    if (!detailsPage) {
+      return;
     }
-    if (progress) { 
-        progress.style.width = project.projectProgress + "%"
-        progress.textContent = project.projectProgress + "%"
+    // Query selectors to update project details on the page
+    const name = detailsPage.querySelector("[data-project-info='name']");
+    const description = detailsPage.querySelector("[data-project-info='description']");
+    const status = detailsPage.querySelector("[data-project-info='status']");
+    const cost = detailsPage.querySelector("[data-project-info='cost']");
+    const type = detailsPage.querySelector("[data-project-info='type']");
+    const address = detailsPage.querySelector("[data-project-info='address']");
+    const finishDate = detailsPage.querySelector("[data-project-info='finishDate']");
+    const progress = detailsPage.querySelector("[data-project-info='progress']") as HTMLElement;
+
+    // Update project details on the page
+    if (name) { name.textContent = project.projectName; }
+    if (description) { description.textContent = project.projectDescription; }
+    if (status) { status.textContent = project.projectStatus; }
+    if (cost) { cost.textContent = `$${project.projectCost}`; }
+    if (type) { type.textContent = project.projectType; }
+    if (address) { address.textContent = project.projectAddress; }
+    if (finishDate) {
+      let finishDateString = project.projectFinishDate;
+      let cardFinishDate = new Date(finishDateString);
+      finishDate.textContent = cardFinishDate.toDateString();
+    }
+    if (progress) {
+      progress.style.width = project.projectProgress + "%";
+      progress.textContent = project.projectProgress + "%";
     }
   }
 
+  // Create a new team with the provided data
   newTeam(data: ITeam) {
-    const teamNames = this.teamList.map((team) => {
-      return team.teamName
-    })
-    const nameInUse = teamNames.includes(data.teamName)
+    // Check if a team with the same name already exists
+    const nameInUse = this.teamList.some((team) => team.teamName === data.teamName);
     if (nameInUse) {
-      throw new Error(`A project with the name "${data.teamName}" already exists`)
+      throw new Error(`A team with the name "${data.teamName}" already exists`);
     }
-    const team = new Team(data)
+
+    // Create a new Team instance
+    const team = new Team(data);
+    // Get the teams list container element
     const teamsList = document.getElementById("teams-list");
+    // Append team UI to the teams list container
     if (teamsList) {
       teamsList.appendChild(team.ui);
     }
-    this.teamList.push(team)	
-    return team
+    // Add team to the teamList
+    this.teamList.push(team);
+    return team;
   }
 }
-

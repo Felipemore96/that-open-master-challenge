@@ -1,41 +1,64 @@
-import { IProject, ProjectStatus, ProjectType, ITeam, TeamRole, toggleModal} from "../src/class/projects"
-import { ProjectsManager } from "./class/projectsManager"
+// Import necessary types and functions from project files
+import {
+  IProject,
+  ProjectStatus,
+  ProjectType,
+  ITeam,
+  TeamRole,
+  toggleModal
+} from "../src/class/projects";
+import { ProjectsManager } from "./class/projectsManager";
 
-const projectsListUI = document.getElementById("projects-list") as HTMLElement
-const projectsManager = new ProjectsManager(projectsListUI)
+// DOM elements
+const projectsListUI = document.getElementById("projects-list") as HTMLElement;
+const projectForm = document.getElementById("new-project-form") as HTMLFormElement;
+const cancelNewProjectBtn = document.getElementById("cancel-new-project-btn");
+const submitNewProjectBtn = document.getElementById("submit-new-project-btn");
+const newTeamBtn = document.getElementById("new-team-btn");
+const teamForm = document.getElementById("new-team-form") as HTMLFormElement;
+const cancelNewTeamBtn = document.getElementById("cancel-new-team-btn");
+const submitNewTeamBtn = document.getElementById("submit-new-team-btn");
+const newProjectBtn = document.getElementById("new-project-btn");
+const closeErrorPopup = document.getElementById("close-error-popup");
+const closeTeamInfoPopup = document.getElementById("close-team-info-popup");
+const exportProjectsBtn = document.getElementById("export-projects-btn");
 
-const projectForm = document.getElementById("new-project-form")
-const cancelNewProjectBtn = document.getElementById("cancel-new-project-btn")
-const submitNewProjectBtn = document.getElementById("submit-new-project-btn")
-const newTeamBtn = document.getElementById("new-team-btn")
-const teamForm = document.getElementById("new-team-form")
-const cancelNewTeamBtn = document.getElementById("cancel-new-team-btn")
-const submitNewTeamBtn = document.getElementById("submit-new-team-btn")
+// Create ProjectsManager instance
+const projectsManager = new ProjectsManager(projectsListUI);
 
-const newProjectBtn = document.getElementById("new-project-btn")
+// Event listeners
+
+// Event listener for opening the "New Project" modal
 if (newProjectBtn) {
-  newProjectBtn.addEventListener("click", () => {toggleModal("new-project-modal")})
+  newProjectBtn.addEventListener("click", () => {
+    toggleModal("new-project-modal");
+  });
 } else {
-  console.warn("New projects button was not found")
+  console.warn("New project button was not found");
 }
 
+// Event listener for opening the "New Team" modal
 if (newTeamBtn) {
-  newTeamBtn.addEventListener("click", () => {toggleModal("new-team-modal")})
+  newTeamBtn.addEventListener("click", () => {
+    toggleModal("new-team-modal");
+  });
 } else {
-  console.warn("New projects button was not found")
+  console.warn("New team button was not found");
 }
 
-const closeErrorPopup = document.getElementById("close-error-popup")
+// Event listener for closing the error popup modal
 if (closeErrorPopup) {
   closeErrorPopup.addEventListener("click", () => {
     toggleModal("error-popup");
   });
 }
 
-if (projectForm && projectForm instanceof HTMLFormElement) {
+// Event listener for submitting a new project form
+if (projectForm) {
   submitNewProjectBtn?.addEventListener("click", (e) => {
-    e.preventDefault()
-    const formData = new FormData(projectForm)
+    e.preventDefault();
+    // Gather form data and create a new project
+    const formData = new FormData(projectForm);
     const projectData: IProject = {
       projectName: formData.get("project-name") as string,
       projectDescription: formData.get("project-description") as string,
@@ -46,67 +69,73 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
       projectTeams: []
-    }
+    };
     try {
-      const project = projectsManager.newProject(projectData)
-      console.log(project)
-      projectForm.reset()
-      toggleModal("new-project-modal")
+      // Attempt to create a new project
+      const project = projectsManager.newProject(projectData);
+      console.log(project);
+      projectForm.reset();
+      toggleModal("new-project-modal");
     } catch (err) {
-      const errorMessage = document.getElementById("err") as HTMLElement
-      errorMessage.textContent = err
-      toggleModal("error-popup")
+      // Display an error message in case of an exception
+      const errorMessage = document.getElementById("err") as HTMLElement;
+      errorMessage.textContent = err;
+      toggleModal("error-popup");
     }
-  })
+  });
+  // Event listener for canceling the new project form
   cancelNewProjectBtn?.addEventListener("click", () => {
-    projectForm.reset()
-    toggleModal("new-project-modal") 
-  })
+    projectForm.reset();
+    toggleModal("new-project-modal");
+  });
 } else {
-  console.warn("The project form was not found. Check the ID!")
+  console.warn("The project form was not found. Check the ID!");
 }
 
-if (teamForm && teamForm instanceof HTMLFormElement) {
+// Event listener for submitting a new team form
+if (teamForm) {
   submitNewTeamBtn?.addEventListener("click", (e) => {
-    e.preventDefault()
-    const formData = new FormData(teamForm)
+    e.preventDefault();
+    // Gather form data and create a new team
+    const formData = new FormData(teamForm);
     const teamData: ITeam = {
       teamName: formData.get("teamName") as string,
       teamRole: formData.get("teamRole") as TeamRole,
       teamDescription: formData.get("teamDescription") as string,
       contactName: formData.get("contactName") as string,
       contactPhone: formData.get("contactPhone") as string
-    }
+    };
     try {
-      const team = projectsManager.newTeam(teamData)
-      teamForm.reset()
-      toggleModal("new-team-modal")
+      // Attempt to create a new team
+      const team = projectsManager.newTeam(teamData);
+      teamForm.reset();
+      toggleModal("new-team-modal");
     } catch (err) {
-      const errorMessage = document.getElementById("err") as HTMLElement
-      errorMessage.textContent = err
-      toggleModal("error-popup")
+      // Display an error message in case of an exception
+      const errorMessage = document.getElementById("err") as HTMLElement;
+      errorMessage.textContent = err;
+      toggleModal("error-popup");
     }
-  })
+  });
+  // Event listener for canceling the new team form
   cancelNewTeamBtn?.addEventListener("click", () => {
-    teamForm.reset()
-    toggleModal("new-team-modal") 
-  })
+    teamForm.reset();
+    toggleModal("new-team-modal");
+  });
 } else {
-  console.warn("The team form was not found. Check the ID!")
+  console.warn("The team form was not found. Check the ID!");
 }
 
-const closeTeamInfoPopup = document.getElementById("close-team-info-popup")
+// Event listener for closing the team info popup modal
 if (closeTeamInfoPopup) {
   closeTeamInfoPopup.addEventListener("click", () => {
     toggleModal("team-info-popup");
-  })
+  });
 }
 
-const exportProjectsBtn = document.getElementById("export-projects-btn")
+// Event listener for exporting projects to JSON
 if (exportProjectsBtn) {
   exportProjectsBtn.addEventListener("click", () => {
-    projectsManager.exportToJSON()
-  })
+    projectsManager.exportToJSON();
+  });
 }
-
-
