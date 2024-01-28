@@ -34,23 +34,41 @@
       "projectType": "Industrial",
       "projectAddress": "Barcelona, Spain",
       "projectFinishDate": "2025-06-01T00:00:00.000Z",
-      "projectProgress": "5",
-      "projectTeams": [
-        {
-          "teamName": "BIM Inc.",
-          "teamRole": "BIM Manager",
-          "teamDescription": "Company in charge of BIM Management",
-          "contactName": "Juan Gonzales",
-          "contactPhone": "213-546-879"
-        },
-        {
-          "teamName": "Arch. Company",
-          "teamRole": "Architect",
-          "teamDescription": "Company in charge or architectural design",
-          "contactName": "Connor Wright",
-          "contactPhone": "987-654-321"
-        }
-      ]
+      "projectProgress": "5"
+    }
+  ],
+  "teams": [
+    {
+      "teamName": "BIM Company",
+      "teamRole": "BIM Manager",
+      "teamDescription": "Company in charge of BIM Management",
+      "contactName": "John Jackson",
+      "contactPhone": "123-456-789",
+      "teamProject": "Project #1"
+    },
+    {
+      "teamName": "Structural Company",
+      "teamRole": "Structural",
+      "teamDescription": "Company in charge of structural design",
+      "contactName": "Jack Brandon",
+      "contactPhone": "321-654-987",
+      "teamProject": "Project #1"
+    },
+    {
+      "teamName": "BIM Inc.",
+      "teamRole": "BIM Manager",
+      "teamDescription": "Company in charge of BIM Management",
+      "contactName": "Juan Gonzales",
+      "contactPhone": "213-546-879",
+      "teamProject": "Project #2"
+    },
+    {
+      "teamName": "Arch. Company",
+      "teamRole": "Architect",
+      "teamDescription": "Company in charge or architectural design",
+      "contactName": "Connor Wright",
+      "contactPhone": "987-654-321",
+      "teamProject": "Project #2"
     }
   ]
 }

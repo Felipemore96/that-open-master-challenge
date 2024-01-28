@@ -136,6 +136,12 @@ export class ProjectsManager {
       progress.style.width = project.projectProgress + "%";
       progress.textContent = project.projectProgress + "%";
     }
+    
+    // Clear existing teams before updating project details
+    const teamsList = document.getElementById("teams-list");
+    if (teamsList) {
+      teamsList.innerHTML = "";
+    }
 
     //Update the project Teams and create their cards
     const teams = project.projectTeams
@@ -166,11 +172,11 @@ export class ProjectsManager {
     }
     // Create a new Team instance
     const team = new Team(data);
-    
     const teamsList = document.getElementById("teams-list");
     if (teamsList) {
       teamsList.appendChild(team.ui);
     }
+
     // Add team to the teamList
     this.teamList.push(team);
     
@@ -180,4 +186,6 @@ export class ProjectsManager {
     }
     return team;
   }
+  
+  
 }
