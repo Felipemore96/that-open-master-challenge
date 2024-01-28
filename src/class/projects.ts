@@ -91,7 +91,6 @@ export class Project implements IProject {
   setUI() {
     // Check if UI element already exists
     if (this.ui) { return }
-    console.log("HOLA")
     const roleToIcon: Record<ProjectType, string> = {
       "Residential": "home",
       "Commercial": "corporate_fare",

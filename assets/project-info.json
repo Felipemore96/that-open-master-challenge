@@ -15,18 +15,14 @@
           "teamRole": "BIM Manager",
           "teamDescription": "Company in charge of BIM Management",
           "contactName": "John Jackson",
-          "contactPhone": "123-456-789",
-          "id": "2bf6215d-feb0-45a2-a27c-43388b03cb67",
-          "ui": {}
+          "contactPhone": "123-456-789"
         },
         {
           "teamName": "Structural Company",
           "teamRole": "Structural",
           "teamDescription": "Company in charge of structural design",
           "contactName": "Jack Brandon",
-          "contactPhone": "321-654-987",
-          "id": "ad33b2b5-eb70-4154-b1d6-33ca40775286",
-          "ui": {}
+          "contactPhone": "321-654-987"
         }
       ]
     },

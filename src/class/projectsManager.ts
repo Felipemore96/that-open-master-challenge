@@ -56,7 +56,6 @@ export class ProjectsManager {
       if (!json) { return }
       const projectsData = JSON.parse(json as string);
       const projects: IProject[] = projectsData.projects;
-      console.log(projects)
       for (const project of projects) {
         try {
           // const createdProject = this.newProject(project);
@@ -96,11 +95,6 @@ export class ProjectsManager {
     //   this.ui.append(initialTeams)
     //   initialTeams.newTeam
     // }
-
-    this.ui.addEventListener("click", (e) => {
-      e.preventDefault();
-      this.showProjectDetails(project)
-    })
 
     // Display project details
     this.currentProject = project;
@@ -143,14 +137,20 @@ export class ProjectsManager {
       progress.textContent = project.projectProgress + "%";
     }
 
-    // Update the current project when showing details
-    this.currentProject = project;
-    const teamsList = document.getElementById("teams-list");
-    if (teamsList) {
-      teamsList.innerHTML = ""; // Clear existing teams
+    //Update the project Teams and create their cards
+    const teams = project.projectTeams
+    if (teams) {
+      console.log(teams)
+      for (const teamData of teams) {
+        try {
+          this.newTeam(teamData)
+        } catch (err) {
+        const errorMessage = document.getElementById("err") as HTMLElement;
+        errorMessage.textContent = err;
+        toggleModal("error-popup");
+        }
+      }
     }
-
-
   }
 
 

@@ -23,8 +23,9 @@ const newProjectBtn = document.getElementById("new-project-btn");
 const closeErrorPopup = document.getElementById("close-error-popup");
 const closeTeamInfoPopup = document.getElementById("close-team-info-popup");
 const exportProjectsBtn = document.getElementById("export-projects-btn");
+const navProjectsBtn = document.getElementById("nav-projects-btn");
 
-// Create ProjectsManager instance
+// ProjectsManager instance
 const projectsManager = new ProjectsManager(projectsListUI);
 
 // Event listeners
@@ -149,8 +150,14 @@ if (importProjectsBtn) {
 
 // Event listener for showing project info
 if (projectsListUI) {
-  const clickedProject = null
-  projectsListUI.addEventListener("click", (clickedProject) => {
-    projectsManager.showProjectDetails(clickedProject)
-  })
+  projectsListUI.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    const projectId = target.dataset.projectId;    
+    if (projectId) {
+      const clickedProject = projectsManager.projectsList.find((project) => project.id === projectId);
+      if (clickedProject) {
+        projectsManager.showProjectDetails(clickedProject);
+      }
+    }
+  });
 }
