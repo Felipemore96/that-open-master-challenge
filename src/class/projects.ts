@@ -25,7 +25,7 @@ export interface IProject {
   projectAddress: string;
   projectFinishDate: Date;
   projectProgress: string;
-  projectTeams: ITeam;
+  projectTeams: ITeam[];
 }
 
 // Function to toggle a modal based on its ID
@@ -68,7 +68,7 @@ export class Project implements IProject {
   projectProgress: string;
 
   // Class internals
-  projectTeams: Team;
+  projectTeams: ITeam[];
   ui: HTMLLIElement;
   id: string;
 
@@ -77,17 +77,21 @@ export class Project implements IProject {
     for (const key in data) {
       this[key] = data[key];
     }
-    // Generate a unique ID for the project
     this.id = uuidv4();
-    // Set up the UI for the project
+    this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
     this.setUI();
+  }
+
+  // Method to add a new team to the project
+  addTeamToProject(team: Team) {
+    this.projectTeams.push(team);
   }
 
   // Method to set up the UI for the project
   setUI() {
     // Check if UI element already exists
-    if (this.ui) { return; }
-    // Map project type to corresponding material icon
+    if (this.ui) { return }
+    console.log("HOLA")
     const roleToIcon: Record<ProjectType, string> = {
       "Residential": "home",
       "Commercial": "corporate_fare",
@@ -102,6 +106,8 @@ export class Project implements IProject {
     this.ui = document.createElement("li");
     this.ui.className = "nav-project-btn";
     this.ui.id = "nav-project-btn";
+    // Add a data attribute for the project ID
+    this.ui.dataset.projectId = this.id;
     // Set inner HTML with material icon and project name
     this.ui.innerHTML = `<span class="material-icons-round">${icon}</span>${this.projectName}`;
   }

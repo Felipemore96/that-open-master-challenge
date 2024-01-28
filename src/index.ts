@@ -5,7 +5,8 @@ import {
   ProjectType,
   ITeam,
   TeamRole,
-  toggleModal
+  toggleModal,
+  Project
 } from "../src/class/projects";
 import { ProjectsManager } from "./class/projectsManager";
 
@@ -73,7 +74,6 @@ if (projectForm) {
     try {
       // Attempt to create a new project
       const project = projectsManager.newProject(projectData);
-      console.log(project);
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {
@@ -138,4 +138,19 @@ if (exportProjectsBtn) {
   exportProjectsBtn.addEventListener("click", () => {
     projectsManager.exportToJSON();
   });
+}
+
+const importProjectsBtn = document.getElementById("import-projects-btn")
+if (importProjectsBtn) {
+  importProjectsBtn.addEventListener("click", () => {
+    projectsManager.importFromJSON()
+  })
+}
+
+// Event listener for showing project info
+if (projectsListUI) {
+  const clickedProject = null
+  projectsListUI.addEventListener("click", (clickedProject) => {
+    projectsManager.showProjectDetails(clickedProject)
+  })
 }
