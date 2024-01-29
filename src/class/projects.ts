@@ -51,7 +51,8 @@ function updateTeamInfo(team: Team) {
       <p>Company's role: ${team.teamRole}</p>
       <p>Description: ${team.teamDescription}</p>
       <p>Contact Name: ${team.contactName}</p>
-      <p>Phone number: ${team.contactPhone}</p>`;
+      <p>Phone number: ${team.contactPhone}</p>
+      <p>Project: ${team.teamProject}</p>`;
   }
 }
 
@@ -80,11 +81,6 @@ export class Project implements IProject {
     // this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
     this.setUI();
   }
-
-  // // Method to add a new team to the project
-  // addTeamToProject(team: Team) {
-  //   this.projectTeams.push(team);
-  // }
 
   // Method to set up the UI for the project
   setUI() {

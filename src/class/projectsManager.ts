@@ -39,18 +39,18 @@ export class ProjectsManager {
       const importData = JSON.parse(json as string);
       const projects: IProject[] = importData.projects;
       const teams: ITeam[] = importData.teams;
-      for (const project of projects) {
+      for (const team of teams) {
         try {
-          this.newProject(project)
+          this.createNewTeam(team)
         } catch (err) {
           const errorMessage = document.getElementById("err") as HTMLElement;
           errorMessage.textContent = err;
           toggleModal("error-popup");
         }
       }
-      for (const team of teams) {
+      for (const project of projects) {
         try {
-          this.newTeam(team)
+          this.newProject(project)
         } catch (err) {
           const errorMessage = document.getElementById("err") as HTMLElement;
           errorMessage.textContent = err;
@@ -120,33 +120,26 @@ export class ProjectsManager {
       progress.style.width = project.projectProgress + "%";
       progress.textContent = project.projectProgress + "%";
     }
-    
-    
+    this.showProjectTeams(project);
+  }
 
-
+  showProjectTeams(project: Project) {
     // Clear existing teams before updating project details
     const teamsShown = document.getElementById("teams-list");
     if (teamsShown) {
       teamsShown.innerHTML = "";
     }
-    
+
     //Update the project Teams and create their cards
-
-
     const teams = this.teamList;
+    const teamsList = document.getElementById("teams-list");
     if (teams) {
-      console.log(teams)
       for (const teamData of teams) {
-        if (teamData.teamProject && teamData.teamProject === this.currentProject?.projectName) {
-          console.log(teamData.teamProject)
-          console.log(this.currentProject?.projectName)
-      //     try {
-      //       this.newTeam(teamData);
-      //     } catch (err) {
-      //       const errorMessage = document.getElementById("err") as HTMLElement;
-      //       errorMessage.textContent = err;
-      //       toggleModal("error-popup");
-      //     }
+        if (teamData.teamProject && teamData.teamProject === project.projectName) {
+          // Create a new Team instance
+          if (teamsList) {
+            teamsList.appendChild(teamData.ui);
+          }
         }
       }
     }
@@ -154,17 +147,7 @@ export class ProjectsManager {
 
 
   // Create a new team with the provided data
-  newTeam(data: ITeam) {
-    // const teamNames = this.teamList.map((team) => {
-    //   return team.teamName;
-    // });
-    // console.log(teamNames)
-
-    // // Check if a team with the same name already exists
-    // const nameInUse = teamNames.includes(data.teamName);
-    // if (nameInUse) {
-    //   throw new Error(`A team with the name "${data.teamName}" already exists`);
-    // }
+  createNewTeam(data: ITeam) {
     // Create a new Team instance
     const team = new Team(data);
     const teamsList = document.getElementById("teams-list");
@@ -174,11 +157,7 @@ export class ProjectsManager {
 
     // Add team to the teamList
     this.teamList.push(team);
-    
-    // // Add the team to the current project
-    // if (this.currentProject) {
-    //   this.currentProject.projectTeams.push(team);
-    // }
+
     return team;
   }
   

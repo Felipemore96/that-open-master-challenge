@@ -98,17 +98,19 @@ if (teamForm) {
     e.preventDefault();
     // Gather form data and create a new team
     const formData = new FormData(teamForm);
+    const currentProjectName = projectsManager.currentProject?.projectName;
+    console.log(currentProjectName)
     const teamData: ITeam = {
       teamName: formData.get("teamName") as string,
       teamRole: formData.get("teamRole") as TeamRole,
       teamDescription: formData.get("teamDescription") as string,
       contactName: formData.get("contactName") as string,
       contactPhone: formData.get("contactPhone") as string,
-      teamProject: projectsManager.teamProject
+      teamProject: currentProjectName as string
     };
     try {
       // Attempt to create a new team
-      const team = projectsManager.newTeam(teamData);
+      const team = projectsManager.createNewTeam(teamData);
       teamForm.reset();
       toggleModal("new-team-modal");
     } catch (err) {
