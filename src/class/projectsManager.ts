@@ -17,7 +17,7 @@ export class ProjectsManager {
 
   // Export project and team data to a JSON file
   exportToJSON(fileName: string = "project-info") {
-    const json = JSON.stringify((this.projectsList, this.teamList), null, 2);
+    const json = JSON.stringify({ projects: this.projectsList, teams: this.teamList }, null, 2);    
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
