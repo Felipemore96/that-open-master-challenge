@@ -13,6 +13,7 @@ export interface ITeam {
   teamDescription: string;
   contactName: string;
   contactPhone: string;
+  teamProject: string;
 }
 
 // Define the structure for a project
@@ -25,7 +26,6 @@ export interface IProject {
   projectAddress: string;
   projectFinishDate: Date;
   projectProgress: string;
-  projectTeams: ITeam[];
 }
 
 // Function to toggle a modal based on its ID
@@ -68,7 +68,6 @@ export class Project implements IProject {
   projectProgress: string;
 
   // Class internals
-  projectTeams: ITeam[];
   ui: HTMLLIElement;
   id: string;
 
@@ -78,14 +77,14 @@ export class Project implements IProject {
       this[key] = data[key];
     }
     this.id = uuidv4();
-    this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
+    // this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
     this.setUI();
   }
 
-  // Method to add a new team to the project
-  addTeamToProject(team: Team) {
-    this.projectTeams.push(team);
-  }
+  // // Method to add a new team to the project
+  // addTeamToProject(team: Team) {
+  //   this.projectTeams.push(team);
+  // }
 
   // Method to set up the UI for the project
   setUI() {
@@ -120,6 +119,7 @@ export class Team implements ITeam {
   teamDescription: string;
   contactName: string;
   contactPhone: string;
+  teamProject: string;
 
   // Class internals
   ui: HTMLDivElement;

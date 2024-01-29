@@ -69,8 +69,7 @@ if (projectForm) {
       projectType: formData.get("project-type") as ProjectType,
       projectAddress: formData.get("project-address") as string,
       projectFinishDate: new Date(formData.get("finishDate") as string),
-      projectProgress: formData.get("project-progress") as string,
-      projectTeams: []
+      projectProgress: formData.get("project-progress") as string
     };
     try {
       // Attempt to create a new project
@@ -104,7 +103,8 @@ if (teamForm) {
       teamRole: formData.get("teamRole") as TeamRole,
       teamDescription: formData.get("teamDescription") as string,
       contactName: formData.get("contactName") as string,
-      contactPhone: formData.get("contactPhone") as string
+      contactPhone: formData.get("contactPhone") as string,
+      teamProject: projectsManager.teamProject
     };
     try {
       // Attempt to create a new team
