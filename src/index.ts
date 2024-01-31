@@ -1,5 +1,6 @@
 // Import necessary types and functions from project files
 import * as THREE from 'three'
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import {
   IProject,
@@ -206,5 +207,23 @@ function renderScene() {
   requestAnimationFrame(renderScene)
 }
 
-
 renderScene()
+
+const axes = new THREE.AxesHelper()
+const grid = new THREE.GridHelper()
+grid.material.transparent = true
+grid.material.opacity = 0.4
+grid.material.color = new THREE.Color("#808080")
+
+scene.add(axes, grid)
+
+const gui = new GUI()
+
+const cubeControls = gui.addFolder("Cube")
+
+cubeControls.add(cube.position, "x", -10, 10, 1)
+cubeControls.add(cube.position, "y", -10, 10, 1)
+cubeControls.add(cube.position, "z", -10, 10, 1)
+cubeControls.add(cube, "visible")
+cubeControls.addColor(cube.material, "color")
+
