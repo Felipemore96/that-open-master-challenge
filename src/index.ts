@@ -1,4 +1,5 @@
 // Import necessary types and functions from project files
+import * as THREE from 'three'
 import {
   IProject,
   ProjectStatus,
@@ -163,3 +164,15 @@ if (projectsListUI) {
     }
   });
 }
+
+//ThreeJS viewer
+const scene = new THREE.Scene()
+const viewerContainer = document.getElementById("viewer-container") as HTMLElement
+const containerDimensions = viewerContainer.getBoundingClientRect()
+const aspectRatio = containerDimensions.width / containerDimensions.height
+const camera = new THREE.PerspectiveCamera(75, aspectRatio)
+const renderer = new THREE.WebGL1Renderer()
+viewerContainer.append(renderer.domElement)
+renderer.setSize(containerDimensions.width, containerDimensions.height)
+
+renderer.render(scene, camera)
