@@ -1,0 +1,19 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 23.01.2023 17:46:11
+
+newmtl Gear_1
+	Ns 100.0000
+	Ni 1.6000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Gear_1_Diffuse.png
+	map_Kd textures/Gear_1_Diffuse.png
+	map_Ks textures/Gear_1_Specular.png
+	map_bump textures/Gear_1_Normal.png
+	bump textures/Gear_1_Normal.png
