@@ -1,6 +1,7 @@
 // Import necessary types and functions from project files
 import * as THREE from 'three'
 import * as OBC from "openbim-components"
+import { FragmentsGroup } from "bim-fragment"
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
@@ -191,6 +192,28 @@ viewer.raycaster = raycasterComponent
 
 viewer.init()
 cameraComponent.updateAspect()
+rendererComponent.postproduction.enabled = true
+
+const fragmentManager = new OBC.FragmentManager(viewer)
+function exportFragments(model:FragmentsGroup) {
+  const fragmentBinary = fragmentManager.export(model)
+  const blob = new Blob([fragmentBinary])
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${model.name.replace(".ifc","")}.frag`
+  a.click()
+  URL.revokeObjectURL(url)
+
+  const json = JSON.stringify(model.properties, null, 2) // Added for challenge class 3.10.
+  const jsonblob = new Blob([json], { type: "application/json" })
+  const jsonUrl = URL.createObjectURL(jsonblob)
+  const jsona = document.createElement('a')
+  jsona.href = jsonUrl
+  jsona.download = `${model.name.replace(".ifc", "")}`
+  jsona.click();
+  URL.revokeObjectURL(jsonUrl)
+}
 
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
 ifcLoader.settings.wasm = {
@@ -201,13 +224,128 @@ ifcLoader.settings.wasm = {
 const highlighter = new OBC.FragmentHighlighter(viewer)
 highlighter.setup()
 
-ifcLoader.onIfcLoaded.add((model) => {
-  highlighter.update()
+const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer)
+highlighter.events.select.onClear.add(() => {
+  propertiesProcessor.cleanPropertiesList()
 })
+
+const classifier = new OBC.FragmentClassifier(viewer)
+const classificationWindow = new OBC.FloatingWindow(viewer)
+classificationWindow.visible = false
+viewer.ui.add(classificationWindow)
+classificationWindow.title = "Model Groups"
+
+const classificationsBtn = new OBC.Button(viewer)
+classificationsBtn.materialIcon = "account_tree"
+classificationsBtn.tooltip = "Classificaiton"
+
+classificationsBtn.onClick.add(() => {
+  classificationWindow.visible = !classificationWindow.visible
+  classificationWindow.active = classificationWindow.visible
+})
+
+async function createModelTree() {
+  const fragmentTree = new OBC.FragmentTree(viewer)
+  await fragmentTree.init()
+  await fragmentTree.update(["model","storeys", "entities"])
+  fragmentTree.onHovered.add((fragmentMap) => {
+    highlighter.highlightByID("hover", fragmentMap)
+  })
+  fragmentTree.onSelected.add((fragmentMap) => {
+    highlighter.highlightByID("select", fragmentMap)
+  })
+  const tree = fragmentTree.get().uiElement.get("tree")
+  return tree
+}
+
+const culler = new OBC.ScreenCuller(viewer)
+cameraComponent.controls.addEventListener("sleep", () => {
+  culler.needsUpdate = true
+})
+
+async function onModelLoaded(model: FragmentsGroup) {
+  highlighter.update()
+  for (const fragment of model.items) {culler.add(fragment.mesh)}
+  culler.needsUpdate = true 
+  try {
+    console.log(model)
+    classifier.byModel(model.name, model)
+    classifier.byStorey(model)
+    classifier.byEntity(model)
+    console.log("2")
+    const tree = await createModelTree()
+    await classificationWindow.slots.content.dispose(true)
+    classificationWindow.addChild(tree)
+    propertiesProcessor.process(model)
+    highlighter.events.select.onHighlight.add((fragmentMap) => {
+      const expressID = [...Object.values(fragmentMap)[0]][0]
+      propertiesProcessor.renderProperties(model, Number(expressID))
+    })
+  } catch (error) {
+    alert(error)
+  }
+}
+
+ifcLoader.onIfcLoaded.add(async (model) => {
+  exportFragments(model)
+  onModelLoaded(model)
+})
+
+fragmentManager.onFragmentsLoaded.add((model) => {
+  importJSONProperties(model) // Added for challenge class 3.10.
+  onModelLoaded(model)
+})
+
+const importFragmentBtn = new OBC.Button(viewer)
+importFragmentBtn.materialIcon = "upload"
+importFragmentBtn.tooltip = "Load FRAG"
+
+
+importFragmentBtn.onClick.add(() => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.frag'
+  const reader = new FileReader()
+  reader.addEventListener("load", async () => {
+    const binary = reader.result
+    if (!(binary instanceof ArrayBuffer)) { return }
+    const fragmentBinary = new Uint8Array(binary)
+    await fragmentManager.load(fragmentBinary)
+  })
+  input.addEventListener('change', () => {
+    const filesList = input.files
+    if (!filesList) { return }
+    reader.readAsArrayBuffer(filesList[0])
+  })
+  input.click()
+})
+
+function importJSONProperties(model: FragmentsGroup) {  // Added for challenge class 3.10.
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = 'application/json'
+  const reader = new FileReader()
+  reader.addEventListener("load", async () => {
+    const json = reader.result
+    if (!json) { return }
+    const importedPropertiesFromJSON = JSON.parse(json as string)
+    model.properties = importedPropertiesFromJSON
+  })
+  input.addEventListener('change', () => {
+    const filesList = input.files
+    if (!filesList) { return }
+    reader.readAsText(filesList[0])
+  })
+  input.click()
+}
 
 const toolbar = new OBC.Toolbar(viewer)
 toolbar.addChild(
-  ifcLoader.uiElement.get("main")
+  ifcLoader.uiElement.get("main"),
+  importFragmentBtn,
+  classificationsBtn,
+  propertiesProcessor.uiElement.get("main"),
+  fragmentManager.uiElement.get("main")
 )
 
 viewer.ui.addToolbar(toolbar)
