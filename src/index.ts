@@ -172,8 +172,11 @@ if (projectsListUI) {
 }
 
 //openBIM-components viewer
+
+//first thing, to keep the viewer running
 const viewer = new OBC.Components()
 
+//Scene tool setup
 const sceneComponent = new OBC.SimpleScene(viewer)
 sceneComponent.setup()
 viewer.scene = sceneComponent
@@ -184,18 +187,22 @@ const viewerContainer = document.getElementById("viewer-container") as HTMLDivEl
 const rendererComponent = new OBC.PostproductionRenderer(viewer, viewerContainer)
 viewer.renderer = rendererComponent
 
+//Camera tool setup
 const cameraComponent = new OBC.OrthoPerspectiveCamera(viewer)
 viewer.camera = cameraComponent
 
+//Raycaster tool setup
 const raycasterComponent = new OBC.SimpleRaycaster(viewer)
 viewer.raycaster = raycasterComponent
 
+//Renderer setup, viewer initialization after defining basic objects (scene, camera...)
 viewer.init()
-cameraComponent.updateAspect()
-rendererComponent.postproduction.enabled = true
+cameraComponent.updateAspect() //Camera aspect fix
+rendererComponent.postproduction.enabled = true //Outlines
 
+//Fragment manager tool setup
 const fragmentManager = new OBC.FragmentManager(viewer)
-function exportFragments(model:FragmentsGroup) {
+function exportFragments(model:FragmentsGroup) { //Method to export Fragments Groups, Fragments group datatype is necessary
   const fragmentBinary = fragmentManager.export(model)
   const blob = new Blob([fragmentBinary])
   const url = URL.createObjectURL(blob)
@@ -215,49 +222,54 @@ function exportFragments(model:FragmentsGroup) {
   URL.revokeObjectURL(jsonUrl)
 }
 
+//IFC Loader tool setup, uses web-ifc library to process IFC files
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
 ifcLoader.settings.wasm = {
-  path: "https://unpkg.com/web-ifc@0.0.43/",
+  path: "https://unpkg.com/web-ifc@0.0.43/", //Includes version of web-ifc, needs to match version used by openBIM components
   absolute: true
 }
 
+//Highlighter tool setup based on Raycaster
 const highlighter = new OBC.FragmentHighlighter(viewer)
 highlighter.setup()
 
+//IFC Properies processor tool setup
 const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer)
 highlighter.events.select.onClear.add(() => {
   propertiesProcessor.cleanPropertiesList()
 })
 
+//Classifier tool definition
 const classifier = new OBC.FragmentClassifier(viewer)
-const classificationWindow = new OBC.FloatingWindow(viewer)
+
+//Classifier doesn't have UI elements, so button and window must be defined
+const classificationWindow = new OBC.FloatingWindow(viewer) //UI Component - floating window
 classificationWindow.visible = false
 viewer.ui.add(classificationWindow)
 classificationWindow.title = "Model Groups"
-
-const classificationsBtn = new OBC.Button(viewer)
+const classificationsBtn = new OBC.Button(viewer) //UI Component - button
 classificationsBtn.materialIcon = "account_tree"
 classificationsBtn.tooltip = "Classificaiton"
-
 classificationsBtn.onClick.add(() => {
   classificationWindow.visible = !classificationWindow.visible
   classificationWindow.active = classificationWindow.visible
 })
 
 async function createModelTree() {
-  const fragmentTree = new OBC.FragmentTree(viewer)
+  const fragmentTree = new OBC.FragmentTree(viewer) //Fragment tree tool setup, organizing infirmation from classifier tool
   await fragmentTree.init()
   await fragmentTree.update(["model","storeys", "entities"])
-  fragmentTree.onHovered.add((fragmentMap) => {
+  fragmentTree.onHovered.add((fragmentMap) => { //On hover method for the fragment map
     highlighter.highlightByID("hover", fragmentMap)
   })
-  fragmentTree.onSelected.add((fragmentMap) => {
+  fragmentTree.onSelected.add((fragmentMap) => { //On selected method for fragment map
     highlighter.highlightByID("select", fragmentMap)
   })
   const tree = fragmentTree.get().uiElement.get("tree")
-  return tree
+  return tree //Final result is the Fragment Tree
 }
 
+//Culler tool setup to optimize the viewer performace 
 const culler = new OBC.ScreenCuller(viewer)
 cameraComponent.controls.addEventListener("sleep", () => {
   culler.needsUpdate = true
@@ -269,38 +281,39 @@ async function onModelLoaded(model: FragmentsGroup) {
   culler.needsUpdate = true 
   try {
     console.log(model)
-    classifier.byModel(model.name, model)
+    classifier.byModel(model.name, model) //Classifier tool setup once model is loaded
     classifier.byStorey(model)
     classifier.byEntity(model)
     console.log("2")
     const tree = await createModelTree()
     await classificationWindow.slots.content.dispose(true)
     classificationWindow.addChild(tree)
-    propertiesProcessor.process(model)
-    highlighter.events.select.onHighlight.add((fragmentMap) => {
+    propertiesProcessor.process(model) //IFC properties processor setup
+    highlighter.events.select.onHighlight.add((fragmentMap) => { //Callback event to find the express ID of the selected element
       const expressID = [...Object.values(fragmentMap)[0]][0]
-      propertiesProcessor.renderProperties(model, Number(expressID))
+      propertiesProcessor.renderProperties(model, Number(expressID)) //Method to show properties of selected elements
     })
   } catch (error) {
     alert(error)
   }
 }
 
+//IFC loaded event listener callback
 ifcLoader.onIfcLoaded.add(async (model) => {
   exportFragments(model)
   onModelLoaded(model)
 })
 
+//Fragments loaded event listener callback
 fragmentManager.onFragmentsLoaded.add((model) => {
   importJSONProperties(model) // Added for challenge class 3.10.
   onModelLoaded(model)
 })
 
+//Import fragment button setup
 const importFragmentBtn = new OBC.Button(viewer)
 importFragmentBtn.materialIcon = "upload"
 importFragmentBtn.tooltip = "Load FRAG"
-
-
 importFragmentBtn.onClick.add(() => {
   const input = document.createElement('input')
   input.type = 'file'
@@ -320,6 +333,7 @@ importFragmentBtn.onClick.add(() => {
   input.click()
 })
 
+//Function to import json file with properties 
 function importJSONProperties(model: FragmentsGroup) {  // Added for challenge class 3.10.
   const input = document.createElement('input')
   input.type = 'file'
@@ -339,7 +353,7 @@ function importJSONProperties(model: FragmentsGroup) {  // Added for challenge c
   input.click()
 }
 
-const toolbar = new OBC.Toolbar(viewer)
+const toolbar = new OBC.Toolbar(viewer) //Toolbar tool definition, addChild funciton adds buttons to it
 toolbar.addChild(
   ifcLoader.uiElement.get("main"),
   importFragmentBtn,
@@ -347,5 +361,5 @@ toolbar.addChild(
   propertiesProcessor.uiElement.get("main"),
   fragmentManager.uiElement.get("main")
 )
-
 viewer.ui.addToolbar(toolbar)
+
