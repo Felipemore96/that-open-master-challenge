@@ -1,7 +1,12 @@
 import * as OBC from "openbim-components"
 
+interface ToDo {
+    description: string
+    date: Date
+    fragmentMap: OBC.FragmentIdMap
+}
 
-export class ToDoCreator extends OBC.Component<null> implements OBC.UI {
+export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
     static uuid = "be178b9a-0ee1-4d3d-b83a-49d4c5f3e34b"
     enable = true
     uiElement = new OBC.UIElement<{
@@ -9,6 +14,7 @@ export class ToDoCreator extends OBC.Component<null> implements OBC.UI {
         toDoList: OBC.FloatingWindow
     }>()
     private _components: OBC.Components
+    private _list: ToDo[] = []
     
     constructor(components: OBC.Components) {
         super(components)
@@ -17,8 +23,14 @@ export class ToDoCreator extends OBC.Component<null> implements OBC.UI {
         this.setUI()
     }
 
-    addToDo(description: string) {
-        
+    async addToDo(description: string) {
+        const highlighter = await this._components.tools.get(OBC.FragmentHighlighter)
+        const toDo: ToDo = {
+            description,
+            date: new Date(),
+            fragmentMap: highlighter.selection.select
+        }
+        console.log(toDo)
     }
 
     private setUI() {
@@ -42,7 +54,7 @@ export class ToDoCreator extends OBC.Component<null> implements OBC.UI {
         form.slots.content.get().style.rowGap = "20px"
 
         form.onAccept.add(() => {
-
+            this.addToDo(descriptionInput.value)
         })
 
         form.onCancel.add(() => form.visible = false)
@@ -61,7 +73,7 @@ export class ToDoCreator extends OBC.Component<null> implements OBC.UI {
         this.uiElement.set({activationButton, toDoList})
     }
 
-    get(): null{
-
+    get(): ToDo[] {
+        return this._list
     }
 }

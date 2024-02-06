@@ -9,13 +9,13 @@
     --background: #2e2e2e;
     --background-100: #525252;
     --background-200: #535353;
-    --font-xs: 10px;
-    --font-sm: 12px;
-    --font-base: 14px;
-    --font-lg: 16px;
-    --font-xl: 18px;
-    --font-2xl: 20px;
-    --font-3xl: 22px;
+    --font-xs: 8px;
+    --font-sm: 10px;
+    --font-base: 12px;
+    --font-lg: 14px;
+    --font-xl: 16px;
+    --font-2xl: 18px;
+    --font-3xl: 20px;
 }
 
 * {
@@ -55,7 +55,7 @@ button {
     padding: 8px 15px;
     cursor: pointer;
     height: 40px;
-    font-size: 14px;
+    font-size: 12px;
     background-color: var(--primary);
     color: white;
     border-radius: 100px;
@@ -79,14 +79,14 @@ button:hover {
 
 #sidebar {
     background-color: var(--background-100);
-    padding: 25px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     row-gap: 40px;
 }
 
 #company-logo {
-    height: 130px;
+    height: 120px;
 }
 
 #new-project-btn {
@@ -113,7 +113,7 @@ button:hover {
     align-items: center;
     justify-content: space-between;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
     background-color: var(--primary);
     font-size: var(--font-base);
@@ -130,7 +130,7 @@ button:hover {
 } */
 
 header {
-    padding: 0px 40px;
+    padding: 0px 20px;
     margin-top: 20px;
     display: flex;
     align-items: center;
@@ -141,9 +141,9 @@ header {
 .card-content {
     display: flex;
     flex-direction: column;
-    row-gap: 10px;
+    row-gap: 5px;
     align-items: start;
-    font-size: var(--font-base);
+    font-size: 13px;
 }
 
 .card-property{
@@ -239,8 +239,8 @@ input:focus, textarea:focus, select:focus {
 
 #project-details > .main-page-content {
     display: grid;
-    padding: 20px 40px;
-    gap: 30px;
+    padding: 20px 20px;
+    gap: 20px;
     grid-template-columns: 400px 1fr;
     height: 100%;
 }
@@ -267,7 +267,7 @@ input:focus, textarea:focus, select:focus {
 }   
 
 #teams-list {
-    padding: 10px 30px;
+    padding: 10px 20px;
     display: flex; 
     flex-direction: column; 
     row-gap: 15px;
