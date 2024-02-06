@@ -2,10 +2,6 @@
 import * as THREE from 'three'
 import * as OBC from "openbim-components"
 import { FragmentsGroup } from "bim-fragment"
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import {
   IProject,
   ProjectStatus,
@@ -16,6 +12,7 @@ import {
   Project
 } from "../src/class/projects";
 import { ProjectsManager } from "./class/projectsManager";
+import { ToDoCreator } from './bim-components/tools';
 
 // DOM elements
 const projectsListUI = document.getElementById("projects-list") as HTMLElement;
@@ -284,7 +281,7 @@ async function onModelLoaded(model: FragmentsGroup) {
     classifier.byModel(model.name, model) //Classifier tool setup once model is loaded
     classifier.byStorey(model)
     classifier.byEntity(model)
-    console.log("2")
+    console.log("Finished classification")
     const tree = await createModelTree()
     await classificationWindow.slots.content.dispose(true)
     classificationWindow.addChild(tree)
@@ -353,13 +350,18 @@ function importJSONProperties(model: FragmentsGroup) {  // Added for challenge c
   input.click()
 }
 
-const toolbar = new OBC.Toolbar(viewer) //Toolbar tool definition, addChild funciton adds buttons to it
+//Instance of ToDoCreator
+const toDoCreator = new ToDoCreator(viewer)
+
+//Toolbar tool definition, addChild funciton adds buttons to it
+const toolbar = new OBC.Toolbar(viewer) 
 toolbar.addChild(
   ifcLoader.uiElement.get("main"),
   importFragmentBtn,
   classificationsBtn,
   propertiesProcessor.uiElement.get("main"),
-  fragmentManager.uiElement.get("main")
+  fragmentManager.uiElement.get("main"),
+  toDoCreator.uiElement.get("activationButton")
 )
 viewer.ui.addToolbar(toolbar)
 
