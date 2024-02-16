@@ -246,7 +246,7 @@ viewer.ui.add(classificationWindow)
 classificationWindow.title = "Model Groups"
 const classificationsBtn = new OBC.Button(viewer) //UI Component - button
 classificationsBtn.materialIcon = "account_tree"
-classificationsBtn.tooltip = "Classificaiton"
+classificationsBtn.tooltip = "Classification"
 classificationsBtn.onClick.add(() => {
   classificationWindow.visible = !classificationWindow.visible
   classificationWindow.active = classificationWindow.visible
@@ -352,7 +352,6 @@ function importJSONProperties(model: FragmentsGroup) {  // Added for challenge c
 
 //Instance of ToDoCreator
 const toDoCreator = new ToDoCreator(viewer)
-
 
 //Toolbar tool definition, addChild funciton adds buttons to it
 const toolbar = new OBC.Toolbar(viewer) 
