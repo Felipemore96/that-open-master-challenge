@@ -2,8 +2,10 @@ import * as OBC from "openbim-components"
 import * as THREE from "three"
 import { ToDoCard } from "./src/ToDoCard"
 
+//Custom datatype for priority property
 type ToDoPriority = "Low" | "Medium" | "High"
 
+//Interface to define the properties of each To Do
 interface ToDo {
     description: string
     date: Date
@@ -15,8 +17,8 @@ interface ToDo {
 // Create and export a class named just like the folder, all tools must extend from component class
 export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
     static uuid = "be178b9a-0ee1-4d3d-b83a-49d4c5f3e34b" //Mandatory and must be called "uuid"
-    enable = true
-    uiElement = new OBC.UIElement<{
+    enabled = true
+    uiElement = new OBC.UIElement<{ //Specify all UI elements to use
         activationButton: OBC.Button
         toDoList: OBC.FloatingWindow
     }>()
@@ -30,6 +32,7 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         this.setUI()
     }
 
+    //Setup method to also invoke as soon as tool is initialized, could have been added to the constructor
     async setup() {
         const highlighter = await this._components.tools.get(OBC.FragmentHighlighter)
         highlighter.add(`${ToDoCreator.uuid}-priority-Low`, [new THREE.MeshStandardMaterial({color: 0x59bc59})])
@@ -37,23 +40,30 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         highlighter.add(`${ToDoCreator.uuid}-priority-High`, [new THREE.MeshStandardMaterial({color: 0xff7676})])
     }
 
+    //Challenge: method to delete a To Do
     deleteToDo() {
-        
+
+        //toDoCard.dispose()
     }
 
+    //Method to create a new To Do
     async addToDo(description: string, priority: ToDoPriority) {
+
+        //To save camera position and target and store them, it has to be OrthoPerspective
         const camera = this._components.camera
         if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
             throw new Error("ToDoCreator needs the OrthoPerspectiveCamera in order to work")
         }
-
         const position = new THREE.Vector3()
         camera.controls.getPosition(position)
         const target = new THREE.Vector3()
         camera.controls.getTarget(target)
         const toDoCamera = {position, target}
 
+        //Take existing highlight tool that was already defined
         const highlighter = await this._components.tools.get(OBC.FragmentHighlighter)
+
+        //Definition of To Do instance
         const toDo: ToDo = {
             camera: toDoCamera,
             description,
@@ -64,10 +74,12 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
 
         this._list.push(toDo)
 
+        //To show each To Do instance properties
         const toDoCard = new ToDoCard(this._components)
         toDoCard.description = toDo.description
         toDoCard.date = toDo.date
         toDoCard.onCardClick.add(() => {
+            //To change the camera angle for each To Do
             camera.controls.setLookAt(
                 toDo.camera.position.x,
                 toDo.camera.position.y,
@@ -77,6 +89,7 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
                 toDo.camera.target.z,
                 true
             )
+            //To highlight the elements from the To Do
             const fragmentMapLenght = Object.keys(toDo.fragmentMap).length
             if (fragmentMapLenght === 0) {return}
             highlighter.highlightByID("select", toDo.fragmentMap)
@@ -85,21 +98,24 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         toDoList.addChild(toDoCard)
     }
 
+    //Define actual values of UI elements for each instance
     private async setUI() {
+
+        //Activation button UI definition
         const activationButton = new OBC.Button(this._components)
         activationButton.materialIcon = "construction"
 
         const newToDoBtn = new OBC.Button(this._components, {name: "Create"})
         activationButton.addChild(newToDoBtn)
-
+        
+        //New To Do form definition
         const form = new OBC.Modal(this._components)
         this._components.ui.add(form)
         form.title = "Create New To Do"
-
         const descriptionInput = new OBC.TextArea(this._components)
         descriptionInput.label = "Description"
         form.slots.content.addChild(descriptionInput)
-
+        //Priority feature added to the form
         const priorityDropdown = new OBC.Dropdown(this._components)
         priorityDropdown.label = "Priority"
         priorityDropdown.addOption("Low", "Normal", "High")
@@ -111,28 +127,29 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         form.slots.content.get().style.flexDirection = "column"
         form.slots.content.get().style.rowGap = "20px"
 
+        //Buttons functionality
         form.onAccept.add(() => {
             this.addToDo(descriptionInput.value, priorityDropdown.value as ToDoPriority)
             descriptionInput.value = ""
             form.visible = false
         })
-
         form.onCancel.add(() => form.visible = false)
-
         newToDoBtn.onClick.add(() => form.visible = true)
-
+        
+        //List window UI definition
         const toDoList = new OBC.FloatingWindow(this._components)
         this._components.ui.add(toDoList)
         toDoList.visible = false
         toDoList.title = "To Do List" 
 
+        //Toolbar added to the top of the to do list, to add the colorize button
         const toDoListToolbar = new OBC.SimpleUIComponent(this._components)
         toDoList.addChild(toDoListToolbar)
-
         const colorizeBtn = new OBC.Button(this._components)
         colorizeBtn.materialIcon = "format_color_fill"
         toDoListToolbar.addChild(colorizeBtn)
 
+        //Logic of clicking colorize button, for clicking and unclicking
         const highlighter = await this._components.tools.get(OBC.FragmentHighlighter)
         colorizeBtn.onClick.add(() => {
             colorizeBtn.active = !colorizeBtn.active
@@ -153,6 +170,7 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         activationButton.addChild(toDoListBtn)
         toDoListBtn.onClick.add(() => toDoList.visible = !toDoList.visible)
 
+        //Setting the created elements as actual values of the UI components for this tool 
         this.uiElement.set({activationButton, toDoList})
     }
 

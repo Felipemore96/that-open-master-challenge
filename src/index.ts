@@ -12,7 +12,7 @@ import {
   Project
 } from "../src/class/projects";
 import { ProjectsManager } from "./class/projectsManager";
-import { ToDoCreator } from './bim-components/tools';
+import { ToDoCreator } from './bim-components/ToDoCreator';
 
 // DOM elements
 const projectsListUI = document.getElementById("projects-list") as HTMLElement;
@@ -350,7 +350,7 @@ function importJSONProperties(model: FragmentsGroup) {  // Added for challenge c
   input.click()
 }
 
-//Instance of ToDoCreator
+//Instance of ToDoCreator and setup method
 const toDoCreator = new ToDoCreator(viewer)
 await toDoCreator.setup()
 
