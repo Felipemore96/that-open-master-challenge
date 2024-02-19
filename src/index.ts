@@ -352,6 +352,7 @@ function importJSONProperties(model: FragmentsGroup) {  // Added for challenge c
 
 //Instance of ToDoCreator
 const toDoCreator = new ToDoCreator(viewer)
+await toDoCreator.setup()
 
 //Toolbar tool definition, addChild funciton adds buttons to it
 const toolbar = new OBC.Toolbar(viewer) 
