@@ -160,9 +160,9 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
                     highlighter.highlightByID(`${ToDoCreator.uuid}-priority-${toDo.priority}`, toDo.fragmentMap)
                 }
             } else {
-                highlighter.clear(`${ToDoCreator.uuid}-priority.Low`)
-                highlighter.clear(`${ToDoCreator.uuid}-priority.Normal`)
-                highlighter.clear(`${ToDoCreator.uuid}-priority.High`)
+                highlighter.clear(`${ToDoCreator.uuid}-priority-Low`)
+                highlighter.clear(`${ToDoCreator.uuid}-priority-Normal`)
+                highlighter.clear(`${ToDoCreator.uuid}-priority-High`)
             }
         })
         

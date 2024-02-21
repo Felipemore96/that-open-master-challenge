@@ -253,7 +253,7 @@ classificationsBtn.onClick.add(() => {
 })
 
 async function createModelTree() {
-  const fragmentTree = new OBC.FragmentTree(viewer) //Fragment tree tool setup, organizing infirmation from classifier tool
+  const fragmentTree = new OBC.FragmentTree(viewer) //Fragment tree tool setup, organizing information from classifier tool
   await fragmentTree.init()
   await fragmentTree.update(["model","storeys", "entities"])
   fragmentTree.onHovered.add((fragmentMap) => { //On hover method for the fragment map
