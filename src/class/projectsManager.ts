@@ -13,6 +13,59 @@ export class ProjectsManager {
   // Constructor initializes the ProjectsManager with a container element
   constructor(container: HTMLElement) {
     this.ui = container;
+    this.newProject({
+      projectName: "Project #1",
+      projectDescription: "Description of this project",
+      projectStatus: "Active",
+      projectCost: "500,000.00",
+      projectType: "Residential",
+      projectAddress: "Madrid, Spain",
+      projectFinishDate: new Date("2025-01-02T00:00:00.000Z"),
+      projectProgress: "50"
+    })
+    this.createNewTeam({
+      teamName: "BIM Company",
+      teamRole: "BIM Manager",
+      teamDescription: "Company in charge of BIM Management",
+      contactName: "John Jackson",
+      contactPhone: "123-456-789",
+      teamProject: "Project #1"
+    })
+    this.createNewTeam({
+      teamName: "Structural Company",
+      teamRole: "Structural",
+      teamDescription: "Company in charge of structural design",
+      contactName: "Jack Brandon",
+      contactPhone: "321-654-987",
+      teamProject: "Project #1"
+    })
+    this.newProject({
+      projectName: "Project #2",
+      projectDescription: "General description of project #2",
+      projectStatus: "Finished",
+      projectCost: "150,000.00",
+      projectType: "Industrial",
+      projectAddress: "Barcelona, Spain",
+      projectFinishDate: new Date("2025-06-01T00:00:00.000Z"),
+      projectProgress: "10"
+    })
+    this.createNewTeam({
+      teamName: "BIM Inc.",
+      teamRole: "BIM Manager",
+      teamDescription: "Company in charge of BIM Management",
+      contactName: "Juan Gonzales",
+      contactPhone: "213-546-879",
+      teamProject: "Project #2"
+    })
+    this.createNewTeam({
+      teamName: "Arch. Company",
+      teamRole: "Architect",
+      teamDescription: "Company in charge or architectural design",
+      contactName: "Connor Wright",
+      contactPhone: "987-654-321",
+      teamProject: "Project #2"
+    })
+    
   }
 
   // Export project and team data to a JSON file
