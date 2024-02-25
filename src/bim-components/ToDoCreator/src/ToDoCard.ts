@@ -3,8 +3,12 @@ import * as OBC from "openbim-components"
 //Class for UI component for To Do cards
 export class ToDoCard extends OBC.SimpleUIComponent {
 
+  //Event to trigger what happens once the delete button was clicked
+  onCardDeleteClick = new OBC.Event()
+
   //Event to trigger what happens once the card was clicked
   onCardClick = new OBC.Event()
+
   //Define types of slots to use
   slots: {
     actionButtons: OBC.SimpleUIComponent
@@ -45,10 +49,14 @@ export class ToDoCard extends OBC.SimpleUIComponent {
       this.onCardClick.trigger()
     })
 
-    //setSlot method to replace the slot placeholder with a simple UI component with a delete button
+    //setSlot method to replace the slot placeholder with a delete button UI component
     this.setSlot("actionButtons", new OBC.SimpleUIComponent(this._components))
     const deleteBtn = new OBC.Button(this._components)
     deleteBtn.materialIcon = "delete"
     this.slots.actionButtons.addChild(deleteBtn)
+    //Delete button logic
+    deleteBtn.onClick.add(() => {
+      this.onCardDeleteClick.trigger()
+    })
   }
 }

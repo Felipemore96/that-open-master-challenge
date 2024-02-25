@@ -15,8 +15,9 @@ interface ToDo {
 }
 
 // Create and export a class named just like the folder, all tools must extend from component class
-export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
+export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI, OBC.Disposable {
     static uuid = "be178b9a-0ee1-4d3d-b83a-49d4c5f3e34b" //Mandatory and must be called "uuid"
+    onProjectCreated = new OBC.Event<ToDo>()
     enabled = true
     uiElement = new OBC.UIElement<{ //Specify all UI elements to use
         activationButton: OBC.Button
@@ -32,6 +33,13 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         this.setUI()
     }
 
+    //Dispose method
+    async dispose() {
+        this.uiElement.dispose()
+        this._list = []
+        this.enabled = false
+    }
+
     //Setup method to also invoke as soon as tool is initialized, could have been added to the constructor
     async setup() {
         const highlighter = await this._components.tools.get(OBC.FragmentHighlighter)
@@ -40,15 +48,9 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         highlighter.add(`${ToDoCreator.uuid}-priority-High`, [new THREE.MeshStandardMaterial({color: 0xff7676})])
     }
 
-    //Challenge: method to delete a To Do
-    deleteToDo() {
-
-        //toDoCard.dispose()
-    }
-
     //Method to create a new To Do
     async addToDo(description: string, priority: ToDoPriority) {
-
+        if(!this.enabled) {return}
         //To save camera position and target and store them, it has to be OrthoPerspective
         const camera = this._components.camera
         if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
@@ -96,6 +98,23 @@ export class ToDoCreator extends OBC.Component<ToDo[]> implements OBC.UI {
         })
         const toDoList = this.uiElement.get("toDoList")
         toDoList.addChild(toDoCard)
+
+        toDoCard.onCardDeleteClick.add(() => {
+            this.deleteToDo(toDo, toDoCard)
+        })
+
+        this.onProjectCreated.trigger(toDo)
+    }
+
+    //Challenge: method to delete a To Do
+    deleteToDo(toDo: ToDo, toDoCard: ToDoCard) {
+        //To delete the To Do from the list
+        const updateToDoList = this._list.filter((toDo) => {
+            return(toDo.description!=toDo.description)
+        })
+        this._list = updateToDoList
+        //To delete the To Do UI element
+        toDoCard.dispose()
     }
 
     //Define actual values of UI elements for each instance

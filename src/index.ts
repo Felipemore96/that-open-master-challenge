@@ -13,6 +13,7 @@ import {
 } from "../src/class/projects";
 import { ProjectsManager } from "./class/projectsManager";
 import { ToDoCreator } from './bim-components/ToDoCreator';
+import { SimpleQTO } from './bim-components/SimpleQTO';
 
 // DOM elements
 const projectsListUI = document.getElementById("projects-list") as HTMLElement;
@@ -222,7 +223,7 @@ function exportFragments(model:FragmentsGroup) { //Method to export Fragments Gr
 //IFC Loader tool setup, uses web-ifc library to process IFC files
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
 ifcLoader.settings.wasm = {
-  path: "https://unpkg.com/web-ifc@0.0.43/", //Includes version of web-ifc, needs to match version used by openBIM components
+  path: "https://unpkg.com/web-ifc@0.0.44/", //Includes version of web-ifc, needs to match version used by openBIM components
   absolute: true
 }
 
@@ -353,6 +354,13 @@ function importJSONProperties(model: FragmentsGroup) {  // Added for challenge c
 //Instance of ToDoCreator and setup method
 const toDoCreator = new ToDoCreator(viewer)
 await toDoCreator.setup()
+toDoCreator.onProjectCreated.add((toDo) => {
+  console.log(toDo)
+})
+
+//Instance of Quentity takeoff tool and setup method
+const simpleQTO = new SimpleQTO(viewer)
+await simpleQTO.setup()
 
 //Toolbar tool definition, addChild funciton adds buttons to it
 const toolbar = new OBC.Toolbar(viewer) 
@@ -362,7 +370,8 @@ toolbar.addChild(
   classificationsBtn,
   propertiesProcessor.uiElement.get("main"),
   fragmentManager.uiElement.get("main"),
-  toDoCreator.uiElement.get("activationButton")
+  toDoCreator.uiElement.get("activationButton"),
+  simpleQTO.uiElement.get("activationBtn")
 )
 viewer.ui.addToolbar(toolbar)
 
