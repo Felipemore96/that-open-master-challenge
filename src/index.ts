@@ -298,7 +298,7 @@ async function onModelLoaded(model: FragmentsGroup) {
 
 //IFC loaded event listener callback
 ifcLoader.onIfcLoaded.add(async (model) => {
-  exportFragments(model)
+  // exportFragments(model)*************************
   onModelLoaded(model)
 })
 
@@ -366,7 +366,7 @@ await simpleQTO.setup()
 const toolbar = new OBC.Toolbar(viewer) 
 toolbar.addChild(
   ifcLoader.uiElement.get("main"),
-  importFragmentBtn,
+  // importFragmentBtn,**************
   classificationsBtn,
   propertiesProcessor.uiElement.get("main"),
   fragmentManager.uiElement.get("main"),
