@@ -1,6 +1,8 @@
 // Import necessary types and functions from project files
 import * as THREE from 'three'
 import * as OBC from "openbim-components"
+import * as React from "react"
+import * as ReactDOM from "react-dom/client"
 import { FragmentsGroup } from "bim-fragment"
 import {
   IProject,
@@ -10,10 +12,21 @@ import {
   TeamRole,
   toggleModal,
   Project
-} from "../src/class/projects";
+} from "./class/projects";
+import { Sidebar } from "./react-components/Sidebar"
 import { ProjectsManager } from "./class/projectsManager";
 import { ToDoCreator } from './bim-components/ToDoCreator';
 import { SimpleQTO } from './bim-components/SimpleQTO';
+import { DetailsPage } from './react-components/DetailsPage'
+
+const rootElement = document.getElementById("app") as HTMLDivElement
+const appRoot = ReactDOM.createRoot(rootElement)
+appRoot.render(
+  <>
+  <Sidebar />
+  <DetailsPage /> 
+  </>
+)
 
 // DOM elements
 const projectsListUI = document.getElementById("projects-list") as HTMLElement;
@@ -176,9 +189,9 @@ const viewer = new OBC.Components()
 
 //Scene tool setup
 const sceneComponent = new OBC.SimpleScene(viewer)
-sceneComponent.setup()
 viewer.scene = sceneComponent
 const scene = sceneComponent.get()
+sceneComponent.setup()
 scene.background = null
 
 const viewerContainer = document.getElementById("viewer-container") as HTMLDivElement
@@ -242,10 +255,11 @@ const classifier = new OBC.FragmentClassifier(viewer)
 
 //Classifier doesn't have UI elements, so button and window must be defined
 const classificationWindow = new OBC.FloatingWindow(viewer) //UI Component - floating window
-classificationWindow.visible = false
 viewer.ui.add(classificationWindow)
 classificationWindow.title = "Model Groups"
-const classificationsBtn = new OBC.Button(viewer) //UI Component - button
+classificationWindow.visible = false
+//UI Component and button
+const classificationsBtn = new OBC.Button(viewer) 
 classificationsBtn.materialIcon = "account_tree"
 classificationsBtn.tooltip = "Classification"
 classificationsBtn.onClick.add(() => {
@@ -257,13 +271,13 @@ async function createModelTree() {
   const fragmentTree = new OBC.FragmentTree(viewer) //Fragment tree tool setup, organizing information from classifier tool
   await fragmentTree.init()
   await fragmentTree.update(["model","storeys", "entities"])
+  const tree = fragmentTree.get().uiElement.get("tree")
   fragmentTree.onHovered.add((fragmentMap) => { //On hover method for the fragment map
     highlighter.highlightByID("hover", fragmentMap)
   })
   fragmentTree.onSelected.add((fragmentMap) => { //On selected method for fragment map
     highlighter.highlightByID("select", fragmentMap)
   })
-  const tree = fragmentTree.get().uiElement.get("tree")
   return tree //Final result is the Fragment Tree
 }
 
@@ -288,6 +302,7 @@ async function onModelLoaded(model: FragmentsGroup) {
     classificationWindow.addChild(tree)
     propertiesProcessor.process(model) //IFC properties processor setup
     highlighter.events.select.onHighlight.add((fragmentMap) => { //Callback event to find the express ID of the selected element
+      highlighter.update()
       const expressID = [...Object.values(fragmentMap)[0]][0]
       propertiesProcessor.renderProperties(model, Number(expressID)) //Method to show properties of selected elements
     })
@@ -362,6 +377,13 @@ toDoCreator.onProjectCreated.add((toDo) => {
 const simpleQTO = new SimpleQTO(viewer)
 await simpleQTO.setup()
 
+//Instance properties finder tool
+const propsFinder = new OBC.IfcPropertiesFinder(viewer)
+await propsFinder.init()
+propsFinder.onFound.add((fragmentIdMap) => {
+  highlighter.highlightByID("select", fragmentIdMap)
+})
+
 //Toolbar tool definition, addChild funciton adds buttons to it
 const toolbar = new OBC.Toolbar(viewer) 
 toolbar.addChild(
@@ -369,9 +391,10 @@ toolbar.addChild(
   // importFragmentBtn,**************
   classificationsBtn,
   propertiesProcessor.uiElement.get("main"),
-  fragmentManager.uiElement.get("main"),
+  simpleQTO.uiElement.get("activationBtn"),
   toDoCreator.uiElement.get("activationButton"),
-  simpleQTO.uiElement.get("activationBtn")
+  propsFinder.uiElement.get("main"),
+  fragmentManager.uiElement.get("main")
 )
 viewer.ui.addToolbar(toolbar)
 
