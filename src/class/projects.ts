@@ -69,7 +69,7 @@ export class Project implements IProject {
   projectProgress: string;
 
   // Class internals
-  ui: HTMLLIElement;
+  // ui: HTMLLIElement;
   id: string;
 
   constructor(data: IProject) {
@@ -79,32 +79,30 @@ export class Project implements IProject {
     }
     this.id = uuidv4();
     // this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
-    this.setUI();
+    // this.setUI();
   }
 
-  // Method to set up the UI for the project
-  setUI() {
-    // Check if UI element already exists
-    if (this.ui) { return }
-    const roleToIcon: Record<ProjectType, string> = {
-      "Residential": "home",
-      "Commercial": "corporate_fare",
-      "Institutional": "school",
-      "Mixed-use": "emoji_transportation",
-      "Industrial": "factory",
-      "Heavy civil": "stadium"
-    };
-    // Select the appropriate icon or use a default ("home")
-    const icon = roleToIcon[this.projectType] || "home";
-    // Create a list item element for the project
-    this.ui = document.createElement("li");
-    this.ui.className = "nav-project-btn";
-    this.ui.id = "nav-project-btn";
-    // Add a data attribute for the project ID
-    this.ui.dataset.projectId = this.id;
-    // Set inner HTML with material icon and project name
-    this.ui.innerHTML = `<span class="material-icons-round">${icon}</span>${this.projectName}`;
-  }
+//   // Method to set up the UI for the project
+//   setUI() {
+//     // Check if UI element already exists
+//     if (this.ui) { return }
+//     const roleToIcon: Record<ProjectType, string> = {
+//       "Residential": "home",
+//       "Commercial": "corporate_fare",
+//       "Institutional": "school",
+//       "Mixed-use": "emoji_transportation",
+//       "Industrial": "factory",
+//       "Heavy civil": "stadium"
+//     };
+//     // Select the appropriate icon or use a default ("home")
+//     const icon = roleToIcon[this.projectType] || "home";
+//     // Create a list item element for the project
+//     this.ui = document.createElement("li");
+//     this.ui.className = "nav-project-btn";
+//     this.ui.id = "nav-project-btn";
+//     // Add a data attribute for the project ID
+//     this.ui.dataset.projectId = this.id;
+//   }
 }
 
 // Class representing a team

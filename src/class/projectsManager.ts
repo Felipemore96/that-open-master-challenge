@@ -5,14 +5,13 @@ import { IProject, Project, ITeam, Team, toggleModal } from "../class/projects";
 export class ProjectsManager {
   // Properties to store project and team data
   projectsList: Project[] = [];
-  ui: HTMLElement;
   teamList: Team[] = [];
   currentProject: Project | null = null;
   teamProject: string;
+  onProjectCreated = (project: Project) => {}
 
   // Constructor initializes the ProjectsManager with a container element
-  constructor(container: HTMLElement) {
-    this.ui = container;
+  constructor() {
     this.newProject({
       projectName: "Project #1",
       projectDescription: "Description of this project",
@@ -129,13 +128,14 @@ export class ProjectsManager {
     // Add a click event listener to show project details when clicked
     const project = new Project(data);
     // Add project to the projectsList
-    this.ui.append(project.ui);
     this.projectsList.push(project);
 
     // Display project details
     this.currentProject = project;
     this.teamProject = project.projectName;
     this.showProjectDetails(project);
+
+    this.onProjectCreated(project)
 
     return project;
   }
