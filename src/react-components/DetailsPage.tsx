@@ -7,8 +7,8 @@ import {
     TeamRole,
     toggleModal,
     Project
-  } from "../class/projects";
-  import { ProjectsManager } from "../class/projectsManager";
+} from "../class/projects";
+import { ProjectsManager } from "../class/projectsManager";
 
 
 export function DetailsPage() {
@@ -161,12 +161,12 @@ export function DetailsPage() {
             </dialog>
             <header>
                 <div>
-                <h2 id="project-name" data-project-info="name" />
+                <h2 id="project-name" data-project-info="name">props.project.projectName</h2> 
                 <p
                     id="project-description"
                     data-project-info="description"
                     style={{ color: "#969696" }}
-                />
+                >props.project.projectDescription</p>
                 </div>
                 <div style={{ display: "flex", flexDirection: "row", rowGap: 20 }}>
                 <button onClick={onExportProjects} id="export-projects-btn">

@@ -1,4 +1,5 @@
 import * as React from "react"
+import * as Router from "react-router-dom"
 import {
     IProject,
     ProjectStatus,
@@ -18,7 +19,11 @@ export function Sidebar() {
     projectsManager.onProjectCreated = () => {setProjects([...projectsManager.projectsList])}
 
     const updatedProjectsList = projects.map((project) => {
-        return <ProjectsList project={project} key={project.id} />
+        return (
+            <Router.Link to="/project" key={project.id} >
+                <ProjectsList project={project} />
+            </Router.Link>
+        )
     })
 
     React.useEffect(() => {}, [projects])

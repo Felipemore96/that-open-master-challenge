@@ -22,6 +22,7 @@
     "openbim-components": "1.1.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-router-dom": "6.18.0",
     "three": "0.152.2",
     "uuid": "^9.0.1",
     "web-ifc": "0.0.44"
