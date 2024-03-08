@@ -10,8 +10,11 @@ import {
 } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 
+interface Props {
+    project: Project
+}
 
-export function DetailsPage() {
+export function DetailsPage(props: Props) {
     const projectsManager = new ProjectsManager();
 
     // Event listener for exporting projects to JSON

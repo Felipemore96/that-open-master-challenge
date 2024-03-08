@@ -24,21 +24,14 @@ const rootElement = document.getElementById("app") as HTMLDivElement
 const appRoot = ReactDOM.createRoot(rootElement)
 appRoot.render(
   <>
-  <Router.BrowserRouter>
     <Sidebar />
-    <Router.Routes>
-      <Router.Route path='/' element={<DetailsPage /> }></Router.Route>
-    </Router.Routes>
-  </Router.BrowserRouter>
+    <DetailsPage project={project} key={project.id} />
   </>
 )
 
-// DOM elements
-const projectsListUI = document.getElementById("projects-list") as HTMLElement;
-const closeTeamInfoPopup = document.getElementById("close-team-info-popup");
-
 
 // Event listener for closing the team info popup modal
+const closeTeamInfoPopup = document.getElementById("close-team-info-popup");
 if (closeTeamInfoPopup) {
   closeTeamInfoPopup.addEventListener("click", () => {
     toggleModal("team-info-popup");

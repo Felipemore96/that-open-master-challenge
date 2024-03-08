@@ -11,6 +11,7 @@ import {
   } from "../class/projects";
   import { ProjectsManager } from "../class/projectsManager";
   import { ProjectsList } from "./ProjectsList";
+import { DetailsPage } from "./DetailsPage";
 
 
 export function Sidebar() {
@@ -20,13 +21,15 @@ export function Sidebar() {
 
     const updatedProjectsList = projects.map((project) => {
         return (
-            <Router.Link to="/project" key={project.id} >
-                <ProjectsList project={project} />
-            </Router.Link>
+            <>
+                <ProjectsList project={project} key={project.id} />
+            </>
         )
     })
 
-    React.useEffect(() => {}, [projects])
+    React.useEffect(() => {
+        console.log("Projects state updated", projects)
+    }, [projects])
 
     // React Event listener
     const onNewProject = () => {

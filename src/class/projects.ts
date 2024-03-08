@@ -68,8 +68,6 @@ export class Project implements IProject {
   projectFinishDate: Date;
   projectProgress: string;
 
-  // Class internals
-  // ui: HTMLLIElement;
   id: string;
 
   constructor(data: IProject) {
@@ -81,28 +79,6 @@ export class Project implements IProject {
     // this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
     // this.setUI();
   }
-
-//   // Method to set up the UI for the project
-//   setUI() {
-//     // Check if UI element already exists
-//     if (this.ui) { return }
-//     const roleToIcon: Record<ProjectType, string> = {
-//       "Residential": "home",
-//       "Commercial": "corporate_fare",
-//       "Institutional": "school",
-//       "Mixed-use": "emoji_transportation",
-//       "Industrial": "factory",
-//       "Heavy civil": "stadium"
-//     };
-//     // Select the appropriate icon or use a default ("home")
-//     const icon = roleToIcon[this.projectType] || "home";
-//     // Create a list item element for the project
-//     this.ui = document.createElement("li");
-//     this.ui.className = "nav-project-btn";
-//     this.ui.id = "nav-project-btn";
-//     // Add a data attribute for the project ID
-//     this.ui.dataset.projectId = this.id;
-//   }
 }
 
 // Class representing a team
