@@ -9,6 +9,7 @@ export class ProjectsManager {
   currentProject: Project | null = null;
   teamProject: string;
   onProjectCreated = (project: Project) => {}
+  onProjectDeleted = () => {}
 
   // Constructor initializes the ProjectsManager with a container element
   constructor() {
@@ -65,6 +66,23 @@ export class ProjectsManager {
       teamProject: "Project #2"
     })
     
+  }
+
+  getProject(id: string) {
+    const project = this.projectsList.find((project) => {
+      return project.id === id
+    })
+    return project
+  }
+
+  deleteProject(id: string) {
+    const project = this.getProject(id)
+    if (!project) { return }
+    const remaining = this.projectsList.filter((project) => {
+      return project.id !== id
+    })
+    this.projectsList = remaining
+    this.onProjectDeleted()
   }
 
   // Export project and team data to a JSON file

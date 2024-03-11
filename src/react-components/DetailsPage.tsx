@@ -1,4 +1,5 @@
 import * as React from "react"
+import * as Router from "react-router-dom"
 import {
     IProject,
     ProjectStatus,
@@ -12,13 +13,10 @@ import { ProjectsManager } from "../class/projectsManager";
 import { DetailsPageHeader } from "./DetailsPageHeader";
 
 interface Props {
-    projectsManager: ProjectsManager
-}
+    project: Project
+  }
 
 export function DetailsPage(props: Props) {
-
-    const project = props.projectsManager.getProject()
-
     // Event listener for closing the error popup modal
     const onCloseErrorPopup = () => {
         toggleModal("error-popup");
@@ -42,7 +40,7 @@ export function DetailsPage(props: Props) {
         e.preventDefault();
         // Gather form data and create a new team
         const formData = new FormData(teamForm);
-        const currentProjectName = project?.projectName;
+        const currentProjectName = props.project.projectName;
         console.log(currentProjectName)
         const teamData: ITeam = {
         teamName: formData.get("teamName") as string,
