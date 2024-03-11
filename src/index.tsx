@@ -19,16 +19,23 @@ import { ProjectsManager } from "./class/projectsManager";
 import { ToDoCreator } from './bim-components/ToDoCreator';
 import { SimpleQTO } from './bim-components/SimpleQTO';
 import { DetailsPage } from './react-components/DetailsPage'
+import { HomePage } from './react-components/HomePage'
+import { ProjectsPage } from './react-components/ProjectsPage'
+
+const projectsManager = new ProjectsManager()
 
 const rootElement = document.getElementById("app") as HTMLDivElement
 const appRoot = ReactDOM.createRoot(rootElement)
 appRoot.render(
   <>
-    <Sidebar />
-    <DetailsPage project={project} key={project.id} />
+    <Router.BrowserRouter>
+      <Router.Routes>
+        <Router.Route path="/" element={<HomePage projectsManager={projectsManager} />}></Router.Route>
+        <Router.Route path="/project/:id" element={<ProjectsPage projectsManager={projectsManager} />}></Router.Route>        
+      </Router.Routes>
+    </Router.BrowserRouter>
   </>
 )
-
 
 // Event listener for closing the team info popup modal
 const closeTeamInfoPopup = document.getElementById("close-team-info-popup");

@@ -8,21 +8,24 @@ import {
     TeamRole,
     toggleModal,
     Project
-  } from "../class/projects";
-  import { ProjectsManager } from "../class/projectsManager";
-  import { ProjectsList } from "./ProjectsList";
+} from "../class/projects";
+import { ProjectsManager } from "../class/projectsManager";
+import { ProjectsListElements } from "./ProjectsListElements";
 import { DetailsPage } from "./DetailsPage";
 
+interface Props {
+    projectsManager: ProjectsManager
+}
 
-export function Sidebar() {
-    const [projectsManager] = React.useState(new ProjectsManager())
-    const [projects, setProjects] = React.useState<Project[]>(projectsManager.projectsList)
-    projectsManager.onProjectCreated = () => {setProjects([...projectsManager.projectsList])}
+export function Sidebar(props: Props) {
+    // const [projectsManager] = React.useState(new ProjectsManager())
+    const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
+    props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
 
     const updatedProjectsList = projects.map((project) => {
         return (
             <>
-                <ProjectsList project={project} key={project.id} />
+                <ProjectsListElements project={project} key={project.id} />
             </>
         )
     })
@@ -63,7 +66,7 @@ export function Sidebar() {
         };
         try {
           // Attempt to create a new project
-          const project = projectsManager.newProject(projectData);
+          const project = props.projectsManager.newProject(projectData);
           projectForm.reset();
           toggleModal("new-project-modal");
         } catch (err) {

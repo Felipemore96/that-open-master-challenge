@@ -9,22 +9,15 @@ import {
     Project
 } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
+import { DetailsPageHeader } from "./DetailsPageHeader";
 
 interface Props {
-    project: Project
+    projectsManager: ProjectsManager
 }
 
 export function DetailsPage(props: Props) {
-    const projectsManager = new ProjectsManager();
 
-    // Event listener for exporting projects to JSON
-    const onExportProjects = () => {
-        projectsManager.exportToJSON();
-    }
-    // Event listener for exporting projects to JSON
-    const onImportProjects = () => {
-        projectsManager.importFromJSON()
-    }
+    const project = props.projectsManager.getProject()
 
     // Event listener for closing the error popup modal
     const onCloseErrorPopup = () => {
@@ -49,7 +42,7 @@ export function DetailsPage(props: Props) {
         e.preventDefault();
         // Gather form data and create a new team
         const formData = new FormData(teamForm);
-        const currentProjectName = projectsManager.currentProject?.projectName;
+        const currentProjectName = project?.projectName;
         console.log(currentProjectName)
         const teamData: ITeam = {
         teamName: formData.get("teamName") as string,
@@ -61,7 +54,7 @@ export function DetailsPage(props: Props) {
         };
         try {
         // Attempt to create a new team
-        const team = projectsManager.createNewTeam(teamData);
+        const team = props.projectsManager.createNewTeam(teamData);
         teamForm.reset();
         toggleModal("new-team-modal");
         } catch (err) {
@@ -162,24 +155,7 @@ export function DetailsPage(props: Props) {
                 </button>
                 </div>
             </dialog>
-            <header>
-                <div>
-                <h2 id="project-name" data-project-info="name">props.project.projectName</h2> 
-                <p
-                    id="project-description"
-                    data-project-info="description"
-                    style={{ color: "#969696" }}
-                >props.project.projectDescription</p>
-                </div>
-                <div style={{ display: "flex", flexDirection: "row", rowGap: 20 }}>
-                <button onClick={onExportProjects} id="export-projects-btn">
-                    <p>Export</p>
-                </button>
-                <button onClick={onImportProjects} id="import-projects-btn">
-                    <p>Import</p>
-                </button>
-                </div>
-            </header>
+            {/* <DetailsPageHeader /> */}
             <div className="main-page-content">
                 <div style={{ display: "flex", flexDirection: "column", rowGap: 20 }}>
                 <div className="dashboard-card" style={{ padding: "20px 0" }}>

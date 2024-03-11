@@ -5,7 +5,7 @@ interface Props {
     project: Project
 }
 
-export function ProjectsList(props: Props) {
+export function ProjectsListElements(props: Props) {
 
     const iconConversion = (projectType: ProjectType): string => {
         switch (projectType) {
