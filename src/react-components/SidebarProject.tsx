@@ -5,7 +5,7 @@ interface Props {
     project: Project
 }
 
-export function ProjectsListElements(props: Props) {
+export function SidebarProject(props: Props) {
 
     const iconConversion = (projectType: ProjectType): string => {
         switch (projectType) {

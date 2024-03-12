@@ -13,10 +13,11 @@ import { ProjectsManager } from "../class/projectsManager";
 import { DetailsPageHeader } from "./DetailsPageHeader";
 
 interface Props {
+    projectsManager: ProjectsManager
     project: Project
   }
 
-export function DetailsPage(props: Props) {
+export function DetailsPage(projectsManager: ProjectsManager, props: Props) {
     // Event listener for closing the error popup modal
     const onCloseErrorPopup = () => {
         toggleModal("error-popup");

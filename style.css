@@ -89,6 +89,10 @@ button:hover {
     height: 120px;
 }
 
+#homepage-company-logo {
+    height: 200px;
+}
+
 #new-project-btn {
     border-radius: 10px;
 }

@@ -30,8 +30,26 @@ export function HomePage(props: Props) {
 
 
     return (
-        <div className="page" id="projects-page" style={{ display: "flex" }}>
-          <div id="projects-list">{ projectCards }</div>
-        </div>
+      <div className="homepage" 
+        style={{
+          width: "100vw",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          padding: "100px",
+          gap: "50px"
+        }}>
+        <img
+              id="homepage-company-logo"
+              src="./assets/company-logo.svg"
+              alt="Construction Company"
+          />
+        <div id="projects-list" 
+          style={{
+            display: "flex",
+            gap: "40px",
+            justifyContent: "center"
+          }}>{ projectCards }</div>
+      </div>
     )
 }

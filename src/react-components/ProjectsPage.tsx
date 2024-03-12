@@ -8,7 +8,7 @@ interface Props {
   projectsManager: ProjectsManager
 }
 
-export function DetailsPage(props: Props) {
+export function ProjectsPage(props: Props) {
 
     const routeParams = Router.useParams<{id: string}>()
     if (!routeParams.id) {return (<p>Project ID is needed to see this page</p>)}
@@ -18,7 +18,7 @@ export function DetailsPage(props: Props) {
     return (
         <div className="page" id="project-details">
             <Sidebar projectsManager={new ProjectsManager} />
-            <DetailsPage projectsManager={new ProjectsManager} />
+            <DetailsPage />
         </div>
     )
 }

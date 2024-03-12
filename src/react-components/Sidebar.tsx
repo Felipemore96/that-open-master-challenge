@@ -10,7 +10,7 @@ import {
     Project
 } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
-import { ProjectsListElements } from "./ProjectsListElements";
+import { SidebarProject } from "./SidebarProject";
 import { DetailsPage } from "./DetailsPage";
 
 interface Props {
@@ -25,7 +25,7 @@ export function Sidebar(props: Props) {
     const updatedProjectsList = projects.map((project) => {
         return (
             <>
-                <ProjectsListElements project={project} key={project.id} />
+                <SidebarProject project={project} key={project.id} />
             </>
         )
     })
