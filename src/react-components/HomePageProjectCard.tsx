@@ -7,20 +7,22 @@ interface Props {
 
 export function HomePageProjectCard(props: Props) {
   return (
-    <div className="dashboard-card" style={{ padding: "20px 0" }}>
+    <div className="dashboard-card" 
+      style={{ 
+        padding: "30px 10px",
+        width: "20vw"
+
+      }}>
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center",
           alignItems: "center",
           padding: "0px 30px",
           marginBottom: 10
         }}
       >
-        <h4 />
-        <button className="btn-secondary">
-          <p style={{ width: "100%" }}>Edit</p>
-        </button>
+        <h2>{props.project.projectName}</h2>
       </div>
       <div style={{ padding: "0 30px" }}>
         <div
@@ -32,20 +34,16 @@ export function HomePageProjectCard(props: Props) {
         >
           <div className="card-content">
             <div className="card-property">
-              <p style={{ color: "#969696" }}>Status</p>
-              <p id="project-status" data-project-info="status">{props.project.projectStatus}</p>
+              <h5 style={{ color: "#969696" }}>Status</h5>
+              <h5 id="project-status" data-project-info="status">{props.project.projectStatus}</h5>
             </div>
             <div className="card-property">
-              <p style={{ color: "#969696" }}>Cost</p>
-              <p id="project-cost" data-project-info="cost">{props.project.projectCost}</p>
+              <h5 style={{ color: "#969696" }}>Type</h5>
+              <h5 id="project-type" data-project-info="type">{props.project.projectType}</h5>
             </div>
             <div className="card-property">
-              <p style={{ color: "#969696" }}>Type</p>
-              <p id="project-type" data-project-info="type">{props.project.projectType}</p>
-            </div>
-            <div className="card-property">
-              <p style={{ color: "#969696" }}>Address</p>
-              <p id="project-address" data-project-info="address">{props.project.projectAddress}</p>
+              <h5 style={{ color: "#969696" }}>Address</h5>
+              <h5 id="project-address" data-project-info="address">{props.project.projectAddress}</h5>
             </div>
             <div
               className="card-property"

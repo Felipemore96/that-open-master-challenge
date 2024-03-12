@@ -37,7 +37,7 @@ export function HomePage(props: Props) {
           justifyContent: "center",
           flexDirection: "column",
           padding: "100px",
-          gap: "50px"
+          gap: "150px"
         }}>
         <img
               id="homepage-company-logo"
