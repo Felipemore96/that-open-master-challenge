@@ -18,7 +18,7 @@ export function ProjectsPage(props: Props) {
     return (
         <div className="page" id="project-details">
             <Sidebar projectsManager={new ProjectsManager} />
-            <DetailsPage />
+            <DetailsPage projectsManager={new ProjectsManager} />
         </div>
     )
 }
