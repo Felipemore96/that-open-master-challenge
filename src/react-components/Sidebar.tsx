@@ -12,6 +12,7 @@ import {
 import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
 import { DetailsPage } from "./DetailsPage";
+import { SearchBox } from "./SearchBox";
 
 interface Props {
     projectsManager: ProjectsManager
@@ -75,6 +76,10 @@ export function Sidebar(props: Props) {
           errorMessage.textContent = err;
           toggleModal("error-popup");
         }
+    }
+
+    const onProjectSearch = (value: string) => {
+        setProjects(props.projectsManager.filterProjects(value))
     }
     
     return (
@@ -208,7 +213,7 @@ export function Sidebar(props: Props) {
             </dialog>
             <img
                 id="company-logo"
-                src="./assets/company-logo.svg"
+                src="../assets/company-logo.svg"
                 alt="Construction Company"
             />
             <div style={{ display: "flex", alignItems: "center", columnGap: 10 }}>
@@ -217,10 +222,14 @@ export function Sidebar(props: Props) {
                     <span className="material-icons-round">add</span>
                 </p>
                 </button>
-                <input type="text" placeholder="Search Project" style={{ width: "100%" }} />
+                <SearchBox onChange={(value) => onProjectSearch(value)}/>
             </div>
-            <div id="projects-list" className="nav-buttons">{ updatedProjectsList }
-            </div>
+            {
+                projects.length > 0 ? 
+                <div id="projects-list" className="nav-buttons">{ updatedProjectsList }</div> 
+                : 
+                <p>There is no projects to display</p>
+            }
         </aside>
     )
 }

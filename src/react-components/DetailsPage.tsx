@@ -14,10 +14,9 @@ import { DetailsPageHeader } from "./DetailsPageHeader";
 
 interface Props {
     projectsManager: ProjectsManager
-    project: Project
   }
 
-export function DetailsPage(projectsManager: ProjectsManager, props: Props) {
+export function DetailsPage(props: Props) {
     // Event listener for closing the error popup modal
     const onCloseErrorPopup = () => {
         toggleModal("error-popup");
@@ -41,7 +40,7 @@ export function DetailsPage(projectsManager: ProjectsManager, props: Props) {
         e.preventDefault();
         // Gather form data and create a new team
         const formData = new FormData(teamForm);
-        const currentProjectName = props.project.projectName;
+        const currentProjectName = props.projectsManager.currentProject?.projectName;
         console.log(currentProjectName)
         const teamData: ITeam = {
         teamName: formData.get("teamName") as string,

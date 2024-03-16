@@ -65,7 +65,13 @@ export class ProjectsManager {
       contactPhone: "987-654-321",
       teamProject: "Project #2"
     })
-    
+  }
+
+  filterProjects(value: string) {
+    const filteredProjects = this.projectsList.filter((project) => {
+      return project.projectName
+    })
+    return filteredProjects
   }
 
   getProject(id: string) {
