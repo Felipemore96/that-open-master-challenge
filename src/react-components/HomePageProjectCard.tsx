@@ -57,11 +57,14 @@ export function HomePageProjectCard(props: Props) {
                 id="project-progress"
                 data-project-info="progress"
                 style={{
-                  width: "100%",
+                  width: `${props.project.projectProgress}%`,
                   backgroundColor: "#468f3f",
-                  padding: "4px 0",
+                  padding: "4px",
                   textAlign: "center"
-                }} />
+                }}
+                >
+                  {props.project.projectProgress}%
+                </div>
             </div>
           </div>
         </div>
