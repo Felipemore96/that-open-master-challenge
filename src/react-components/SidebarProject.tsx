@@ -7,10 +7,6 @@ interface Props {
 
 export function SidebarProject(props: Props) {
 
-    const onProjectClicked = () => {
-        
-    }
-
     const iconConversion = (projectType: ProjectType): string => {
         switch (projectType) {
             case "Residential":
@@ -31,7 +27,7 @@ export function SidebarProject(props: Props) {
     };
 
     return (
-    <li onClick={onProjectClicked} id="nav-project-btn" className="nav-project-btn">
+    <li id="nav-project-btn" className="nav-project-btn">
         <span className="material-icons-round">{iconConversion(props.project.projectType)}</span>
         {props.project.projectName}
     </li>
