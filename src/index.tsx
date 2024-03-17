@@ -20,7 +20,7 @@ import { ToDoCreator } from './bim-components/ToDoCreator';
 import { SimpleQTO } from './bim-components/SimpleQTO';
 import { DetailsPage } from './react-components/DetailsPage'
 import { HomePage } from './react-components/HomePage'
-import { ProjectsPage } from './react-components/ProjectsPage'
+import { DetailsPageHeader } from "./react-components/DetailsPageHeader";
 
 const projectsManager = new ProjectsManager()
 
@@ -31,7 +31,12 @@ appRoot.render(
     <Router.BrowserRouter>
       <Router.Routes>
         <Router.Route path="/" element={<HomePage projectsManager={projectsManager} />}></Router.Route>
-        <Router.Route path="/project/:id" element={<ProjectsPage projectsManager={projectsManager} />}></Router.Route>        
+        <Router.Route path="/project/:id" element={
+          <>
+            <Sidebar projectsManager={projectsManager} />
+            <DetailsPage projectsManager={projectsManager} />
+          </>
+        }></Router.Route>        
       </Router.Routes>
     </Router.BrowserRouter>
   </>

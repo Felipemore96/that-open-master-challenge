@@ -1,7 +1,6 @@
 import * as React from "react"
 import * as Router from "react-router-dom"
 import { ProjectsManager } from "../class/projectsManager"
-import { ProjectsPage } from "./ProjectsPage"
 import { Project } from "../class/projects"
 import { HomePageProjectCard } from "./HomePageProjectCard"
 

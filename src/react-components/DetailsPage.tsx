@@ -153,7 +153,7 @@ export function DetailsPage(props: Props) {
                 </button>
                 </div>
             </dialog>
-            {/* <DetailsPageHeader /> */}
+            <DetailsPageHeader projectsManager={new ProjectsManager}/>
             <div className="main-page-content">
                 <div style={{ display: "flex", flexDirection: "column", rowGap: 20 }}>
                 <div className="dashboard-card" style={{ padding: "20px 0" }}>

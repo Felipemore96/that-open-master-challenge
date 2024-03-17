@@ -11,8 +11,8 @@ import {
 import { ProjectsManager } from "../class/projectsManager";
 
 interface Props {
-    project: Project
-}
+    projectsManager: ProjectsManager
+  }
 
 export function DetailsPageHeader(props: Props) {
     const projectsManager = new ProjectsManager();
@@ -29,12 +29,12 @@ export function DetailsPageHeader(props: Props) {
     return (
         <header>
             <div>
-            <h2 id="project-name" data-project-info="name">{props.project.projectName}</h2> 
+            <h2 id="project-name" data-project-info="name">{props.projectsManager.currentProject?.projectName}</h2> 
             <p
                 id="project-description"
                 data-project-info="description"
                 style={{ color: "#969696" }}
-            >{props.project.projectDescription}</p>
+            >{props.projectsManager.currentProject?.projectDescription}</p>
             </div>
             <div style={{ display: "flex", flexDirection: "row", rowGap: 20 }}>
             <button onClick={onExportProjects} id="export-projects-btn">
