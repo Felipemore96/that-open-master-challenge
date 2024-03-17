@@ -25,9 +25,9 @@ export function Sidebar(props: Props) {
 
     const updatedProjectsList = projects.map((project) => {
         return (
-            <>
-                <SidebarProject project={project} key={project.id} />
-            </>
+            <Router.Link to={`/project/${project.id}`} key={project.id}>
+                <SidebarProject project={project} />
+            </Router.Link>
         )
     })
 
