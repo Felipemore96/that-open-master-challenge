@@ -13,16 +13,16 @@ export class ProjectsManager {
 
   // Constructor initializes the ProjectsManager with a container element
   constructor() {
-    this.newProject({
-      projectName: "Project #1",
-      projectDescription: "Description of this project",
-      projectStatus: "Active",
-      projectCost: "500,000.00",
-      projectType: "Residential",
-      projectAddress: "Madrid, Spain",
-      projectFinishDate: new Date("2025-01-02T00:00:00.000Z"),
-      projectProgress: "50"
-    })
+    // this.newProject({
+    //   projectName: "Project #1",
+    //   projectDescription: "Description of this project",
+    //   projectStatus: "Active",
+    //   projectCost: "500,000.00",
+    //   projectType: "Residential",
+    //   projectAddress: "Madrid, Spain",
+    //   projectFinishDate: new Date("2025-01-02T00:00:00.000Z"),
+    //   projectProgress: "50"
+    // })
     this.createNewTeam({
       teamName: "BIM Company",
       teamRole: "BIM Manager",
@@ -39,16 +39,16 @@ export class ProjectsManager {
       contactPhone: "321-654-987",
       teamProject: "Project #1"
     })
-    this.newProject({
-      projectName: "Project #2",
-      projectDescription: "General description of project #2",
-      projectStatus: "Finished",
-      projectCost: "150,000.00",
-      projectType: "Industrial",
-      projectAddress: "Barcelona, Spain",
-      projectFinishDate: new Date("2025-06-01T00:00:00.000Z"),
-      projectProgress: "10"
-    })
+    // this.newProject({
+    //   projectName: "Project #2",
+    //   projectDescription: "General description of project #2",
+    //   projectStatus: "Finished",
+    //   projectCost: "150,000.00",
+    //   projectType: "Industrial",
+    //   projectAddress: "Barcelona, Spain",
+    //   projectFinishDate: new Date("2025-06-01T00:00:00.000Z"),
+    //   projectProgress: "10"
+    // })
     this.createNewTeam({
       teamName: "BIM Inc.",
       teamRole: "BIM Manager",

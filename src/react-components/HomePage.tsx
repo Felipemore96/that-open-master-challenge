@@ -1,8 +1,10 @@
 import * as React from "react"
 import * as Router from "react-router-dom"
 import { ProjectsManager } from "../class/projectsManager"
-import { Project } from "../class/projects"
+import { IProject, Project } from "../class/projects"
 import { HomePageProjectCard } from "./HomePageProjectCard"
+import { firebaseDB } from "../firebase"
+import * as Firestore from "firebase/firestore"
 
 interface Props {
     projectsManager: ProjectsManager
@@ -13,6 +15,19 @@ export function HomePage(props: Props) {
     const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
     props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
     // props.projectsManager.onProjectDeleted = () => { setProjects([...props.projectsManager.projectsList]) }
+
+    const getFirestoreProjects = async () => {
+      const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
+      const firebaseProjects = await Firestore.getDocs(projectsCollenction)
+      for (const doc of firebaseProjects.docs) {
+        const data = doc.data()
+        props.projectsManager.newProject(data)
+      }
+    }
+
+    React.useEffect(() => {
+      getFirestoreProjects()
+    }, [])
   
     const projectCards = projects.map((project) => {
       return (
