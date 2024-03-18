@@ -143,14 +143,14 @@ export class ProjectsManager {
   }
 
   // Create a new project with the provided data
-  newProject(data: IProject) {
+  newProject(data: IProject, id?: string) {
     // Check if a project with the same name already exists
     const nameInUse = this.projectsList.some((project) => project.projectName === data.projectName);
     if (nameInUse) {
       throw new Error(`A project with name "${data.projectName}" already exists`);
     }
     // Add a click event listener to show project details when clicked
-    const project = new Project(data);
+    const project = new Project(data, id);
     // Add project to the projectsList
     this.projectsList.push(project);
 

@@ -70,12 +70,12 @@ export class Project implements IProject {
 
   id: string;
 
-  constructor(data: IProject) {
+  constructor(data: IProject, id = uuidv4()) {
     // Initialize properties with data
     for (const key in data) {
       this[key] = data[key];
     }
-    this.id = uuidv4();
+    this.id = id;
     // this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
     // this.setUI();
   }

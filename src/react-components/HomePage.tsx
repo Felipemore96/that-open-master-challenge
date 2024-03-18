@@ -21,7 +21,15 @@ export function HomePage(props: Props) {
       const firebaseProjects = await Firestore.getDocs(projectsCollenction)
       for (const doc of firebaseProjects.docs) {
         const data = doc.data()
-        props.projectsManager.newProject(data)
+        const project: IProject = {
+          ...data,
+          projectFinishDate: (data.projectFinishDate as unknown as Firestore.Timestamp).toDate()
+        }
+        try {
+          props.projectsManager.newProject(project, doc.id)
+        } catch (error) {
+
+        }
       }
     }
 
