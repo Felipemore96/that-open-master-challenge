@@ -1,5 +1,5 @@
+import * as Firestore from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
   apiKey: "AIzaSyBfD-yeqFortwzYmrUMcQFZRstig5E9Fbw",
@@ -11,4 +11,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const firebaseDB = getFirestore()
+export const firestoreDB = Firestore.getFirestore()
+
+export function getCollection<T>(path: string) {
+  return Firestore.collection(firestoreDB, path) as Firestore.CollectionReference<T>
+}

@@ -5,6 +5,7 @@ import { IProject, Project } from "../class/projects"
 import { HomePageProjectCard } from "./HomePageProjectCard"
 import { firebaseDB } from "../firebase"
 import * as Firestore from "firebase/firestore"
+import { getCollection } from "../firebase";
 
 interface Props {
     projectsManager: ProjectsManager
@@ -17,7 +18,8 @@ export function HomePage(props: Props) {
     // props.projectsManager.onProjectDeleted = () => { setProjects([...props.projectsManager.projectsList]) }
 
     const getFirestoreProjects = async () => {
-      const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
+      // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
+      const projectsCollenction = getCollection<IProject>("/projects")
       const firebaseProjects = await Firestore.getDocs(projectsCollenction)
       for (const doc of firebaseProjects.docs) {
         const data = doc.data()

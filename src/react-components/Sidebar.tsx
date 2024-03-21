@@ -13,6 +13,8 @@ import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
 import { DetailsPage } from "./DetailsPage";
 import { SearchBox } from "./SearchBox";
+import * as Firestore from "firebase/firestore";
+import { getCollection } from "../firebase";
 
 interface Props {
     projectsManager: ProjectsManager
@@ -66,6 +68,9 @@ export function Sidebar(props: Props) {
           projectProgress: formData.get("project-progress") as string
         };
         try {
+        //   const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
+          const projectsCollection = getCollection<IProject>("/projects")
+          Firestore.addDoc(projectsCollection, projectData)
           // Attempt to create a new project
           const project = props.projectsManager.newProject(projectData);
           projectForm.reset();
