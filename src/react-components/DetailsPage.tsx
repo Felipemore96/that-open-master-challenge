@@ -14,12 +14,19 @@ import { DetailsPageHeader } from "./DetailsPageHeader";
 import { IFCViewer } from "./IFCViewer";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore"
+import { deleteDocument } from "../firebase";
 
 interface Props {
     projectsManager: ProjectsManager
   }
 
 export function DetailsPage(props: Props) {
+
+    const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
+    props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
+    const [teams, setTeams] = React.useState<Team[]>(props.projectsManager.teamList)
+    props.projectsManager.onTeamCreated = () => {setProjects([...props.projectsManager.teamList])}
+
     // Event listener for closing the error popup modal
     const onCloseErrorPopup = () => {
         toggleModal("error-popup");

@@ -16,3 +16,8 @@ export const firestoreDB = Firestore.getFirestore()
 export function getCollection<T>(path: string) {
   return Firestore.collection(firestoreDB, path) as Firestore.CollectionReference<T>
 }
+
+export function deleteDocument(path: string, id: string) {
+  const doc = Firestore.doc(firestoreDB,  `${path}/${id}`)
+  Firestore.deleteDoc(doc)
+}
