@@ -12,6 +12,8 @@ import {
 import { ProjectsManager } from "../class/projectsManager";
 import { DetailsPageHeader } from "./DetailsPageHeader";
 import { IFCViewer } from "./IFCViewer";
+import { getCollection } from "../firebase";
+import * as Firestore from "firebase/firestore"
 
 interface Props {
     projectsManager: ProjectsManager
@@ -52,6 +54,8 @@ export function DetailsPage(props: Props) {
         teamProject: currentProjectName as string
         };
         try {
+        const teamsCollection = getCollection<ITeam>("/projects")
+        Firestore.addDoc(teamsCollection, teamData)
         // Attempt to create a new team
         const team = props.projectsManager.createNewTeam(teamData);
         teamForm.reset();

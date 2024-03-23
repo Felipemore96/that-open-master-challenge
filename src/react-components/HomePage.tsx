@@ -3,7 +3,6 @@ import * as Router from "react-router-dom"
 import { ProjectsManager } from "../class/projectsManager"
 import { IProject, Project } from "../class/projects"
 import { HomePageProjectCard } from "./HomePageProjectCard"
-import { firebaseDB } from "../firebase"
 import * as Firestore from "firebase/firestore"
 import { getCollection } from "../firebase";
 
