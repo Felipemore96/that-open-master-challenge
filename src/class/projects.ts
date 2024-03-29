@@ -76,8 +76,6 @@ export class Project implements IProject {
       this[key] = data[key];
     }
     this.id = id;
-    // this.projectTeams = data.projectTeams.map((teamData: ITeam) => new Team(teamData));
-    // this.setUI();
   }
 }
 
@@ -95,13 +93,12 @@ export class Team implements ITeam {
   ui: HTMLDivElement;
   id: string;
 
-  constructor(data: ITeam) {
+  constructor(data: ITeam, id = uuidv4()) {
     // Initialize properties with data
     for (const key in data) {
       this[key] = data[key];
     }
-    // Generate a unique ID for the team
-    this.id = uuidv4();
+    this.id = id;
     // Set up the UI for the team
     this.setTeamUI();
   }

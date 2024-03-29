@@ -7,7 +7,8 @@ import {
     ITeam,
     TeamRole,
     toggleModal,
-    Project
+    Project,
+    Team
 } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 import { DetailsPageHeader } from "./DetailsPageHeader";
@@ -22,10 +23,29 @@ interface Props {
 
 export function DetailsPage(props: Props) {
 
-    const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
-    props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
     const [teams, setTeams] = React.useState<Team[]>(props.projectsManager.teamList)
-    props.projectsManager.onTeamCreated = () => {setProjects([...props.projectsManager.teamList])}
+    props.projectsManager.onTeamCreated = () => {setTeams([...props.projectsManager.teamList])}
+    // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
+
+    const getFirestoreTeams = async () => {
+      const teamsCollenction = getCollection<ITeam>("/teams")
+      const firebaseTeams = await Firestore.getDocs(teamsCollenction)
+      for (const doc of firebaseTeams.docs) {
+        const data = doc.data()
+        const team: ITeam = {
+          ...data
+        }
+        try {
+          props.projectsManager.createNewTeam(team, doc.id)
+        } catch (error) {
+
+        }
+      }
+    }
+
+    React.useEffect(() => {
+      getFirestoreTeams()
+    }, [])
 
     // Event listener for closing the error popup modal
     const onCloseErrorPopup = () => {
