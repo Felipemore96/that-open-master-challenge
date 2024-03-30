@@ -103,7 +103,9 @@ export class ProjectsManager {
     // Display project details
     this.currentProject = project;
     this.teamProject = project.projectName;
+
     this.showProjectDetails(project);
+    this.showProjectTeams(project);
 
     this.onProjectCreated(project)
 
@@ -113,6 +115,7 @@ export class ProjectsManager {
   // Display detailed information about a project
   showProjectDetails(project: Project) {
     // Get the project details page element
+    console.log("HOLAAAAAAAAAAAA")
     const detailsPage = document.getElementById("project-details");
     if (!detailsPage) {
       return;
@@ -143,7 +146,6 @@ export class ProjectsManager {
       progress.style.width = project.projectProgress + "%";
       progress.textContent = project.projectProgress + "%";
     }
-    this.showProjectTeams(project);
   }
 
   showProjectTeams(project: Project) {

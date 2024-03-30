@@ -25,7 +25,7 @@ export function Sidebar(props: Props) {
     const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
     props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
 
-    const updatedProjectsList = projects.map((project) => {
+    const projectsCards = projects.map((project) => {
         return (
             <Router.Link to={`/project/${project.id}`} key={project.id}>
                 <SidebarProject project={project} />
@@ -68,7 +68,6 @@ export function Sidebar(props: Props) {
           projectProgress: formData.get("project-progress") as string
         };
         try {
-        //   const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
           const projectsCollection = getCollection<IProject>("/projects")
           Firestore.addDoc(projectsCollection, projectData)
           // Attempt to create a new project
@@ -231,7 +230,7 @@ export function Sidebar(props: Props) {
             </div>
             {
                 projects.length > 0 ? 
-                <div id="projects-list" className="nav-buttons">{ updatedProjectsList }</div> 
+                <div id="projects-list" className="nav-buttons">{ projectsCards }</div> 
                 : 
                 <p>There is no projects to display</p>
             }

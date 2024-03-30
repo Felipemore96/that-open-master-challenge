@@ -23,9 +23,22 @@ interface Props {
 
 export function DetailsPage(props: Props) {
 
+    const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
+    props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
+
     const [teams, setTeams] = React.useState<Team[]>(props.projectsManager.teamList)
     props.projectsManager.onTeamCreated = () => {setTeams([...props.projectsManager.teamList])}
     // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
+
+    const routeParams = Router.useParams<{ id: string }>()
+    if (!routeParams.id) {return (<p>Project ID is needed to see this page</p>)}
+    const currentProject = props.projectsManager.getProject(routeParams.id)
+    if (!currentProject) { return (<p>The project with ID {routeParams.id} wasn't found.</p>) }
+    const navigateTo = Router.useNavigate()
+    // props.projectsManager.onProjectDeleted = async (id) => {
+    //   await deleteDocument("/projects", id)
+    //   navigateTo("/")
+    // }
 
     const getFirestoreTeams = async () => {
       const teamsCollenction = getCollection<ITeam>("/teams")
@@ -70,7 +83,7 @@ export function DetailsPage(props: Props) {
         e.preventDefault();
         // Gather form data and create a new team
         const formData = new FormData(teamForm);
-        const currentProjectName = props.projectsManager.currentProject?.projectName;
+        const currentProjectName = currentProject.projectName;
         console.log(currentProjectName)
         const teamData: ITeam = {
         teamName: formData.get("teamName") as string,
@@ -81,7 +94,7 @@ export function DetailsPage(props: Props) {
         teamProject: currentProjectName as string
         };
         try {
-        const teamsCollection = getCollection<ITeam>("/projects")
+        const teamsCollection = getCollection<ITeam>("/teams")
         Firestore.addDoc(teamsCollection, teamData)
         // Attempt to create a new team
         const team = props.projectsManager.createNewTeam(teamData);
@@ -214,23 +227,23 @@ export function DetailsPage(props: Props) {
                             <div className="card-content">
                             <div className="card-property">
                                 <p style={{ color: "#969696" }}>Status</p>
-                                <p id="project-status" data-project-info="status" />
+                                <p id="project-status" data-project-info="status">{currentProject.projectStatus}</p>
                             </div>
                             <div className="card-property">
                                 <p style={{ color: "#969696" }}>Cost</p>
-                                <p id="project-cost" data-project-info="cost" />
+                                <p id="project-cost" data-project-info="cost">{currentProject.projectCost}</p>
                             </div>
                             <div className="card-property">
                                 <p style={{ color: "#969696" }}>Type</p>
-                                <p id="project-type" data-project-info="type" />
+                                <p id="project-type" data-project-info="type">{currentProject.projectType}</p>
                             </div>
                             <div className="card-property">
                                 <p style={{ color: "#969696" }}>Address</p>
-                                <p id="project-address" data-project-info="address" />
+                                <p id="project-address" data-project-info="address">{currentProject.projectAddress}</p>
                             </div>
                             <div className="card-property">
                                 <p style={{ color: "#969696" }}>Finish Date</p>
-                                <p id="project-finish-date" data-project-info="finishDate" />
+                                <p id="project-finish-date" data-project-info="finishDate">{currentProject.projectFinishDate.toDateString()}</p>
                             </div>
                             <div
                                 className="card-property"
@@ -244,12 +257,14 @@ export function DetailsPage(props: Props) {
                                 id="project-progress"
                                 data-project-info="progress"
                                 style={{
-                                    width: "100%",
+                                    width: `${currentProject.projectProgress}%`,
                                     backgroundColor: "#468f3f",
                                     padding: "4px 0",
                                     textAlign: "center"
                                 }}
-                                />
+                                >
+                                    {currentProject.projectProgress}%
+                                </div>
                             </div>
                             </div>
                         </div>
