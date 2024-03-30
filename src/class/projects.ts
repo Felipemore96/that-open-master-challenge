@@ -13,7 +13,7 @@ export interface ITeam {
   teamDescription: string;
   contactName: string;
   contactPhone: string;
-  teamProject: string;
+  teamProjectId: string;
 }
 
 // Define the structure for a project
@@ -52,7 +52,7 @@ function updateTeamInfo(team: Team) {
       <p>Description: ${team.teamDescription}</p>
       <p>Contact Name: ${team.contactName}</p>
       <p>Phone number: ${team.contactPhone}</p>
-      <p>Project: ${team.teamProject}</p>`;
+      <p>Project: Arreglar esto !!!</p>`;
   }
 }
 
@@ -87,7 +87,7 @@ export class Team implements ITeam {
   teamDescription: string;
   contactName: string;
   contactPhone: string;
-  teamProject: string;
+  teamProjectId: string;
 
   // Class internals
   ui: HTMLDivElement;
