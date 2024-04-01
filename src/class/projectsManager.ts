@@ -105,7 +105,7 @@ export class ProjectsManager {
     this.teamProject = project.projectName;
 
     this.showProjectDetails(project);
-    this.showProjectTeams(project);
+    // this.showProjectTeams(project);
 
     this.onProjectCreated(project)
 
@@ -115,7 +115,6 @@ export class ProjectsManager {
   // Display detailed information about a project
   showProjectDetails(project: Project) {
     // Get the project details page element
-    console.log("HOLAAAAAAAAAAAA")
     const detailsPage = document.getElementById("project-details");
     if (!detailsPage) {
       return;
@@ -148,27 +147,27 @@ export class ProjectsManager {
     }
   }
 
-  showProjectTeams(project: Project) {
-    // Clear existing teams before updating project details
-    const teamsShown = document.getElementById("teams-list");
-    if (teamsShown) {
-      teamsShown.innerHTML = "";
-    }
+  // showProjectTeams(project: Project) {
+  //   // Clear existing teams before updating project details
+  //   const teamsShown = document.getElementById("teams-list");
+  //   if (teamsShown) {
+  //     teamsShown.innerHTML = "";
+  //   }
 
-    //Update the project Teams and create their cards
-    const teams = this.teamList;
-    const teamsList = document.getElementById("teams-list");
-    if (teams) {
-      for (const teamData of teams) {
-        if (teamData.teamProject && teamData.teamProject === project.projectName) {
-          // Create a new Team instance
-          if (teamsList) {
-            teamsList.appendChild(teamData.ui);
-          }
-        }
-      }
-    }
-  }
+  //   //Update the project Teams and create their cards
+  //   const teams = this.teamList;
+  //   const teamsList = document.getElementById("teams-list");
+  //   if (teams) {
+  //     for (const teamData of teams) {
+  //       if (teamData.teamProject && teamData.teamProject === project.projectName) {
+  //         // Create a new Team instance
+  //         if (teamsList) {
+  //           teamsList.appendChild(teamData.ui);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
 
   // Create a new team with the provided data

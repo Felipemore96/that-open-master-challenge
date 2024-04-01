@@ -27,9 +27,9 @@ export function SidebarProject(props: Props) {
     };
 
     return (
-    <li id="nav-project-btn" className="nav-project-btn">
-        <span className="material-icons-round">{iconConversion(props.project.projectType)}</span>
-        {props.project.projectName}
-    </li>
+        <li id="nav-project-btn" className="nav-project-btn">
+            <span className="material-icons-round">{iconConversion(props.project.projectType)}</span>
+            {props.project.projectName}
+        </li>
     )
 }

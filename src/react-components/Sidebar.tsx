@@ -25,6 +25,28 @@ export function Sidebar(props: Props) {
     const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
     props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
 
+    const getFirestoreProjects = async () => {
+        // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
+        const projectsCollenction = getCollection<IProject>("/projects")
+        const firebaseProjects = await Firestore.getDocs(projectsCollenction)
+        for (const doc of firebaseProjects.docs) {
+          const data = doc.data()
+          const project: IProject = {
+            ...data,
+            projectFinishDate: (data.projectFinishDate as unknown as Firestore.Timestamp).toDate()
+          }
+          try {
+            props.projectsManager.newProject(project, doc.id)
+          } catch (error) {
+  
+          }
+        }
+    }
+  
+    React.useEffect(() => {
+        getFirestoreProjects()
+    }, [])
+
     const projectsCards = projects.map((project) => {
         return (
             <Router.Link to={`/project/${project.id}`} key={project.id}>

@@ -20,22 +20,23 @@ import { TeamsCard } from "./TeamsCard";
 
 interface Props {
     projectsManager: ProjectsManager
-  }
+}
 
 export function DetailsPage(props: Props) {
 
-    const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.projectsList)
-    props.projectsManager.onProjectCreated = () => {setProjects([...props.projectsManager.projectsList])}
+    const [projects, setProjects] = React.useState<Project[]>(
+        props.projectsManager.projectsList
+    );
+    props.projectsManager.onProjectCreated = () => {
+        setProjects([...props.projectsManager.projectsList]);
+    };
 
     const routeParams = Router.useParams<{ id: string }>()
-    if (!routeParams.id) {return (<p>Project ID is needed to see this page</p>)}
+    if (!routeParams.id) { return (<p>Project ID is needed to see this page</p>) }
     const currentProject = props.projectsManager.getProject(routeParams.id)
     if (!currentProject) { return (<p>The project with ID {routeParams.id} wasn't found.</p>) }
-    const navigateTo = Router.useNavigate()
-    // props.projectsManager.onProjectDeleted = async (id) => {
-    //   await deleteDocument("/projects", id)
-    //   navigateTo("/")
-    // }
+
+    React.useEffect(() => {}, [currentProject]);
 
     return (
         <div className="page" id="project-details">
@@ -111,7 +112,7 @@ export function DetailsPage(props: Props) {
                         </div>
                         </div>
                     </div>
-                    <TeamsCard project={currentProject}/>
+                    <TeamsCard project={currentProject} projectsManager={props.projectsManager}/>
                 </div>  
                 <IFCViewer/>
             </div>

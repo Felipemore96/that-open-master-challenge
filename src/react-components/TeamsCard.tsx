@@ -9,15 +9,16 @@ import { getCollection } from "../firebase";
 
 interface Props {
     project: Project
-  }  
+    projectsManager: ProjectsManager;
+}  
 
 export function TeamsCard(props: Props) {
-    const projectsManager = new ProjectsManager();
-    const [teams, setTeams] = React.useState<Team[]>(projectsManager.teamList)
-    projectsManager.onTeamCreated = () => {setTeams([...projectsManager.teamList])}
+    const [teams, setTeams] = React.useState<Team[]>(props.projectsManager.teamList)
+    props.projectsManager.onTeamCreated = () => {setTeams([...props.projectsManager.teamList])}
     // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
 
     const getFirestoreTeams = async () => {
+        setTeams([]);
         const teamsCollenction = getCollection<ITeam>("/teams")
         const firebaseTeams = await Firestore.getDocs(teamsCollenction)
         for (const doc of firebaseTeams.docs) {
@@ -27,17 +28,18 @@ export function TeamsCard(props: Props) {
             }
             try {
                 if (team.teamProjectId === props.project.id) {
-                    projectsManager.createNewTeam(team, doc.id)
+                    const existingTeam = props.projectsManager.teamList.find(t => t.id === doc.id);
+                    if (!existingTeam) {
+                        props.projectsManager.createNewTeam(team, doc.id);
+                    }
                 }
-            } catch (error) {
-
-            }
+            } catch (error) {}
         }
     }
   
     React.useEffect(() => {
-    getFirestoreTeams()
-    }, [])
+        getFirestoreTeams()
+    }, [props.project.id])
 
     // Event listener for opening the "New Team" modal
     const onNewTeam = () => {
@@ -76,7 +78,7 @@ export function TeamsCard(props: Props) {
         const teamsCollection = getCollection<ITeam>("/teams")
         Firestore.addDoc(teamsCollection, teamData)
         // Attempt to create a new team
-        const team = projectsManager.createNewTeam(teamData);
+        const team = props.projectsManager.createNewTeam(teamData);
         teamForm.reset();
         toggleModal("new-team-modal");
         } catch (err) {
