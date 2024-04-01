@@ -90,7 +90,7 @@ export class Team implements ITeam {
   teamProjectId: string;
 
   // Class internals
-  ui: HTMLDivElement;
+  // ui: HTMLDivElement;
   id: string;
 
   constructor(data: ITeam, id = uuidv4()) {
@@ -100,37 +100,37 @@ export class Team implements ITeam {
     }
     this.id = id;
     // Set up the UI for the team
-    this.setTeamUI();
+    // this.setTeamUI();
   }
 
-  // Method to create the team card UI
-  setTeamUI() {
-    // Check if UI element already exists
-    if (this.ui) { return; }
-    // Map team role to corresponding material icon
-    const roleToIcon: Record<TeamRole, string> = {
-      "BIM Manager": "computer",
-      "Structural": "foundation",
-      "MEP": "plumbing",
-      "Architect": "architecture",
-      "Contractor": "construction"
-    };
-    // Select the appropriate icon or use a default ("computer")
-    const icon = roleToIcon[this.teamRole] || "computer";
-    // Create a div element for the team card
-    this.ui = document.createElement("div");
-    this.ui.className = "team-card";
-    // Set inner HTML with material icon, team role, and team name
-    this.ui.innerHTML = `
-    <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">${icon}</span>
-    <p>${this.teamRole}</p>
-    <p>${this.teamName}</p>
-    `;
-    // Add click interaction to display team information
-    this.ui.addEventListener("click", (e) => {
-      e.preventDefault();
-      updateTeamInfo(this);
-      toggleModal("team-info-popup");
-    });
-  }
+  // // Method to create the team card UI
+  // setTeamUI() {
+  //   // Check if UI element already exists
+  //   if (this.ui) { return; }
+  //   // Map team role to corresponding material icon
+  //   const roleToIcon: Record<TeamRole, string> = {
+  //     "BIM Manager": "computer",
+  //     "Structural": "foundation",
+  //     "MEP": "plumbing",
+  //     "Architect": "architecture",
+  //     "Contractor": "construction"
+  //   };
+  //   // Select the appropriate icon or use a default ("computer")
+  //   const icon = roleToIcon[this.teamRole] || "computer";
+  //   // Create a div element for the team card
+  //   this.ui = document.createElement("div");
+  //   this.ui.className = "team-card";
+  //   // Set inner HTML with material icon, team role, and team name
+  //   this.ui.innerHTML = `
+  //   <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">${icon}</span>
+  //   <p>${this.teamRole}</p>
+  //   <p>${this.teamName}</p>
+  //   `;
+  //   // Add click interaction to display team information
+  //   this.ui.addEventListener("click", (e) => {
+  //     e.preventDefault();
+  //     updateTeamInfo(this);
+  //     toggleModal("team-info-popup");
+  //   });
+  // }
 }

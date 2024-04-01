@@ -1,4 +1,5 @@
 import * as React from "react"
+import * as Router from "react-router-dom"
 import {
     ITeam,
     Project, Team, TeamRole, toggleModal
@@ -6,6 +7,7 @@ import {
 import { ProjectsManager } from "../class/projectsManager";
 import * as Firestore from "firebase/firestore"
 import { getCollection } from "../firebase";
+import { TeamCardTeams } from "./TeamCardTeams";
 
 interface Props {
     project: Project
@@ -16,22 +18,19 @@ export function TeamsCard(props: Props) {
     const [teams, setTeams] = React.useState<Team[]>(props.projectsManager.teamList)
     props.projectsManager.onTeamCreated = () => {setTeams([...props.projectsManager.teamList])}
     // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
-
+    
     const getFirestoreTeams = async () => {
-        setTeams([]);
         const teamsCollenction = getCollection<ITeam>("/teams")
         const firebaseTeams = await Firestore.getDocs(teamsCollenction)
         for (const doc of firebaseTeams.docs) {
             const data = doc.data()
             const team: ITeam = {
-            ...data
+                ...data
             }
+            console.log("team", team)
             try {
                 if (team.teamProjectId === props.project.id) {
-                    const existingTeam = props.projectsManager.teamList.find(t => t.id === doc.id);
-                    if (!existingTeam) {
-                        props.projectsManager.createNewTeam(team, doc.id);
-                    }
+                    props.projectsManager.createNewTeam(team, doc.id);
                 }
             } catch (error) {}
         }
@@ -40,6 +39,12 @@ export function TeamsCard(props: Props) {
     React.useEffect(() => {
         getFirestoreTeams()
     }, [props.project.id])
+
+    const teamsCards = teams.map((team) => {
+        return (
+            <TeamCardTeams team={team} key={team.id}/>
+        )
+    })
 
     // Event listener for opening the "New Team" modal
     const onNewTeam = () => {
@@ -197,8 +202,12 @@ export function TeamsCard(props: Props) {
                     </button>
                 </div>
             </div>
-            <div id="teams-list">
-            </div>
+            {
+                teams.length > 0 ? 
+                <div id="teams-list" className="nav-buttons">{ teamsCards }</div> 
+                : 
+                <h4>There is no teams to display</h4>
+            }
         </div>
     )
 }
