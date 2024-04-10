@@ -7,17 +7,20 @@ const firebaseConfig = {
   projectId: "that-open-master-challenge",
   storageBucket: "that-open-master-challenge.appspot.com",
   messagingSenderId: "583262808832",
-  appId: "1:583262808832:web:83dc929d0d80f84258e1e5"
+  appId: "1:583262808832:web:83dc929d0d80f84258e1e5",
 };
 
 const app = initializeApp(firebaseConfig);
-export const firestoreDB = Firestore.getFirestore()
+export const firestoreDB = Firestore.getFirestore();
 
 export function getCollection<T>(path: string) {
-  return Firestore.collection(firestoreDB, path) as Firestore.CollectionReference<T>
+  return Firestore.collection(
+    firestoreDB,
+    path
+  ) as Firestore.CollectionReference<T>;
 }
 
 export function deleteDocument(path: string, id: string) {
-  const doc = Firestore.doc(firestoreDB,  `${path}/${id}`)
-  Firestore.deleteDoc(doc)
+  const doc = Firestore.doc(firestoreDB, `${path}/${id}`);
+  Firestore.deleteDoc(doc);
 }
