@@ -1,4 +1,3 @@
-// Import necessary types and functions from project files
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import * as Router from "react-router-dom";
