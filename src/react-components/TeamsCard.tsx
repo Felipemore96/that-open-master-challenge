@@ -12,29 +12,37 @@ interface Props {
 }
 
 export function TeamsCard(props: Props) {
-  const [teams, setTeams] = React.useState<Team[]>(
-    props.projectsManager.teamList
-  );
+  const [teams, setTeams] = React.useState<Team[]>([]);
+  // const [teams, setTeams] = React.useState<Team[]>(
+  //   props.projectsManager.teamList
+  // );
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamList]);
   };
   // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
 
   const getFirestoreTeams = async () => {
+    setTeams([]);
     const teamsCollenction = getCollection<ITeam>("/teams");
     const firebaseTeams = await Firestore.getDocs(teamsCollenction);
+    let newTeams: Team[] = [];
     for (const doc of firebaseTeams.docs) {
       const data = doc.data();
       const team: ITeam = {
         ...data,
       };
-      console.log("team", team);
       try {
         if (team.teamProjectId === props.project.id) {
-          props.projectsManager.createNewTeam(team, doc.id);
+          const newTeam: Team = {
+            id: doc.id,
+            ...data,
+          };
+          newTeams.push(newTeam);
+          // props.projectsManager.newTeam(team, team.teamProjectId);
         }
       } catch (error) {}
     }
+    setTeams(newTeams);
   };
 
   React.useEffect(() => {
@@ -85,7 +93,8 @@ export function TeamsCard(props: Props) {
       const teamsCollection = getCollection<ITeam>("/teams");
       Firestore.addDoc(teamsCollection, teamData);
       // Attempt to create a new team
-      const team = props.projectsManager.createNewTeam(teamData);
+      const team = props.projectsManager.newTeam(teamData);
+      getFirestoreTeams();
       teamForm.reset();
       toggleModal("new-team-modal");
     } catch (err) {
@@ -220,7 +229,14 @@ export function TeamsCard(props: Props) {
           {teamsCards}
         </div>
       ) : (
-        <h4>There is no teams to display</h4>
+        <h4
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          There is no teams to display
+        </h4>
       )}
     </div>
   );

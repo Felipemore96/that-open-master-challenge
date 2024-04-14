@@ -71,7 +71,7 @@ export class ProjectsManager {
       const teams: ITeam[] = importData.teams;
       for (const team of teams) {
         try {
-          this.createNewTeam(team);
+          this.newTeam(team);
         } catch (err) {
           const errorMessage = document.getElementById("err") as HTMLElement;
           errorMessage.textContent = err;
@@ -202,16 +202,16 @@ export class ProjectsManager {
   // }
 
   // Create a new team with the provided data
-  createNewTeam(data: ITeam, id?: string) {
-    // Create a new Team instance
+  newTeam(data: ITeam, id?: string) {
     const team = new Team(data, id);
-    const teamsList = document.getElementById("teams-list");
-    if (teamsList) {
-      // teamsList.appendChild(team.ui);
-    }
+    // const teamsList = document.getElementById("teams-list");
+    // if (teamsList) {
+    //   // teamsList.appendChild(team.ui);
+    // }
 
     // Add team to the teamList
     this.teamList.push(team);
+    this.onTeamCreated(team);
 
     return team;
   }
