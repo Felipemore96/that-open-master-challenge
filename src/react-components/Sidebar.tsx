@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   IProject,
   ProjectStatus,
@@ -28,6 +29,7 @@ export function Sidebar(props: Props) {
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
   };
+  const navigate = useNavigate();
 
   const getFirestoreProjects = async () => {
     // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
@@ -104,6 +106,8 @@ export function Sidebar(props: Props) {
       Firestore.addDoc(projectsCollection, projectData);
       // Attempt to create a new project
       const project = props.projectsManager.newProject(projectData);
+      navigate(`/project/${project.id}`);
+      getFirestoreProjects();
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {
@@ -115,7 +119,12 @@ export function Sidebar(props: Props) {
   };
 
   const onProjectSearch = (value: string) => {
-    setProjects(props.projectsManager.filterProjects(value));
+    const filteredProjects = props.projectsManager.projectsList.filter(
+      (project) => {
+        return project.projectName.includes(value);
+      }
+    );
+    setProjects(filteredProjects);
   };
 
   return (

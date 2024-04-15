@@ -109,75 +109,70 @@ export class ProjectsManager {
         `A project with name "${data.projectName}" already exists`
       );
     }
-    // Add a click event listener to show project details when clicked
     const project = new Project(data, id);
-    // Add project to the projectsList
     this.projectsList.push(project);
 
-    // Display project details
     this.currentProject = project;
     this.teamProject = project.projectName;
 
-    this.showProjectDetails(project);
-    // this.showProjectTeams(project);
-
+    // this.showProjectDetails(project);
     this.onProjectCreated(project);
 
     return project;
   }
 
   // Display detailed information about a project
-  showProjectDetails(project: Project) {
-    // Get the project details page element
-    const detailsPage = document.getElementById("project-details");
-    if (!detailsPage) {
-      return;
-    }
-    // Query selectors to update project details on the page
-    const name = detailsPage.querySelector("[data-project-info='name']");
-    const description = detailsPage.querySelector(
-      "[data-project-info='description']"
-    );
-    const status = detailsPage.querySelector("[data-project-info='status']");
-    const cost = detailsPage.querySelector("[data-project-info='cost']");
-    const type = detailsPage.querySelector("[data-project-info='type']");
-    const address = detailsPage.querySelector("[data-project-info='address']");
-    const finishDate = detailsPage.querySelector(
-      "[data-project-info='finishDate']"
-    );
-    const progress = detailsPage.querySelector(
-      "[data-project-info='progress']"
-    ) as HTMLElement;
+  // showProjectDetails(project: Project) {
+  //   // Get the project details page element
+  //   const detailsPage = document.getElementById("project-details");
+  //   if (!detailsPage) {
+  //     return;
+  //   }
+  //   // Query selectors to update project details on the page
+  //   const name = detailsPage.querySelector("[data-project-info='name']");
+  //   const description = detailsPage.querySelector(
+  //     "[data-project-info='description']"
+  //   );
+  //   const status = detailsPage.querySelector("[data-project-info='status']");
+  //   const cost = detailsPage.querySelector("[data-project-info='cost']");
+  //   const type = detailsPage.querySelector("[data-project-info='type']");
+  //   const address = detailsPage.querySelector("[data-project-info='address']");
+  //   const finishDate = detailsPage.querySelector(
+  //     "[data-project-info='finishDate']"
+  //   );
+  //   const progress = detailsPage.querySelector(
+  //     "[data-project-info='progress']"
+  //   ) as HTMLElement;
 
-    // Update project details on the page
-    if (name) {
-      name.textContent = project.projectName;
-    }
-    if (description) {
-      description.textContent = project.projectDescription;
-    }
-    if (status) {
-      status.textContent = project.projectStatus;
-    }
-    if (cost) {
-      cost.textContent = `$${project.projectCost}`;
-    }
-    if (type) {
-      type.textContent = project.projectType;
-    }
-    if (address) {
-      address.textContent = project.projectAddress;
-    }
-    if (finishDate) {
-      let finishDateString = project.projectFinishDate;
-      let cardFinishDate = new Date(finishDateString);
-      finishDate.textContent = cardFinishDate.toDateString();
-    }
-    if (progress) {
-      progress.style.width = project.projectProgress + "%";
-      progress.textContent = project.projectProgress + "%";
-    }
-  }
+  //   // Update project details on the page
+  //   if (name) {
+  //     name.textContent = project.projectName;
+  //   }
+  //   if (description) {
+  //     description.textContent = project.projectDescription;
+  //   }
+  //   if (status) {
+  //     status.textContent = project.projectStatus;
+  //   }
+  //   if (cost) {
+  //     cost.textContent = `$${project.projectCost}`;
+  //   }
+  //   if (type) {
+  //     type.textContent = project.projectType;
+  //   }
+  //   if (address) {
+  //     address.textContent = project.projectAddress;
+  //   }
+  //   if (finishDate) {
+  //     let finishDateString = project.projectFinishDate;
+  //     let cardFinishDate = new Date(finishDateString);
+  //     finishDate.textContent = cardFinishDate.toDateString();
+  //   }
+  //   if (progress) {
+  //     progress.style.width = project.projectProgress + "%";
+  //     progress.textContent = project.projectProgress + "%";
+  //   }
+  // }
 
   // showProjectTeams(project: Project) {
   //   // Clear existing teams before updating project details
