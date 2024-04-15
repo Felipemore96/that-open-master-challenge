@@ -24,8 +24,9 @@ export function ViewerProvider(props: { children: React.ReactNode }) {
 }
 
 export function IFCViewer() {
-  const { setViewer } = React.useContext(ViewerContext);
-  let viewer: OBC.Components;
+  const { viewer, setViewer } = React.useContext(ViewerContext);
+  // const { setViewer } = React.useContext(ViewerContext);
+  // let viewer: OBC.Components;
 
   // openBIM-components viewer
   const createViewer = async () => {
@@ -269,8 +270,10 @@ export function IFCViewer() {
   React.useEffect(() => {
     createViewer();
     return () => {
-      viewer.dispose();
-      setViewer(null);
+      if (viewer) {
+        viewer.dispose();
+        setViewer(null);
+      }
     };
   }, []);
 

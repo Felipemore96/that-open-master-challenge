@@ -67,6 +67,10 @@ export function Sidebar(props: Props) {
     toggleModal("new-project-modal");
   };
 
+  const onHomeClick = () => {
+    navigate("/");
+  };
+
   const onCancelNewProject = () => {
     const projectForm = document.getElementById(
       "new-project-modal"
@@ -268,6 +272,7 @@ export function Sidebar(props: Props) {
         </div>
       </dialog>
       <img
+        onClick={onHomeClick}
         id="company-logo"
         src="../assets/company-logo.svg"
         alt="Construction Company"
