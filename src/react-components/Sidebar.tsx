@@ -5,14 +5,11 @@ import {
   IProject,
   ProjectStatus,
   ProjectType,
-  ITeam,
-  TeamRole,
   toggleModal,
   Project,
 } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
-import { DetailsPage } from "./DetailsPage";
 import { SearchBox } from "./SearchBox";
 import * as Firestore from "firebase/firestore";
 import { getCollection } from "../firebase";
