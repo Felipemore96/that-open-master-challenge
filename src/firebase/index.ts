@@ -12,6 +12,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const firestoreDB = Firestore.getFirestore();
+export const DatabaseVisibility = "public";
 
 export function getCollection<T>(path: string) {
   return Firestore.collection(

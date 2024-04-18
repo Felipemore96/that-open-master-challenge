@@ -1,20 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import * as Router from "react-router-dom";
-import {
-  IProject,
-  ProjectStatus,
-  ProjectType,
-  ITeam,
-  TeamRole,
-  toggleModal,
-  Project,
-} from "./class/projects";
+import { toggleModal } from "./class/projects";
 import { Sidebar } from "./react-components/Sidebar";
 import { ProjectsManager } from "./class/projectsManager";
 import { DetailsPage } from "./react-components/DetailsPage";
 import { HomePage } from "./react-components/HomePage";
-import { DetailsPageHeader } from "./react-components/DetailsPageHeader";
 import { ViewerProvider } from "./react-components/IFCViewer";
 
 const projectsManager = new ProjectsManager();
