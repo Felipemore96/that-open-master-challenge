@@ -27,7 +27,7 @@ export interface ITeam {
   teamProjectId: string;
 }
 
-// Define the structure for a project
+// New created projects
 export interface IProject {
   projectName: string;
   projectDescription: string;
@@ -37,6 +37,8 @@ export interface IProject {
   projectAddress: string;
   projectFinishDate: Date;
   projectProgress: string;
+  projectid?: string;
+  projectModelRoute?: string;
 }
 
 // Function to toggle a modal based on its ID
@@ -86,13 +88,19 @@ export class Project implements IProject {
   projectProgress: string;
 
   id: string;
+  modelRoute?: string;
 
   constructor(data: IProject, id = uuidv4()) {
     // Initialize properties with data
     for (const key in data) {
-      this[key] = data[key];
+      if (key === "projectid") {
+        this.id = data[key] || id;
+      } else if (key === "projectModelRoute") {
+        this.modelRoute = data[key];
+      } else {
+        this[key] = data[key];
+      }
     }
-    this.id = id;
   }
 }
 
@@ -119,35 +127,4 @@ export class Team implements ITeam {
     // Set up the UI for the team
     // this.setTeamUI();
   }
-
-  // // Method to create the team card UI
-  // setTeamUI() {
-  //   // Check if UI element already exists
-  //   if (this.ui) { return; }
-  //   // Map team role to corresponding material icon
-  //   const roleToIcon: Record<TeamRole, string> = {
-  //     "BIM Manager": "computer",
-  //     "Structural": "foundation",
-  //     "MEP": "plumbing",
-  //     "Architect": "architecture",
-  //     "Contractor": "construction"
-  //   };
-  //   // Select the appropriate icon or use a default ("computer")
-  //   const icon = roleToIcon[this.teamRole] || "computer";
-  //   // Create a div element for the team card
-  //   this.ui = document.createElement("div");
-  //   this.ui.className = "team-card";
-  //   // Set inner HTML with material icon, team role, and team name
-  //   this.ui.innerHTML = `
-  //   <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px; font-size: 20px;">${icon}</span>
-  //   <p>${this.teamRole}</p>
-  //   <p>${this.teamName}</p>
-  //   `;
-  //   // Add click interaction to display team information
-  //   this.ui.addEventListener("click", (e) => {
-  //     e.preventDefault();
-  //     updateTeamInfo(this);
-  //     toggleModal("team-info-popup");
-  //   });
-  // }
 }
