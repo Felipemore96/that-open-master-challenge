@@ -21,7 +21,7 @@ export class ProjectsManager {
       projectFinishDate: new Date(),
       projectProgress: "",
       projectid: "3826a263-f931-4406-94e7-4f62f717b2e1",
-      projectModelRoute: "",
+      projectModelRoute: "../../assets/IFC1",
     });
     this.newTeam({
       teamName: "Default Project",
@@ -41,7 +41,7 @@ export class ProjectsManager {
       projectFinishDate: new Date(),
       projectProgress: "",
       projectid: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
-      projectModelRoute: "",
+      projectModelRoute: "../../assets/IFC2",
     });
     this.newProject({
       projectName: "Defsdfgault Project",
@@ -53,7 +53,7 @@ export class ProjectsManager {
       projectFinishDate: new Date(),
       projectProgress: "",
       projectid: "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
-      projectModelRoute: "",
+      projectModelRoute: "../../assets/IFC3",
     });
   }
 

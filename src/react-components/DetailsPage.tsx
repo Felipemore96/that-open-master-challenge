@@ -41,7 +41,7 @@ export function DetailsPage(props: Props) {
             projectsManager={props.projectsManager}
           />
         </div>
-        <IFCViewer />
+        <IFCViewer project={currentProject} />
       </div>
     </div>
   );

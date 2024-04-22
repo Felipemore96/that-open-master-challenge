@@ -3,6 +3,11 @@ import * as OBC from "openbim-components";
 import { FragmentsGroup } from "bim-fragment";
 import { ToDoCreator } from "../bim-components/ToDoCreator";
 import { SimpleQTO } from "../bim-components/SimpleQTO";
+import { Project } from "../class/projects";
+
+interface Props {
+  project: Project;
+}
 
 interface IViewerContext {
   viewer: OBC.Components | null;
@@ -23,16 +28,17 @@ export function ViewerProvider(props: { children: React.ReactNode }) {
   );
 }
 
-export function IFCViewer() {
+export function IFCViewer(props: Props) {
   const { viewer, setViewer } = React.useContext(ViewerContext);
-  // const { setViewer } = React.useContext(ViewerContext);
-  // let viewer: OBC.Components;
 
   // openBIM-components viewer
   const createViewer = async () => {
-    //first thing, to keep the viewer running
-    const viewer = new OBC.Components();
+    let defaultProject: boolean = false;
+    if (props.project.modelRoute) {
+      defaultProject = true;
+    }
 
+    const viewer = new OBC.Components();
     setViewer(viewer);
 
     //Scene tool setup
