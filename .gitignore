@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+assets/IFC1.ifc
+assets/IFC2.ifc
+assets/IFC3.ifc
