@@ -12,6 +12,7 @@ import {
 import { HomePageProjectCard } from "./HomePageProjectCard";
 import * as Firestore from "firebase/firestore";
 import { getCollection } from "../firebase";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -85,7 +86,7 @@ export function HomePage(props: Props) {
     const projectForm = document.getElementById(
       "new-project-form"
     ) as HTMLFormElement;
-    // Gather form data and create a new project
+
     const formData = new FormData(projectForm);
     const projectData: IProject = {
       projectName: formData.get("project-name") as string,
@@ -97,17 +98,17 @@ export function HomePage(props: Props) {
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
     };
+    const id = uuidv4();
     try {
       const projectsCollection = getCollection<IProject>("/projects");
       Firestore.addDoc(projectsCollection, projectData);
-      // Attempt to create a new project
-      const project = props.projectsManager.newProject(projectData);
+
+      const project = props.projectsManager.newProject({ ...projectData, id });
       navigate(`/project/${project.id}`);
       getFirestoreProjects();
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {
-      // Display an error message in case of an exception
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;
       toggleModal("error-popup");

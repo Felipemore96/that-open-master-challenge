@@ -1,4 +1,5 @@
 import { IProject, Project, ITeam, Team, toggleModal } from "../class/projects";
+import { v4 as uuidv4 } from "uuid";
 
 export class ProjectsManager {
   projectsList: Project[] = [];
@@ -20,7 +21,7 @@ export class ProjectsManager {
       projectAddress: "",
       projectFinishDate: new Date(),
       projectProgress: "",
-      projectid: "3826a263-f931-4406-94e7-4f62f717b2e1",
+      id: "3826a263-f931-4406-94e7-4f62f717b2e1",
       projectModelRoute: "../../assets/IFC1",
     });
     this.newTeam({
@@ -40,7 +41,7 @@ export class ProjectsManager {
       projectAddress: "",
       projectFinishDate: new Date(),
       projectProgress: "",
-      projectid: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
+      id: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
       projectModelRoute: "../../assets/IFC2",
     });
     this.newProject({
@@ -52,7 +53,7 @@ export class ProjectsManager {
       projectAddress: "",
       projectFinishDate: new Date(),
       projectProgress: "",
-      projectid: "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
+      id: "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
       projectModelRoute: "../../assets/IFC3",
     });
   }
@@ -144,20 +145,22 @@ export class ProjectsManager {
     const nameInUse = this.projectsList.some(
       (project) => project.projectName === data.projectName
     );
+
+    const projectId = data.id;
     const idInUse = this.projectsList.some(
-      (project) => project.id === data.projectid
+      (project) => project.id === projectId
     );
+
     if (nameInUse) {
       throw new Error(
         `A project with name "${data.projectName}" already exists`
       );
     }
     if (idInUse) {
-      throw new Error(
-        `A project with the ID "${data.projectid}" already exists`
-      );
+      throw new Error(`A project with the ID "${projectId}" already exists`);
     }
-    const project = new Project(data, id);
+
+    const project = new Project(data, data.id);
     this.projectsList.push(project);
     this.currentProject = project;
     this.teamProject = project.projectName;

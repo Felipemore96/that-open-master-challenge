@@ -37,6 +37,7 @@ export function IFCViewer(props: Props) {
     if (props.project.modelRoute) {
       defaultProject = true;
     }
+    console.log(defaultProject);
 
     const viewer = new OBC.Components();
     setViewer(viewer);

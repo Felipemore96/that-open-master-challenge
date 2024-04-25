@@ -37,7 +37,7 @@ export interface IProject {
   projectAddress: string;
   projectFinishDate: Date;
   projectProgress: string;
-  projectid?: string;
+  id?: string;
   projectModelRoute?: string;
 }
 
@@ -93,7 +93,7 @@ export class Project implements IProject {
   constructor(data: IProject, id = uuidv4()) {
     // Initialize properties with data
     for (const key in data) {
-      if (key === "projectid") {
+      if (key === "id") {
         this.id = data[key] || id;
       } else if (key === "projectModelRoute") {
         this.modelRoute = data[key];
