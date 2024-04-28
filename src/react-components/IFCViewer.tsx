@@ -101,6 +101,15 @@ export function IFCViewer(props: Props) {
       absolute: true,
     };
 
+    if (defaultProject === true) {
+      const file = await fetch("../../assets/default-model1.frag");
+      const data = await file.arrayBuffer();
+      const buffer = new Uint8Array(data);
+      const model = await fragmentManager.load(buffer);
+      const properties = await fetch("../../assets/default-model1.json");
+      model.properties = await properties.json();
+    }
+
     //Highlighter tool setup based on Raycaster
     const highlighter = new OBC.FragmentHighlighter(viewer);
     highlighter.setup();
@@ -261,9 +270,10 @@ export function IFCViewer(props: Props) {
 
     //Toolbar tool definition, addChild funciton adds buttons to it
     const toolbar = new OBC.Toolbar(viewer);
+    if (defaultProject === false) {
+      toolbar.addChild(ifcLoader.uiElement.get("main"));
+    }
     toolbar.addChild(
-      ifcLoader.uiElement.get("main"),
-      // importFragmentBtn,**************
       classificationsBtn,
       propertiesProcessor.uiElement.get("main"),
       simpleQTO.uiElement.get("activationBtn"),
