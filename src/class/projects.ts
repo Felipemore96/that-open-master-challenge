@@ -38,7 +38,8 @@ export interface IProject {
   projectFinishDate: Date;
   projectProgress: string;
   id?: string;
-  projectModelRoute?: string;
+  fragRoute?: string;
+  jsonRoute?: string;
 }
 
 // Function to toggle a modal based on its ID
@@ -88,15 +89,18 @@ export class Project implements IProject {
   projectProgress: string;
 
   id: string;
-  modelRoute?: string;
+  fragRoute?: string;
+  jsonRoute?: string;
 
   constructor(data: IProject, id = uuidv4()) {
     // Initialize properties with data
     for (const key in data) {
       if (key === "id") {
         this.id = data[key] || id;
-      } else if (key === "projectModelRoute") {
-        this.modelRoute = data[key];
+      } else if (key === "fragRoute") {
+        this.fragRoute = data[key];
+      } else if (key === "jsonRoute") {
+        this.jsonRoute = data[key];
       } else {
         this[key] = data[key];
       }

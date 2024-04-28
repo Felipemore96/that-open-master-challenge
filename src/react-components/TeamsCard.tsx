@@ -2,8 +2,8 @@ import * as React from "react";
 import * as Router from "react-router-dom";
 import { ITeam, Project, Team, TeamRole, toggleModal } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
-import * as Firestore from "firebase/firestore";
-import { getCollection } from "../firebase";
+// import * as Firestore from "firebase/firestore";
+// import { getCollection } from "../firebase";
 import { TeamCardTeams } from "./TeamCardTeams";
 
 interface Props {
@@ -21,32 +21,32 @@ export function TeamsCard(props: Props) {
   };
   // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
 
-  const getFirestoreTeams = async () => {
-    setTeams([]);
-    const teamsCollenction = getCollection<ITeam>("/teams");
-    const firebaseTeams = await Firestore.getDocs(teamsCollenction);
-    let newTeams: Team[] = [];
-    for (const doc of firebaseTeams.docs) {
-      const data = doc.data();
-      const team: ITeam = {
-        ...data,
-      };
-      try {
-        if (team.teamProjectId === props.project.id) {
-          const newTeam: Team = {
-            id: doc.id,
-            ...data,
-          };
-          newTeams.push(newTeam);
-          // props.projectsManager.newTeam(team, team.teamProjectId);
-        }
-      } catch (error) {}
-    }
-    setTeams(newTeams);
-  };
+  // const getFirestoreTeams = async () => {
+  //   setTeams([]);
+  //   const teamsCollenction = getCollection<ITeam>("/teams");
+  //   const firebaseTeams = await Firestore.getDocs(teamsCollenction);
+  //   let newTeams: Team[] = [];
+  //   for (const doc of firebaseTeams.docs) {
+  //     const data = doc.data();
+  //     const team: ITeam = {
+  //       ...data,
+  //     };
+  //     try {
+  //       if (team.teamProjectId === props.project.id) {
+  //         const newTeam: Team = {
+  //           id: doc.id,
+  //           ...data,
+  //         };
+  //         newTeams.push(newTeam);
+  //         // props.projectsManager.newTeam(team, team.teamProjectId);
+  //       }
+  //     } catch (error) {}
+  //   }
+  //   setTeams(newTeams);
+  // };
 
   React.useEffect(() => {
-    getFirestoreTeams();
+    // getFirestoreTeams();
   }, [props.project.id]);
 
   const teamsCards = teams.map((team) => {
@@ -90,15 +90,13 @@ export function TeamsCard(props: Props) {
       teamProjectId: currentProjectId as string,
     };
     try {
-      const teamsCollection = getCollection<ITeam>("/teams");
-      Firestore.addDoc(teamsCollection, teamData);
-      // Attempt to create a new team
+      // const teamsCollection = getCollection<ITeam>("/teams");
+      // Firestore.addDoc(teamsCollection, teamData);
       const team = props.projectsManager.newTeam(teamData);
-      getFirestoreTeams();
+      // getFirestoreTeams();
       teamForm.reset();
       toggleModal("new-team-modal");
     } catch (err) {
-      // Display an error message in case of an exception
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;
       toggleModal("error-popup");

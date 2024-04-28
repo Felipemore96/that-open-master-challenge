@@ -11,8 +11,8 @@ import {
 import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
 import { SearchBox } from "./SearchBox";
-import * as Firestore from "firebase/firestore";
-import { getCollection } from "../firebase";
+// import * as Firestore from "firebase/firestore";
+// import { getCollection } from "../firebase";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
@@ -29,26 +29,26 @@ export function Sidebar(props: Props) {
   };
   const navigate = useNavigate();
 
-  const getFirestoreProjects = async () => {
-    // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
-    const projectsCollenction = getCollection<IProject>("/projects");
-    const firebaseProjects = await Firestore.getDocs(projectsCollenction);
-    for (const doc of firebaseProjects.docs) {
-      const data = doc.data();
-      const project: IProject = {
-        ...data,
-        projectFinishDate: (
-          data.projectFinishDate as unknown as Firestore.Timestamp
-        ).toDate(),
-      };
-      try {
-        props.projectsManager.newProject(project, doc.id);
-      } catch (error) {}
-    }
-  };
+  // const getFirestoreProjects = async () => {
+  // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
+  // const projectsCollenction = getCollection<IProject>("/projects");
+  // const firebaseProjects = await Firestore.getDocs(projectsCollenction);
+  //   for (const doc of firebaseProjects.docs) {
+  //     const data = doc.data();
+  //     const project: IProject = {
+  //       ...data,
+  //       projectFinishDate: (
+  //         data.projectFinishDate as unknown as Firestore.Timestamp
+  //       ).toDate(),
+  //     };
+  //     try {
+  //       props.projectsManager.newProject(project, doc.id);
+  //     } catch (error) {}
+  //   }
+  // };
 
   React.useEffect(() => {
-    getFirestoreProjects();
+    // getFirestoreProjects();
   }, []);
 
   const projectsCards = projects.map((project) => {
@@ -105,12 +105,12 @@ export function Sidebar(props: Props) {
     };
     const id = uuidv4();
     try {
-      const projectsCollection = getCollection<IProject>("/projects");
-      Firestore.addDoc(projectsCollection, projectData);
+      // const projectsCollection = getCollection<IProject>("/projects");
+      // Firestore.addDoc(projectsCollection, projectData);
 
       const project = props.projectsManager.newProject({ ...projectData, id });
       navigate(`/project/${project.id}`);
-      getFirestoreProjects();
+      // getFirestoreProjects();
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {

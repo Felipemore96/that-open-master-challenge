@@ -34,7 +34,7 @@ export function IFCViewer(props: Props) {
   // openBIM-components viewer
   const createViewer = async () => {
     let defaultProject: boolean = false;
-    if (props.project.modelRoute) {
+    if (props.project.fragRoute) {
       defaultProject = true;
     }
     console.log(defaultProject);
@@ -94,21 +94,64 @@ export function IFCViewer(props: Props) {
       URL.revokeObjectURL(jsonUrl);
     }
 
-    //IFC Loader tool setup, uses web-ifc library to process IFC files
     const ifcLoader = new OBC.FragmentIfcLoader(viewer);
     ifcLoader.settings.wasm = {
-      path: "https://unpkg.com/web-ifc@0.0.44/", //Includes version of web-ifc, needs to match version used by openBIM components
+      path: "https://unpkg.com/web-ifc@0.0.44/",
       absolute: true,
     };
 
-    if (defaultProject === true) {
-      const file = await fetch("../../assets/default-model1.frag");
+    if (
+      defaultProject === true &&
+      props.project &&
+      props.project.fragRoute &&
+      props.project.jsonRoute
+    ) {
+      const file = await fetch(props.project.fragRoute);
       const data = await file.arrayBuffer();
-      const buffer = new Uint8Array(data);
-      const model = await fragmentManager.load(buffer);
-      const properties = await fetch("../../assets/default-model1.json");
+      if (!(data instanceof ArrayBuffer)) {
+        return;
+      }
+      const fragmentBinary = new Uint8Array(data);
+      const model = await fragmentManager.load(fragmentBinary);
+
+      const properties = await fetch(props.project.jsonRoute);
       model.properties = await properties.json();
     }
+
+    // if (defaultProject === true) {
+    //   const file = await fetch("../../assets/default-model1.frag");
+    //   const data = await file.arrayBuffer();
+    //   if (!(data instanceof ArrayBuffer)) {
+    //     return;
+    //   }
+    //   const fragmentBinary = new Uint8Array(data);
+    //   const model = await fragmentManager.load(fragmentBinary);
+
+    //   const properties = await fetch("../../assets/default-model1.json");
+    //   model.properties = await properties.json();
+    // }
+
+    // const file = await fetch("../../assets/default-model1.frag");
+    // const data = await file.arrayBuffer();
+    // const buffer = new Uint8Array(data);
+    // const model = await fragmentManager.load(buffer);
+    // const properties = await fetch("../../assets/default-model1.json");
+    // model.properties = await properties.json();
+
+    // const input = document.createElement("input");
+    // input.type = "file";
+    // input.accept = ".frag";
+
+    // const reader = new FileReader();
+    // const binary = reader.result;
+    // input.addEventListener("change", () => {
+    //   const filesList = input.files;
+    //   if (!filesList) {
+    //     return;
+    //   }
+    //   reader.readAsArrayBuffer(filesList[0]);
+    // });
+    // input.click();
 
     //Highlighter tool setup based on Raycaster
     const highlighter = new OBC.FragmentHighlighter(viewer);
