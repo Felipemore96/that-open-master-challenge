@@ -43,17 +43,3 @@ if (closeTeamInfoPopup) {
     toggleModal("team-info-popup");
   });
 }
-
-// Event listener for showing project info
-// if (projectsListUI) {
-//   projectsListUI.addEventListener("click", (event) => {
-//     const target = event.target as HTMLElement;
-//     const projectId = target.dataset.projectId;
-//     if (projectId) {
-//       const clickedProject = projectsManager.projectsList.find((project) => project.id === projectId);
-//       if (clickedProject) {
-//         projectsManager.showProjectDetails(clickedProject);
-//       }
-//     }
-//   });
-// }

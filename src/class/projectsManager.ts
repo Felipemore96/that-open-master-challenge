@@ -11,7 +11,7 @@ export class ProjectsManager {
   onTeamCreated = (team: Team) => {};
   onTeamDeleted = () => {};
 
-  constructor(container: HTMLElement) {
+  constructor() {
     this.newProject({
       projectName: "Riverside Bridge",
       projectDescription:
