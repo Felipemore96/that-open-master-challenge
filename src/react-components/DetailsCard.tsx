@@ -32,9 +32,9 @@ export function DetailsCard(props: Props) {
         }}
       >
         <h4 />
-        <button onClick={onClickEditButton} className="btn-secondary">
+        {/* <button onClick={onClickEditButton} className="btn-secondary">
           <p style={{ width: "100%" }}>Edit</p>
-        </button>
+        </button> */}
       </div>
       <div style={{ padding: "0 30px" }}>
         <div
