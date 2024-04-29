@@ -12,41 +12,29 @@ interface Props {
 }
 
 export function TeamsCard(props: Props) {
-  const [teams, setTeams] = React.useState<Team[]>([]);
-  // const [teams, setTeams] = React.useState<Team[]>(
-  //   props.projectsManager.teamList
-  // );
+  // const [teams, setTeams] = React.useState<Team[]>([]);
+  const [teams, setTeams] = React.useState<Team[]>(
+    props.projectsManager.teamList
+  );
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamList]);
   };
   // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
 
-  // const getFirestoreTeams = async () => {
-  //   setTeams([]);
-  //   const teamsCollenction = getCollection<ITeam>("/teams");
-  //   const firebaseTeams = await Firestore.getDocs(teamsCollenction);
-  //   let newTeams: Team[] = [];
-  //   for (const doc of firebaseTeams.docs) {
-  //     const data = doc.data();
-  //     const team: ITeam = {
-  //       ...data,
-  //     };
-  //     try {
-  //       if (team.teamProjectId === props.project.id) {
-  //         const newTeam: Team = {
-  //           id: doc.id,
-  //           ...data,
-  //         };
-  //         newTeams.push(newTeam);
-  //         // props.projectsManager.newTeam(team, team.teamProjectId);
-  //       }
-  //     } catch (error) {}
-  //   }
-  //   setTeams(newTeams);
-  // };
+  const filterTeams = () => {
+    const filteredTeams = props.projectsManager.teamList.filter(
+      (team) => team.teamProjectId === props.project.id
+    );
+    setTeams(filteredTeams);
+  };
+
+  React.useEffect(() => {
+    filterTeams();
+  }, [props.project.id, props.projectsManager.teamList]);
 
   React.useEffect(() => {
     // getFirestoreTeams();
+    filterTeams();
   }, [props.project.id]);
 
   const teamsCards = teams.map((team) => {
