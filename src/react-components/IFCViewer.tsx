@@ -337,7 +337,7 @@ export function IFCViewer(props: Props) {
   };
 
   React.useEffect(() => {
-    createViewer();
+    createViewer(props);
     return () => {
       if (viewer) {
         viewer.dispose();
