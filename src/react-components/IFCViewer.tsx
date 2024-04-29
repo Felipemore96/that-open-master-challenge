@@ -121,6 +121,7 @@ export function IFCViewer(props: Props) {
         return;
       }
       const fragmentBinary = new Uint8Array(data);
+      console.log(fragmentBinary);
       const model = await fragmentManager.load(fragmentBinary);
 
       const properties = await fetch(props.project.jsonRoute);
