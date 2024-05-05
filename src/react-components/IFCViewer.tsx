@@ -37,8 +37,8 @@ export function IFCViewer(props: Props) {
       viewer.dispose(); // Dispose the previous viewer instance
       setViewer(null);
     }
-    createViewer(props); // Create a new viewer instance
-  }, [props.project]);
+    createViewer(props); // Create a new viewer instance with updated project
+  }, [props.project.id]); // Dependency on props.project
 
   // openBIM-components viewer
   const createViewer = async (props: Props) => {
@@ -47,6 +47,7 @@ export function IFCViewer(props: Props) {
       defaultProject = true;
     }
     console.log(defaultProject);
+    console.log(props.project.projectName);
 
     const viewer = new OBC.Components();
     setViewer(viewer);
@@ -80,29 +81,7 @@ export function IFCViewer(props: Props) {
     cameraComponent.updateAspect(); //Camera aspect fix
     rendererComponent.postproduction.enabled = true; //Outlines
 
-    //Fragment manager tool setup
     const fragmentManager = new OBC.FragmentManager(viewer);
-    function exportFragments(model: FragmentsGroup) {
-      //Method to export Fragments Groups, Fragments group datatype is necessary
-      const fragmentBinary = fragmentManager.export(model);
-      const blob = new Blob([fragmentBinary]);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${model.name.replace(".ifc", "")}.frag`;
-      a.click();
-      URL.revokeObjectURL(url);
-
-      const json = JSON.stringify(model.properties, null, 2); // Added for challenge class 3.10.
-      const jsonblob = new Blob([json], { type: "application/json" });
-      const jsonUrl = URL.createObjectURL(jsonblob);
-      const jsona = document.createElement("a");
-      jsona.href = jsonUrl;
-      jsona.download = `${model.name.replace(".ifc", "")}`;
-      jsona.click();
-      URL.revokeObjectURL(jsonUrl);
-    }
-
     const ifcLoader = new OBC.FragmentIfcLoader(viewer);
     ifcLoader.settings.wasm = {
       path: "https://unpkg.com/web-ifc@0.0.44/",
@@ -117,51 +96,12 @@ export function IFCViewer(props: Props) {
     ) {
       const file = await fetch(props.project.fragRoute);
       const data = await file.arrayBuffer();
-      if (!(data instanceof ArrayBuffer)) {
-        return;
-      }
       const fragmentBinary = new Uint8Array(data);
-      console.log(fragmentBinary);
       const model = await fragmentManager.load(fragmentBinary);
 
       const properties = await fetch(props.project.jsonRoute);
       model.properties = await properties.json();
     }
-
-    // if (defaultProject === true) {
-    //   const file = await fetch("../../assets/default-model1.frag");
-    //   const data = await file.arrayBuffer();
-    //   if (!(data instanceof ArrayBuffer)) {
-    //     return;
-    //   }
-    //   const fragmentBinary = new Uint8Array(data);
-    //   const model = await fragmentManager.load(fragmentBinary);
-
-    //   const properties = await fetch("../../assets/default-model1.json");
-    //   model.properties = await properties.json();
-    // }
-
-    // const file = await fetch("../../assets/default-model1.frag");
-    // const data = await file.arrayBuffer();
-    // const buffer = new Uint8Array(data);
-    // const model = await fragmentManager.load(buffer);
-    // const properties = await fetch("../../assets/default-model1.json");
-    // model.properties = await properties.json();
-
-    // const input = document.createElement("input");
-    // input.type = "file";
-    // input.accept = ".frag";
-
-    // const reader = new FileReader();
-    // const binary = reader.result;
-    // input.addEventListener("change", () => {
-    //   const filesList = input.files;
-    //   if (!filesList) {
-    //     return;
-    //   }
-    //   reader.readAsArrayBuffer(filesList[0]);
-    // });
-    // input.click();
 
     //Highlighter tool setup based on Raycaster
     const highlighter = new OBC.FragmentHighlighter(viewer);
@@ -241,7 +181,6 @@ export function IFCViewer(props: Props) {
 
     //IFC loaded event listener callback
     ifcLoader.onIfcLoaded.add(async (model) => {
-      // exportFragments(model)*************************
       onModelLoaded(model);
     });
 
@@ -336,16 +275,6 @@ export function IFCViewer(props: Props) {
     );
     viewer.ui.addToolbar(toolbar);
   };
-
-  React.useEffect(() => {
-    createViewer(props);
-    return () => {
-      if (viewer) {
-        viewer.dispose();
-        setViewer(null);
-      }
-    };
-  }, []);
 
   return (
     <div

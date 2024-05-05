@@ -24,7 +24,6 @@ export class ProjectsManager {
       projectProgress: "30",
       id: "3826a263-f931-4406-94e7-4f62f717b2e1",
       fragRoute: "../../assets/default-model1.frag",
-      // fragRoute: "../../assets/small.frag",
       jsonRoute: "../../assets/default-model1.json",
     });
     this.newTeam({
