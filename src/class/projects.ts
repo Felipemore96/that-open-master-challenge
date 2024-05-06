@@ -1,7 +1,6 @@
-// Importing necessary dependencies and modules
 import { v4 as uuidv4 } from "uuid";
+import * as OBC from "openbim-components";
 
-// Define types for project status, project type, and team role
 export type ProjectStatus = "Pending" | "Active" | "Finished";
 export type ProjectType =
   | "Residential"
@@ -25,6 +24,8 @@ export interface ITeam {
   contactName: string;
   contactPhone: string;
   teamProjectId: string;
+  fragmentMap?: OBC.FragmentIdMap;
+  camera?: { position: THREE.Vector3; target: THREE.Vector3 };
 }
 
 // New created projects
@@ -118,17 +119,14 @@ export class Team implements ITeam {
   contactPhone: string;
   teamProjectId: string;
 
-  // Class internals
-  // ui: HTMLDivElement;
   id: string;
+  fragmentMap?: OBC.FragmentIdMap;
+  camera?: { position: THREE.Vector3; target: THREE.Vector3 };
 
   constructor(data: ITeam, id = uuidv4()) {
-    // Initialize properties with data
     for (const key in data) {
       this[key] = data[key];
     }
     this.id = id;
-    // Set up the UI for the team
-    // this.setTeamUI();
   }
 }

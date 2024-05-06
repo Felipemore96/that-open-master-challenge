@@ -2,7 +2,7 @@ import * as React from "react";
 import * as OBC from "openbim-components";
 import { FragmentsGroup } from "bim-fragment";
 import { ToDoCreator } from "../bim-components/ToDoCreator";
-import { SimpleQTO } from "../bim-components/SimpleQTO";
+// import { SimpleQTO } from "../bim-components/SimpleQTO";
 import { Project } from "../class/projects";
 
 interface Props {
@@ -250,8 +250,8 @@ export function IFCViewer(props: Props) {
     });
 
     //Instance of Quentity takeoff tool and setup method
-    const simpleQTO = new SimpleQTO(viewer);
-    await simpleQTO.setup();
+    // const simpleQTO = new SimpleQTO(viewer);
+    // await simpleQTO.setup();
 
     //Instance properties finder tool
     const propsFinder = new OBC.IfcPropertiesFinder(viewer);
@@ -268,7 +268,7 @@ export function IFCViewer(props: Props) {
     toolbar.addChild(
       classificationsBtn,
       propertiesProcessor.uiElement.get("main"),
-      simpleQTO.uiElement.get("activationBtn"),
+      // simpleQTO.uiElement.get("activationBtn"),
       toDoCreator.uiElement.get("activationButton"),
       propsFinder.uiElement.get("main"),
       fragmentManager.uiElement.get("main")
