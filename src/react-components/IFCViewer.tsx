@@ -46,8 +46,6 @@ export function IFCViewer(props: Props) {
     if (props.project.fragRoute) {
       defaultProject = true;
     }
-    console.log(defaultProject);
-    console.log(props.project.projectName);
 
     const viewer = new OBC.Components();
     setViewer(viewer);

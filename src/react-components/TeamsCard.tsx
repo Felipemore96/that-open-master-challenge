@@ -1,10 +1,13 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
+import * as OBC from "openbim-components";
+import * as THREE from "three";
 import { ITeam, Project, Team, TeamRole, toggleModal } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 // import * as Firestore from "firebase/firestore";
 // import { getCollection } from "../firebase";
 import { TeamCardTeams } from "./TeamCardTeams";
+import { ViewerContext } from "./IFCViewer";
 
 interface Props {
   project: Project;
@@ -12,14 +15,12 @@ interface Props {
 }
 
 export function TeamsCard(props: Props) {
-  // const [teams, setTeams] = React.useState<Team[]>([]);
   const [teams, setTeams] = React.useState<Team[]>(
     props.projectsManager.teamList
   );
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamList]);
   };
-  // props.projectsManager.onTeamDeleted = () => {setTeams([...props.projectsManager.teamList])}
 
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamList.filter(
@@ -61,11 +62,31 @@ export function TeamsCard(props: Props) {
   };
 
   // Event listener for submitting a new team form
-  const onSubmitNewTeam = (e: React.FormEvent) => {
+  const { viewer } = React.useContext(ViewerContext);
+  let modelLoaded: boolean = false;
+  const onSubmitNewTeam = async (e: React.FormEvent) => {
     const teamForm = document.getElementById(
       "new-team-form"
     ) as HTMLFormElement;
     e.preventDefault();
+
+    if (viewer) {
+      const camera = viewer.camera;
+      if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+        throw new Error(
+          "ToDoCreator needs the OrthoPerspectiveCamera in order to work"
+        );
+      }
+      modelLoaded = true;
+      const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+      console.log(highlighter);
+      const position = new THREE.Vector3();
+      camera.controls.getPosition(position);
+      const target = new THREE.Vector3();
+      camera.controls.getTarget(target);
+      const toDoCamera = { position, target };
+    }
+
     // Gather form data and create a new team
     const formData = new FormData(teamForm);
     const currentProjectId = props.project.id;
@@ -76,7 +97,10 @@ export function TeamsCard(props: Props) {
       contactName: formData.get("contactName") as string,
       contactPhone: formData.get("contactPhone") as string,
       teamProjectId: currentProjectId as string,
+      fragmentMap: this.highlighter.selection.select,
+      camera: this.toDoCamera,
     };
+    console.log(teamData);
     try {
       // const teamsCollection = getCollection<ITeam>("/teams");
       // Firestore.addDoc(teamsCollection, teamData);

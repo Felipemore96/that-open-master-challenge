@@ -145,23 +145,11 @@ export class SimpleQTO
     await this.updateQtoUI();
   }
 
-  // async dispose() {
-  //   const highlighter = await this._components.tools.get(
-  //     OBC.FragmentHighlighter
-  //   );
-  //   highlighter.events.select.onHighlight.remove(this.sumQuantities);
-  //   this.uiElement.dispose();
-  //   this.resetQto();
-  // }
-
   async dispose() {
     const highlighter = await this._components.tools.get(
       OBC.FragmentHighlighter
     );
-    if (highlighter) {
-      // Check if highlighter is available
-      highlighter.events.select.onHighlight.remove(this.sumQuantities);
-    }
+    highlighter.events.select.onHighlight.remove(this.sumQuantities);
     this.uiElement.dispose();
     this.resetQto();
   }
