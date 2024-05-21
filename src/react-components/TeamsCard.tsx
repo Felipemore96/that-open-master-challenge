@@ -65,10 +65,18 @@ export function TeamsCard(props: Props) {
   const { viewer } = React.useContext(ViewerContext);
   let modelLoaded: boolean = false;
   const onSubmitNewTeam = async (e: React.FormEvent) => {
+    e.preventDefault();
     const teamForm = document.getElementById(
       "new-team-form"
     ) as HTMLFormElement;
-    e.preventDefault();
+
+    const formData = new FormData(teamForm);
+    const currentProjectId = props.project.id;
+
+    let fragmentMap: OBC.FragmentIdMap | undefined = undefined;
+    let toDoCamera:
+      | { position: THREE.Vector3; target: THREE.Vector3 }
+      | undefined = undefined;
 
     if (viewer) {
       const camera = viewer.camera;
@@ -80,32 +88,30 @@ export function TeamsCard(props: Props) {
       modelLoaded = true;
       const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
       console.log(highlighter);
+
+      fragmentMap = highlighter.selection.select;
+
       const position = new THREE.Vector3();
       camera.controls.getPosition(position);
       const target = new THREE.Vector3();
       camera.controls.getTarget(target);
-      const toDoCamera = { position, target };
+      toDoCamera = { position, target };
     }
-
-    // Gather form data and create a new team
-    const formData = new FormData(teamForm);
-    const currentProjectId = props.project.id;
     const teamData: ITeam = {
       teamName: formData.get("teamName") as string,
       teamRole: formData.get("teamRole") as TeamRole,
       teamDescription: formData.get("teamDescription") as string,
       contactName: formData.get("contactName") as string,
       contactPhone: formData.get("contactPhone") as string,
-      teamProjectId: currentProjectId as string,
-      fragmentMap: this.highlighter.selection.select,
-      camera: this.toDoCamera,
+      teamProjectId: currentProjectId,
+      fragmentMap: fragmentMap,
+      camera: toDoCamera,
     };
+
     console.log(teamData);
+
     try {
-      // const teamsCollection = getCollection<ITeam>("/teams");
-      // Firestore.addDoc(teamsCollection, teamData);
       const team = props.projectsManager.newTeam(teamData);
-      // getFirestoreTeams();
       teamForm.reset();
       toggleModal("new-team-modal");
     } catch (err) {
