@@ -81,6 +81,68 @@ export function IFCViewer(props: Props) {
 
     const fragmentManager = new OBC.FragmentManager(viewer);
     const ifcLoader = new OBC.FragmentIfcLoader(viewer);
+
+    //Highlighter tool setup based on Raycaster
+    const highlighter = new OBC.FragmentHighlighter(viewer);
+    highlighter.setup();
+
+    //Culler tool setup to optimize the viewer performace
+    const culler = new OBC.ScreenCuller(viewer);
+    cameraComponent.controls.addEventListener("sleep", () => {
+      culler.needsUpdate = true;
+    });
+
+    //Classifier tool definition
+    const classifier = new OBC.FragmentClassifier(viewer);
+
+    //IFC Properies processor tool setup
+    const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer);
+    highlighter.events.select.onClear.add(() => {
+      propertiesProcessor.cleanPropertiesList();
+    });
+
+    ifcLoader.onIfcLoaded.add(async (model) => {
+      onModelLoaded(model);
+    });
+
+    fragmentManager.onFragmentsLoaded.add((model) => {
+      // importJSONProperties(model); // Added for challenge class 3.10.
+      onModelLoaded(model);
+    });
+
+    let propsRoute: string | undefined;
+    async function onModelLoaded(model: FragmentsGroup) {
+      if (propsRoute) {
+        const properties = await fetch(propsRoute);
+        model.properties = await properties.json();
+        propsRoute = undefined;
+      }
+      highlighter.update();
+      for (const fragment of model.items) {
+        culler.add(fragment.mesh);
+      }
+      culler.needsUpdate = true;
+      try {
+        console.log(model);
+        classifier.byModel(model.name, model); //Classifier tool setup once model is loaded
+        classifier.byStorey(model);
+        classifier.byEntity(model);
+        console.log("Finished classification");
+        const tree = await createModelTree();
+        await classificationWindow.slots.content.dispose(true);
+        classificationWindow.addChild(tree);
+        propertiesProcessor.process(model); //IFC properties processor setup
+        highlighter.events.select.onHighlight.add((fragmentMap) => {
+          //Callback event to find the express ID of the selected element
+          highlighter.update();
+          const expressID = [...Object.values(fragmentMap)[0]][0];
+          propertiesProcessor.renderProperties(model, Number(expressID)); //Method to show properties of selected elements
+        });
+      } catch (error) {
+        alert(error);
+      }
+    }
+
     ifcLoader.settings.wasm = {
       path: "https://unpkg.com/web-ifc@0.0.44/",
       absolute: true,
@@ -95,24 +157,9 @@ export function IFCViewer(props: Props) {
       const file = await fetch(props.project.fragRoute);
       const data = await file.arrayBuffer();
       const fragmentBinary = new Uint8Array(data);
+      propsRoute = props.project.jsonRoute;
       const model = await fragmentManager.load(fragmentBinary);
-
-      const properties = await fetch(props.project.jsonRoute);
-      model.properties = await properties.json();
     }
-
-    //Highlighter tool setup based on Raycaster
-    const highlighter = new OBC.FragmentHighlighter(viewer);
-    highlighter.setup();
-
-    //IFC Properies processor tool setup
-    const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer);
-    highlighter.events.select.onClear.add(() => {
-      propertiesProcessor.cleanPropertiesList();
-    });
-
-    //Classifier tool definition
-    const classifier = new OBC.FragmentClassifier(viewer);
 
     //Classifier doesn't have UI elements, so button and window must be defined
     const classificationWindow = new OBC.FloatingWindow(viewer); //UI Component - floating window
@@ -144,101 +191,57 @@ export function IFCViewer(props: Props) {
       return tree; //Final result is the Fragment Tree
     }
 
-    //Culler tool setup to optimize the viewer performace
-    const culler = new OBC.ScreenCuller(viewer);
-    cameraComponent.controls.addEventListener("sleep", () => {
-      culler.needsUpdate = true;
-    });
+    // //Import fragment button setup
+    // const importFragmentBtn = new OBC.Button(viewer);
+    // importFragmentBtn.materialIcon = "upload";
+    // importFragmentBtn.tooltip = "Load FRAG";
+    // importFragmentBtn.onClick.add(() => {
+    //   const input = document.createElement("input");
+    //   input.type = "file";
+    //   input.accept = ".frag";
+    //   const reader = new FileReader();
+    //   reader.addEventListener("load", async () => {
+    //     const binary = reader.result;
+    //     if (!(binary instanceof ArrayBuffer)) {
+    //       return;
+    //     }
+    //     const fragmentBinary = new Uint8Array(binary);
+    //     await fragmentManager.load(fragmentBinary);
+    //   });
+    //   input.addEventListener("change", () => {
+    //     const filesList = input.files;
+    //     if (!filesList) {
+    //       return;
+    //     }
+    //     reader.readAsArrayBuffer(filesList[0]);
+    //   });
+    //   input.click();
+    // });
 
-    async function onModelLoaded(model: FragmentsGroup) {
-      highlighter.update();
-      for (const fragment of model.items) {
-        culler.add(fragment.mesh);
-      }
-      culler.needsUpdate = true;
-      try {
-        console.log(model);
-        classifier.byModel(model.name, model); //Classifier tool setup once model is loaded
-        classifier.byStorey(model);
-        classifier.byEntity(model);
-        console.log("Finished classification");
-        const tree = await createModelTree();
-        await classificationWindow.slots.content.dispose(true);
-        classificationWindow.addChild(tree);
-        propertiesProcessor.process(model); //IFC properties processor setup
-        highlighter.events.select.onHighlight.add((fragmentMap) => {
-          //Callback event to find the express ID of the selected element
-          highlighter.update();
-          const expressID = [...Object.values(fragmentMap)[0]][0];
-          propertiesProcessor.renderProperties(model, Number(expressID)); //Method to show properties of selected elements
-        });
-      } catch (error) {
-        alert(error);
-      }
-    }
-
-    //IFC loaded event listener callback
-    ifcLoader.onIfcLoaded.add(async (model) => {
-      onModelLoaded(model);
-    });
-
-    //Fragments loaded event listener callback
-    fragmentManager.onFragmentsLoaded.add((model) => {
-      importJSONProperties(model); // Added for challenge class 3.10.
-      onModelLoaded(model);
-    });
-
-    //Import fragment button setup
-    const importFragmentBtn = new OBC.Button(viewer);
-    importFragmentBtn.materialIcon = "upload";
-    importFragmentBtn.tooltip = "Load FRAG";
-    importFragmentBtn.onClick.add(() => {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".frag";
-      const reader = new FileReader();
-      reader.addEventListener("load", async () => {
-        const binary = reader.result;
-        if (!(binary instanceof ArrayBuffer)) {
-          return;
-        }
-        const fragmentBinary = new Uint8Array(binary);
-        await fragmentManager.load(fragmentBinary);
-      });
-      input.addEventListener("change", () => {
-        const filesList = input.files;
-        if (!filesList) {
-          return;
-        }
-        reader.readAsArrayBuffer(filesList[0]);
-      });
-      input.click();
-    });
-
-    //Function to import json file with properties
-    function importJSONProperties(model: FragmentsGroup) {
-      // Added for challenge class 3.10.
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = "application/json";
-      const reader = new FileReader();
-      reader.addEventListener("load", async () => {
-        const json = reader.result;
-        if (!json) {
-          return;
-        }
-        const importedPropertiesFromJSON = JSON.parse(json as string);
-        model.properties = importedPropertiesFromJSON;
-      });
-      input.addEventListener("change", () => {
-        const filesList = input.files;
-        if (!filesList) {
-          return;
-        }
-        reader.readAsText(filesList[0]);
-      });
-      input.click();
-    }
+    // //Function to import json file with properties
+    // function importJSONProperties(model: FragmentsGroup) {
+    //   // Added for challenge class 3.10.
+    //   const input = document.createElement("input");
+    //   input.type = "file";
+    //   input.accept = "application/json";
+    //   const reader = new FileReader();
+    //   reader.addEventListener("load", async () => {
+    //     const json = reader.result;
+    //     if (!json) {
+    //       return;
+    //     }
+    //     const importedPropertiesFromJSON = JSON.parse(json as string);
+    //     model.properties = importedPropertiesFromJSON;
+    //   });
+    //   input.addEventListener("change", () => {
+    //     const filesList = input.files;
+    //     if (!filesList) {
+    //       return;
+    //     }
+    //     reader.readAsText(filesList[0]);
+    //   });
+    //   input.click();
+    // }
 
     //Instance of ToDoCreator and setup method
     const toDoCreator = new ToDoCreator(viewer);

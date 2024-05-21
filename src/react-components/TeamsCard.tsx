@@ -74,7 +74,7 @@ export function TeamsCard(props: Props) {
       const camera = viewer.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(
-          "ToDoCreator needs the OrthoPerspectiveCamera in order to work"
+          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
         );
       }
       modelLoaded = true;
