@@ -38,21 +38,17 @@ export function TeamsCard(props: Props) {
     filterTeams();
   }, [props.project.id]);
 
-  const teamsCards = teams.map((team) => {
-    return <TeamCardTeams team={team} key={team.id} />;
-  });
+  const { viewer } = React.useContext(ViewerContext);
+  let modelLoaded: boolean = false;
 
-  // Event listener for opening the "New Team" modal
   const onNewTeam = () => {
     toggleModal("new-team-modal");
   };
 
-  // Event listener for closing the error popup modal
   const onCloseErrorPopup = () => {
     toggleModal("error-popup");
   };
 
-  // Event listener for canceling the new team form
   const onCancelNewTeam = () => {
     const teamForm = document.getElementById(
       "new-team-form"
@@ -61,9 +57,6 @@ export function TeamsCard(props: Props) {
     toggleModal("new-team-modal");
   };
 
-  // Event listener for submitting a new team form
-  const { viewer } = React.useContext(ViewerContext);
-  let modelLoaded: boolean = false;
   const onSubmitNewTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     const teamForm = document.getElementById(
@@ -74,7 +67,7 @@ export function TeamsCard(props: Props) {
     const currentProjectId = props.project.id;
 
     let fragmentMap: OBC.FragmentIdMap | undefined = undefined;
-    let toDoCamera:
+    let teamCamera:
       | { position: THREE.Vector3; target: THREE.Vector3 }
       | undefined = undefined;
 
@@ -87,7 +80,6 @@ export function TeamsCard(props: Props) {
       }
       modelLoaded = true;
       const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
-      console.log(highlighter);
 
       fragmentMap = highlighter.selection.select;
 
@@ -95,7 +87,7 @@ export function TeamsCard(props: Props) {
       camera.controls.getPosition(position);
       const target = new THREE.Vector3();
       camera.controls.getTarget(target);
-      toDoCamera = { position, target };
+      teamCamera = { position, target };
     }
     const teamData: ITeam = {
       teamName: formData.get("teamName") as string,
@@ -105,21 +97,62 @@ export function TeamsCard(props: Props) {
       contactPhone: formData.get("contactPhone") as string,
       teamProjectId: currentProjectId,
       fragmentMap: fragmentMap,
-      camera: toDoCamera,
+      camera: teamCamera,
     };
 
     console.log(teamData);
+    console.log(teamData.fragmentMap);
+    console.log(teamData.camera);
 
     try {
       const team = props.projectsManager.newTeam(teamData);
       teamForm.reset();
       toggleModal("new-team-modal");
+      filterTeams();
     } catch (err) {
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;
       toggleModal("error-popup");
     }
   };
+
+  const onTeamClicked = async (team: Team) => {
+    if (!viewer) return;
+    const camera = viewer.camera;
+    if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+      throw new Error(
+        "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+      );
+    }
+    modelLoaded = true;
+    const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+
+    if (team.camera) {
+      camera.controls.setLookAt(
+        team.camera.position.x,
+        team.camera.position.y,
+        team.camera.position.z,
+        team.camera.target.x,
+        team.camera.target.y,
+        team.camera.target.z,
+        true
+      );
+    }
+    if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
+      highlighter.highlightByID("select", team.fragmentMap);
+    }
+  };
+
+  // const teamsCards = teams.map((team) => {
+  //   return <TeamCardTeams team={team} key={team.id} />;
+  // });
+  const teamsCards = teams.map((team) => {
+    return (
+      <div onClick={() => onTeamClicked(team)} key={team.id}>
+        <TeamCardTeams team={team} />
+      </div>
+    );
+  });
 
   return (
     <div className="dashboard-card" style={{ flexGrow: 1 }}>
