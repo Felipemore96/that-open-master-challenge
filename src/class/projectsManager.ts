@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export class ProjectsManager {
   projectsList: Project[] = [];
-  teamList: Team[] = [];
+  teamsList: Team[] = [];
   currentProject: Project | null = null;
   teamProject: string;
   onProjectCreated = (project: Project) => {};
@@ -378,6 +378,12 @@ export class ProjectsManager {
     });
     return project;
   }
+  getTeam(id: string) {
+    const team = this.teamsList.find((team) => {
+      return team.id === id;
+    });
+    return team;
+  }
 
   deleteProject(id: string) {
     const project = this.getProject(id);
@@ -393,7 +399,7 @@ export class ProjectsManager {
 
   exportToJSON(fileName: string = "project-info") {
     const json = JSON.stringify(
-      { projects: this.projectsList, teams: this.teamList },
+      { projects: this.projectsList, teams: this.teamsList },
       null,
       2
     );
@@ -478,8 +484,20 @@ export class ProjectsManager {
 
   newTeam(data: ITeam, id?: string) {
     const team = new Team(data, id);
-    this.teamList.push(team);
+    this.teamsList.push(team);
     this.onTeamCreated(team);
     return team;
+  }
+
+  deleteTeam(id: string) {
+    const team = this.getTeam(id);
+    if (!team) {
+      return;
+    }
+    const remaining = this.teamsList.filter((team) => {
+      return team.id !== id;
+    });
+    this.teamsList = remaining;
+    this.onTeamDeleted();
   }
 }

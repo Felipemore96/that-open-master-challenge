@@ -3,6 +3,7 @@ import { Project, ProjectType, Team, TeamRole } from "../class/projects";
 
 interface Props {
   team: Team;
+  // projectsManager: ProjectsManager;
 }
 
 export function TeamCardTeams(props: Props) {

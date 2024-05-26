@@ -16,14 +16,14 @@ interface Props {
 
 export function TeamsCard(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
-    props.projectsManager.teamList
+    props.projectsManager.teamsList
   );
   props.projectsManager.onTeamCreated = () => {
-    setTeams([...props.projectsManager.teamList]);
+    setTeams([...props.projectsManager.teamsList]);
   };
 
   const filterTeams = () => {
-    const filteredTeams = props.projectsManager.teamList.filter(
+    const filteredTeams = props.projectsManager.teamsList.filter(
       (team) => team.teamProjectId === props.project.id
     );
     setTeams(filteredTeams);
@@ -31,7 +31,7 @@ export function TeamsCard(props: Props) {
 
   React.useEffect(() => {
     filterTeams();
-  }, [props.project.id, props.projectsManager.teamList]);
+  }, [props.project.id, props.projectsManager.teamsList]);
 
   React.useEffect(() => {
     // getFirestoreTeams();
