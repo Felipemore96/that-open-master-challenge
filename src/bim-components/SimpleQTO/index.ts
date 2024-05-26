@@ -149,7 +149,7 @@ export class SimpleQTO
     const highlighter = await this._components.tools.get(
       OBC.FragmentHighlighter
     );
-    highlighter.events.select.onHighlight.remove(this.sumQuantities);
+    // highlighter.events.select.onHighlight.remove(this.sumQuantities);
     this.uiElement.dispose();
     this.resetQto();
   }
