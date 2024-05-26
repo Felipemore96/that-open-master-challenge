@@ -14,17 +14,6 @@ export function HomePageProjectCard(props: Props) {
         width: "20vw",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "0px 30px",
-          marginBottom: 10,
-        }}
-      >
-        <h2>{props.project.projectName}</h2>
-      </div>
       <div style={{ padding: "0 30px" }}>
         <div
           style={{
