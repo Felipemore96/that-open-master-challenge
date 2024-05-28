@@ -21,6 +21,7 @@ export function TeamCardTeams(props: Props) {
     setTeams([...props.projectsManager.teamsList]);
   };
   const onDeleteTeam = () => {
+    props.projectsManager.deleteTeam(props.team.id);
     toggleModal("delete-popup");
   };
   const onClosePopup = () => {
@@ -69,7 +70,7 @@ export function TeamCardTeams(props: Props) {
               Close
             </button>
             <button
-              onClick={onDeleteTeam}
+              onClick={(e) => onDeleteTeam()}
               type="button"
               style={{
                 padding: "10px 20px",
