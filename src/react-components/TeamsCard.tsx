@@ -149,7 +149,7 @@ export function TeamsCard(props: Props) {
   const teamsCards = teams.map((team) => {
     return (
       <div onClick={() => onTeamClicked(team)} key={team.id}>
-        <TeamCardTeams team={team} />
+        <TeamCardTeams team={team} projectsManager={props.projectsManager} />
       </div>
     );
   });
