@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as Router from "react-router-dom";
 import * as OBC from "openbim-components";
 import * as THREE from "three";
 import { ITeam, Project, Team, TeamRole, toggleModal } from "../class/projects";
@@ -146,10 +145,19 @@ export function TeamsCard(props: Props) {
   // const teamsCards = teams.map((team) => {
   //   return <TeamCardTeams team={team} key={team.id} />;
   // });
+
+  const onTeamDeleted = () => {
+    filterTeams();
+  };
+
   const teamsCards = teams.map((team) => {
     return (
       <div onClick={() => onTeamClicked(team)} key={team.id}>
-        <TeamCardTeams team={team} projectsManager={props.projectsManager} />
+        <TeamCardTeams
+          team={team}
+          projectsManager={props.projectsManager}
+          onTeamDeleted={filterTeams}
+        />
       </div>
     );
   });

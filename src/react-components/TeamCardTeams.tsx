@@ -11,6 +11,7 @@ import { ProjectsManager } from "../class/projectsManager";
 interface Props {
   team: Team;
   projectsManager: ProjectsManager;
+  onTeamDeleted: () => void; // Add this line
 }
 
 export function TeamCardTeams(props: Props) {
@@ -22,8 +23,15 @@ export function TeamCardTeams(props: Props) {
   };
   const onDeleteTeam = () => {
     props.projectsManager.deleteTeam(props.team.id);
+    props.onTeamDeleted();
+    console.log(props.projectsManager.teamsList);
     toggleModal("delete-popup");
   };
+
+  const onDeleteTeamButton = () => {
+    toggleModal("delete-popup");
+  };
+
   const onClosePopup = () => {
     toggleModal("delete-popup");
   };
@@ -109,7 +117,7 @@ export function TeamCardTeams(props: Props) {
         </div>
         <div
           style={{ paddingLeft: "20px", cursor: "pointer" }}
-          onClick={onDeleteTeam}
+          onClick={onDeleteTeamButton}
         >
           <span
             className="material-icons-round"

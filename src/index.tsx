@@ -35,11 +35,3 @@ appRoot.render(
     </Router.BrowserRouter>
   </>
 );
-
-// Event listener for closing the team info popup modal
-const closeTeamInfoPopup = document.getElementById("close-team-info-popup");
-if (closeTeamInfoPopup) {
-  closeTeamInfoPopup.addEventListener("click", () => {
-    toggleModal("team-info-popup");
-  });
-}

@@ -1,12 +1,6 @@
 import * as React from "react";
 import { Project } from "../class/projects";
-import { ProjectsManager } from "../class/projectsManager";
-import {
-  IProject,
-  ProjectStatus,
-  ProjectType,
-  toggleModal,
-} from "../class/projects";
+import { toggleModal } from "../class/projects";
 
 interface Props {
   project: Project;
