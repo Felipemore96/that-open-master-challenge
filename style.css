@@ -26,8 +26,7 @@
 
 #app {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  grid-template-areas: "sidebar content";
+  grid-template-columns: 250px 1fr;
   min-height: 100vh;
   background-color: var(--background);
   color: #fff;
@@ -82,7 +81,7 @@ button:hover {
   padding: 15px;
   display: flex;
   flex-direction: column;
-  row-gap: 40px;
+  row-gap: 20px;
 }
 
 #company-logo {
@@ -250,14 +249,14 @@ select:focus {
   display: grid;
   padding: 20px 20px;
   gap: 20px;
-  grid-template-columns: 400px 1fr;
+  grid-template-columns: 300px 1fr;
   height: 100%;
 }
 
 .btn-secondary {
   background-color: transparent;
   outline: 2px solid #969696;
-  width: 100px;
+  width: 80px;
   height: 30px;
   text-align: center;
 }
