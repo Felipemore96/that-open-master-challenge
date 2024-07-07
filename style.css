@@ -145,7 +145,7 @@ header {
   flex-direction: column;
   row-gap: 5px;
   align-items: start;
-  font-size: 13px;
+  font-size: var(--font-base);
 }
 
 .card-property {
