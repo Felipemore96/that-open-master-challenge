@@ -285,8 +285,8 @@ select:focus {
 .team-card {
   padding: 10px;
   display: flex;
-  flex-direction: row;
-  row-gap: 20px;
+  flex-direction: column;
+  /* row-gap: 20px; */
   background-color: var(--primary-300);
   border-radius: 10px;
   cursor: pointer;
