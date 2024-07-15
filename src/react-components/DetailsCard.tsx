@@ -15,22 +15,21 @@ export function DetailsCard(props: Props) {
   };
 
   return (
-    <div className="dashboard-card" style={{ padding: "20px 0" }}>
+    <div className="dashboard-card" style={{ padding: "20px" }}>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "0px 30px",
           marginBottom: 10,
         }}
       >
         <h4 />
-        {/* <button onClick={onClickEditButton} className="btn-secondary">
+        <button onClick={onClickEditButton} className="btn-secondary">
           <p style={{ width: "100%" }}>Edit</p>
-        </button> */}
+        </button>
       </div>
-      <div style={{ padding: "0 30px" }}>
+      <div>
         <div
           style={{
             display: "flex",

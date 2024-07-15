@@ -92,50 +92,62 @@ export function TeamCardTeams(props: Props) {
         </div>
       </dialog>
       <div className="team-card">
-        <div style={{ paddingRight: "20px" }}>
-          <span
-            className="material-icons-round"
-            style={{
-              padding: 10,
-              backgroundColor: "#686868",
-              borderRadius: 10,
-              fontSize: 20,
-            }}
-          >
-            {iconConversion(props.team.teamRole)}
-          </span>
-        </div>
-        <div style={{ flex: "1" }}>
-          <p style={{ fontSize: "18px", fontWeight: "bold", margin: "5px 0" }}>
-            {props.team.teamRole}
-          </p>
-          <p style={{ fontSize: "16px", margin: "5px 0" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <span
+              className="material-icons-round"
+              style={{
+                padding: 10,
+                backgroundColor: "#686868",
+                borderRadius: 10,
+                fontSize: 20,
+              }}
+            >
+              {iconConversion(props.team.teamRole)}
+            </span>
+          </div>
+          <p style={{ fontSize: "16px", margin: "10px" }}>
             {props.team.teamName}
           </p>
-          <p style={{ margin: "5px 0" }}>Contact: {props.team.contactName}</p>
-          <p style={{ margin: "5px 0" }}>Phone: {props.team.contactPhone}</p>
+          <div
+            style={{ paddingLeft: "20px", cursor: "pointer" }}
+            onClick={onDeleteTeamButton}
+          >
+            <span
+              className="material-icons-round"
+              style={{
+                padding: 10,
+                backgroundColor: "#686868",
+                borderRadius: 10,
+                fontSize: 20,
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#ff4d4d";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#686868";
+              }}
+            >
+              delete
+            </span>
+          </div>
         </div>
         <div
-          style={{ paddingLeft: "20px", cursor: "pointer" }}
-          onClick={onDeleteTeamButton}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            padding: 3,
+          }}
         >
-          <span
-            className="material-icons-round"
-            style={{
-              padding: 10,
-              backgroundColor: "#686868",
-              borderRadius: 10,
-              fontSize: 20,
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "#ff4d4d";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = "#686868";
-            }}
-          >
-            delete
-          </span>
+          <p>{props.team.contactName}</p>
+          <p>{props.team.contactPhone}</p>
         </div>
       </div>
     </div>
