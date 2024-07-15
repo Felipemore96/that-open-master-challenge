@@ -267,19 +267,18 @@ select:focus {
 }
 
 #teams-header {
-  padding: 10px 30px;
+  padding: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
 }
 
 #teams-list {
-  padding: 10px 20px;
+  padding: 15px;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
   row-gap: 15px;
-  margin-bottom: 20px;
 }
 
 .team-card {

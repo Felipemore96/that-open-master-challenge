@@ -275,9 +275,9 @@ export function TeamsCard(props: Props) {
             id="new-team-btn"
             className="btn-secondary"
           >
-            <p style={{ width: "100%" }}>
-              <span className="material-icons-round">add</span>
-            </p>
+            <span style={{ width: "100%" }} className="material-icons-round">
+              add
+            </span>
           </button>
         </div>
       </div>

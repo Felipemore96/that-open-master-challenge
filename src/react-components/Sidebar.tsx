@@ -284,9 +284,9 @@ export function Sidebar(props: Props) {
           id="new-project-btn"
           className="btn-secondary"
         >
-          <p style={{ width: "100%" }}>
-            <span className="material-icons-round">add</span>
-          </p>
+          <span style={{ width: "100%" }} className="material-icons-round">
+            add
+          </span>
         </button>
         <SearchBox onChange={(value) => onProjectSearch(value)} />
       </div>
