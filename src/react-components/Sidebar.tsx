@@ -148,10 +148,10 @@ export function Sidebar(props: Props) {
           if (isProject(item)) {
             item.projectFinishDate = new Date(item.projectFinishDate);
             props.projectsManager.newProject(item, item.id);
+            navigate(`/project/${item.id}`);
           } else if (isTeam(item)) {
             props.projectsManager.newTeam(item);
           }
-          navigate(`/project/${item.id}`);
         } catch (error) {
           console.error("Error processing item:", item, error);
         }
