@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Project } from "../class/projects";
+import { IProject, ITeam, Project } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 
 interface Props {
@@ -7,11 +7,6 @@ interface Props {
 }
 
 export function DetailsPageHeader(props: Props) {
-  const projectsManager = new ProjectsManager();
-
-  function onClickImportButton() {}
-  function onClickExportButton() {}
-
   return (
     <header>
       <div>
@@ -25,18 +20,6 @@ export function DetailsPageHeader(props: Props) {
         >
           {props.project.projectDescription}
         </p>
-      </div>
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button onClick={onClickImportButton} className="btn-secondary">
-          <span style={{ width: "100%" }} className="material-icons-round">
-            file_upload
-          </span>
-        </button>
-        <button onClick={onClickExportButton} className="btn-secondary">
-          <span style={{ width: "100%" }} className="material-icons-round">
-            file_download
-          </span>
-        </button>
       </div>
     </header>
   );
