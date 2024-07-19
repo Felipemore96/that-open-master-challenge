@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Project } from "../class/projects";
+import { IProject, ITeam, Project } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 
 interface Props {
@@ -7,8 +7,6 @@ interface Props {
 }
 
 export function DetailsPageHeader(props: Props) {
-  const projectsManager = new ProjectsManager();
-
   return (
     <header>
       <div>

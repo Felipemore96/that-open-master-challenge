@@ -7,6 +7,7 @@ import {
   ProjectType,
   toggleModal,
   Project,
+  ITeam,
 } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
@@ -128,6 +129,85 @@ export function Sidebar(props: Props) {
     );
     setProjects(filteredProjects);
   };
+
+  function onClickImportButton() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json";
+
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      const json = reader.result;
+      if (!json) {
+        return;
+      }
+      const data = JSON.parse(json as string);
+
+      for (const item of data) {
+        try {
+          if (isProject(item)) {
+            item.projectFinishDate = new Date(item.projectFinishDate);
+            props.projectsManager.newProject(item, item.id);
+            navigate(`/project/${item.id}`);
+          } else if (isTeam(item)) {
+            props.projectsManager.newTeam(item);
+          }
+        } catch (error) {
+          console.error("Error processing item:", item, error);
+        }
+      }
+    });
+
+    input.addEventListener("change", () => {
+      const filesList = input.files;
+      if (!filesList) {
+        return;
+      }
+      reader.readAsText(filesList[0]);
+    });
+    console.log(props.projectsManager.projectsList);
+    input.click();
+  }
+
+  function isProject(item: any): item is IProject {
+    return (
+      "projectName" in item &&
+      "projectDescription" in item &&
+      "projectStatus" in item &&
+      "projectCost" in item &&
+      "projectType" in item &&
+      "projectAddress" in item &&
+      "projectFinishDate" in item &&
+      "projectProgress" in item
+    );
+  }
+
+  function isTeam(item: any): item is ITeam {
+    return (
+      "teamName" in item &&
+      "teamRole" in item &&
+      "teamDescription" in item &&
+      "contactName" in item &&
+      "contactPhone" in item &&
+      "teamProjectId" in item
+    );
+  }
+
+  function onClickExportButton() {
+    const projectsAndTeamsData = {
+      projectsList: props.projectsManager.projectsList,
+      teamsList: props.projectsManager.teamsList,
+    };
+    const json = JSON.stringify(projectsAndTeamsData, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const fileName: string = "projects";
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <aside id="sidebar">
@@ -278,15 +358,41 @@ export function Sidebar(props: Props) {
         src="../assets/company-logo.svg"
         alt="Construction Company"
       />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "10px",
+        }}
+      >
+        <button
+          onClick={onClickExportButton}
+          className="btn-secondary"
+          style={{ width: "100%" }}
+        >
+          <span style={{ width: "100%" }} className="material-icons-round">
+            file_download
+          </span>
+        </button>
+        <button
+          onClick={onClickImportButton}
+          className="btn-secondary"
+          style={{ width: "100%" }}
+        >
+          <span style={{ width: "100%" }} className="material-icons-round">
+            file_upload
+          </span>
+        </button>
+      </div>
       <div style={{ display: "flex", alignItems: "center", columnGap: 10 }}>
         <button
           onClick={onNewProject}
           id="new-project-btn"
           className="btn-secondary"
         >
-          <p style={{ width: "100%" }}>
-            <span className="material-icons-round">add</span>
-          </p>
+          <span style={{ width: "100%" }} className="material-icons-round">
+            add
+          </span>
         </button>
         <SearchBox onChange={(value) => onProjectSearch(value)} />
       </div>

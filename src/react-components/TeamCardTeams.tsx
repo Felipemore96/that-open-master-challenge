@@ -111,7 +111,7 @@ export function TeamCardTeams(props: Props) {
               {iconConversion(props.team.teamRole)}
             </span>
           </div>
-          <p style={{ fontSize: "16px", margin: "10px" }}>
+          <p style={{ fontSize: "15px", margin: "10px" }}>
             {props.team.teamName}
           </p>
           <div
