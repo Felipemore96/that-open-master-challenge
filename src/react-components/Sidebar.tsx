@@ -358,15 +358,29 @@ export function Sidebar(props: Props) {
         src="../assets/company-logo.svg"
         alt="Construction Company"
       />
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button onClick={onClickImportButton} className="btn-secondary">
-          <span style={{ width: "100%" }} className="material-icons-round">
-            file_upload
-          </span>
-        </button>
-        <button onClick={onClickExportButton} className="btn-secondary">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "10px",
+        }}
+      >
+        <button
+          onClick={onClickExportButton}
+          className="btn-secondary"
+          style={{ width: "100%" }}
+        >
           <span style={{ width: "100%" }} className="material-icons-round">
             file_download
+          </span>
+        </button>
+        <button
+          onClick={onClickImportButton}
+          className="btn-secondary"
+          style={{ width: "100%" }}
+        >
+          <span style={{ width: "100%" }} className="material-icons-round">
+            file_upload
           </span>
         </button>
       </div>
