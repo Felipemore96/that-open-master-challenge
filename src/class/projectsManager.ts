@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { IProject, Project, ITeam, Team, toggleModal } from "../class/projects";
+import { IProject, Project, toggleModal } from "../class/projects";
+import { ITeam, Team } from "../class/teams";
 import { v4 as uuidv4 } from "uuid";
 
 export class ProjectsManager {

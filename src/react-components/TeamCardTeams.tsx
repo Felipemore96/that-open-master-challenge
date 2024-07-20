@@ -1,11 +1,6 @@
 import * as React from "react";
-import {
-  Project,
-  ProjectType,
-  Team,
-  TeamRole,
-  toggleModal,
-} from "../class/projects";
+import { Project, ProjectType, toggleModal } from "../class/projects";
+import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 
 interface Props {
