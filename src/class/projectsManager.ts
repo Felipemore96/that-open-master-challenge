@@ -379,6 +379,7 @@ export class ProjectsManager {
     });
     return project;
   }
+
   getTeam(id: string) {
     const team = this.teamsList.find((team) => {
       return team.id === id;
