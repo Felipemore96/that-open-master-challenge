@@ -20,22 +20,6 @@ export interface ITeam {
   camera?: { position: THREE.Vector3; target: THREE.Vector3 };
 }
 
-// DOM element to display team information
-const teamInfo = document.getElementById("team-info") as HTMLElement;
-
-// Function to update team information in the UI
-function updateTeamInfo(team: Team) {
-  if (team) {
-    teamInfo.innerHTML = `
-      <p>Company in charge: ${team.teamName}</p>
-      <p>Company's role: ${team.teamRole}</p>
-      <p>Description: ${team.teamDescription}</p>
-      <p>Contact Name: ${team.contactName}</p>
-      <p>Phone number: ${team.contactPhone}</p>
-      <p>Project: Arreglar esto !!!</p>`;
-  }
-}
-
 // Class representing a team
 export class Team implements ITeam {
   // Properties to satisfy ITeam
@@ -55,5 +39,23 @@ export class Team implements ITeam {
       this[key] = data[key];
     }
     this.id = id;
+  }
+
+  onCardClick = new OBC.Event();
+}
+
+// DOM element to display team information
+const teamInfo = document.getElementById("team-info") as HTMLElement;
+
+// Function to update team information in the UI
+function updateTeamInfo(team: Team) {
+  if (team) {
+    teamInfo.innerHTML = `
+      <p>Company in charge: ${team.teamName}</p>
+      <p>Company's role: ${team.teamRole}</p>
+      <p>Description: ${team.teamDescription}</p>
+      <p>Contact Name: ${team.contactName}</p>
+      <p>Phone number: ${team.contactPhone}</p>
+      <p>Project: Arreglar esto !!!</p>`;
   }
 }
