@@ -42,6 +42,16 @@ export class Team implements ITeam {
   }
 
   onCardClick = new OBC.Event();
+
+  get numberOfElements(): number {
+    if (!this.fragmentMap) return 0;
+
+    let totalElements = 0;
+    for (const set of Object.values(this.fragmentMap)) {
+      totalElements += set.size;
+    }
+    return totalElements;
+  }
 }
 
 // DOM element to display team information

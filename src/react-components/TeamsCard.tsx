@@ -141,6 +141,7 @@ export function TeamsCard(props: Props) {
     if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
       highlighter.highlightByID("select", team.fragmentMap);
     }
+    console.log(team);
   };
 
   // const teamsCards = teams.map((team) => {

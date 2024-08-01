@@ -6,7 +6,7 @@ import { ProjectsManager } from "../class/projectsManager";
 interface Props {
   team: Team;
   projectsManager: ProjectsManager;
-  onTeamDeleted: () => void; // Add this line
+  onTeamDeleted: () => void;
 }
 
 export function TeamCardTeams(props: Props) {
@@ -143,6 +143,9 @@ export function TeamCardTeams(props: Props) {
         >
           <p>{props.team.contactName}</p>
           <p>{props.team.contactPhone}</p>
+        </div>
+        <div>
+          <p>Number of elements: {props.team.numberOfElements}</p>
         </div>
       </div>
     </div>
