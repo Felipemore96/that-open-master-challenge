@@ -1,130 +1,256 @@
 [
   {
-    "projectName": "Urban Loft",
-    "projectDescription": "Structural design for a contemporary one-floor building, blending seamlessly into the urban landscape.",
-    "projectStatus": "Pending",
-    "projectCost": "350,000.00",
-    "projectType": "Mixed-use",
-    "projectAddress": "Prenzlauer Berg, Berlin, Germany",
-    "projectFinishDate": "2025-09-15T06:00:00.000Z",
-    "projectProgress": "75",
-    "id": "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
-    "fragRoute": "../../assets/default-model2.frag",
-    "jsonRoute": "../../assets/default-model2.json"
+    "projectName": "Scholarly Heights",
+    "projectDescription": "A 10-storey building featuring modern concrete floors and robust steel columns, designed to host educational institutions with flexible, unfinished interiors for customizable classroom and office spaces.",
+    "projectStatus": "Active",
+    "projectCost": "1,500,000.00",
+    "projectType": "Institutional",
+    "projectAddress": "Champs-Élysées, Paris, France",
+    "projectFinishDate": "2026-11-20T06:00:00.000Z",
+    "projectProgress": "45",
+    "id": "f29347c4-c5c6-4a0d-900b-f99c29417d44",
+    "fragRoute": "../../assets/default-model4.frag",
+    "jsonRoute": "../../assets/default-model4.json"
   },
   {
-    "projectName": "City Plaza Office",
-    "projectDescription": "A small, sleek office space designed for efficiency and productivity in the heart of the city.",
+    "projectName": "Heritage Townhouses",
+    "projectDescription": "A residential complex of townhouses designed to blend with the historic charm of the neighborhood while offering modern amenities and sustainable features.",
     "projectStatus": "Finished",
-    "projectCost": "250,000.00",
-    "projectType": "Commercial",
-    "projectAddress": "Plaça de Catalunya, Barcelona, Spain",
-    "projectFinishDate": "2024-05-01T06:00:00.000Z",
+    "projectCost": "2,000,000.00",
+    "projectType": "Residential",
+    "projectAddress": "Montmartre, Paris, France",
+    "projectFinishDate": "2023-06-15T06:00:00.000Z",
     "projectProgress": "100",
-    "id": "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
-    "fragRoute": "../../assets/default-model3.frag",
-    "jsonRoute": "../../assets/default-model3.json"
+    "id": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    "fragRoute": "../../assets/default-model5.frag",
+    "jsonRoute": "../../assets/default-model5.json"
   },
   {
-    "teamName": "Urban Architects Collective",
+    "teamName": "Paris Architects Ltd.",
     "teamRole": "Architect",
-    "teamDescription": "Renowned construction company known for implementing cutting-edge techniques and delivering high-quality results.",
-    "contactName": "Sarah Johnson",
-    "contactPhone": "+49 123 456 789",
-    "teamProjectId": "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
+    "teamDescription": "A renowned architectural firm specializing in educational buildings, known for innovative designs and sustainable practices.",
+    "contactName": "Jean-Luc Moreau",
+    "contactPhone": "+33 1 23 45 67 89",
+    "teamProjectId": "f29347c4-c5c6-4a0d-900b-f99c29417d44",
     "fragmentMap": {
-      "0bf94918-91fd-48e5-a9b9-c8096421ed5e": {},
-      "77b9dc24-8541-4c18-884d-3798e9097d75": {},
-      "6300fe10-43bb-41a5-88fc-66913934b928": {}
+      "a51eecbd-bbe7-4e0e-bb1b-442d2b2b31b6": ["39906"],
+      "7d9623f7-2975-4088-bf6a-0bedc0af3785": [
+        "236485",
+        "236463",
+        "236529",
+        "236507",
+        "234666",
+        "234160",
+        "234644",
+        "234490",
+        "234622",
+        "234512"
+      ],
+      "b603f280-76ae-4db1-881a-d61595eacdef": [
+        "237108",
+        "236673",
+        "236963",
+        "234810",
+        "236818",
+        "235535",
+        "235390",
+        "235245",
+        "235680",
+        "235100",
+        "234955"
+      ]
     },
     "camera": {
       "position": {
-        "x": 37.7661077230378,
-        "y": 16.506804101129756,
-        "z": 34.90037938293105
+        "x": 12.553366146986615,
+        "y": 38.46856235492788,
+        "z": 29.39914826595409
       },
       "target": {
-        "x": 8.455718350089347,
-        "y": 1.5425332388016395,
-        "z": 23.60425851131652
+        "x": -2.2194998664771184,
+        "y": 13.68476256313977,
+        "z": 6.501061443611134
       }
-    },
-    "id": "f0dc35a5-0d59-4dcc-a11f-db4b3cc76685"
+    }
   },
   {
-    "teamName": "Construction Innovators Ltd.",
-    "teamRole": "Contractor",
-    "teamDescription": "Innovative architectural firm specializing in urban design, creating spaces that inspire and transform communities.",
-    "contactName": "Michael Brown",
-    "contactPhone": "+49 987 654 321",
-    "teamProjectId": "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
-    "fragmentMap": {
-      "8a846781-a5e5-448d-ab3b-69d9404ad774": {},
-      "6300fe10-43bb-41a5-88fc-66913934b928": {}
-    },
-    "camera": {
-      "position": {
-        "x": -37.68052988820838,
-        "y": 7.812333124771319,
-        "z": 40.48046677685305
-      },
-      "target": {
-        "x": -25.987722991348015,
-        "y": -2.3622430229106635,
-        "z": 17.521449428338766
-      }
-    },
-    "id": "fe841aa8-4a2a-4f40-831a-7fc339c4d8f1"
-  },
-  {
-    "teamName": "City Builders Ltd.",
-    "teamRole": "Contractor",
-    "teamDescription": "Experienced in constructing commercial spaces with a focus on quality craftsmanship and attention to detail.",
-    "contactName": "David Garcia",
-    "contactPhone": "+34 987 654 321",
-    "teamProjectId": "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
-    "fragmentMap": {
-      "0b5ca25a-0513-42ad-bdde-42c8424fdec4": {},
-      "b56f98fc-3334-4875-b95f-991b3758829f": {},
-      "cf044753-5157-4c07-aa0d-77816e479231": {}
-    },
-    "camera": {
-      "position": {
-        "x": -7.226429637383608,
-        "y": 10.738794396720527,
-        "z": 18.766907751409658
-      },
-      "target": {
-        "x": 5.054411304597669,
-        "y": 0.5308368421946721,
-        "z": 3.556021565268745
-      }
-    },
-    "id": "d840e122-5b7b-4dca-92fe-df29e67ce09e"
-  },
-  {
-    "teamName": "Sustainable Solutions GmbH",
+    "teamName": "EcoSmart Solutions Ltd.",
     "teamRole": "MEP",
-    "teamDescription": "Leaders in sustainable building solutions, integrating energy-efficient systems for eco-friendly office environments.",
-    "contactName": "Maria Rodriguez",
-    "contactPhone": "+34 123 456 789",
-    "teamProjectId": "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
+    "teamDescription": "Innovative MEP firm specializing in integrating eco-friendly and energy-efficient systems into high-rise buildings.",
+    "contactName": "Greta Weber",
+    "contactPhone": "+33 456 789 123",
+    "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
     "fragmentMap": {
-      "0b5ca25a-0513-42ad-bdde-42c8424fdec4": {},
-      "b56f98fc-3334-4875-b95f-991b3758829f": {}
+      "e3b65195-9478-4256-bf27-b06345a17396": ["81052"]
     },
     "camera": {
       "position": {
-        "x": -34.80134082593666,
-        "y": -4.943702027655614,
-        "z": 27.965110855797043
+        "x": 31.21658384570606,
+        "y": 9.364908702705275,
+        "z": -8.762025929547349
       },
       "target": {
-        "x": -16.25315496593638,
-        "y": 0.7352623797138533,
-        "z": 3.888409855760159
+        "x": 3.68089317098457,
+        "y": -0.701106895541809,
+        "z": -13.794756569717139
       }
+    }
+  },
+  {
+    "teamName": "Heritage Construction Co.",
+    "teamRole": "Contractor",
+    "teamDescription": "Specializes in constructing residential buildings that integrate modern living with historical aesthetics.",
+    "contactName": "Charlie Black",
+    "contactPhone": "+49 30 123 456 789",
+    "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    "fragmentMap": {
+      "e3b65195-9478-4256-bf27-b06345a17396": ["73107"],
+      "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": [
+        "89272",
+        "89384",
+        "89221",
+        "89326"
+      ]
     },
-    "id": "9a92f8c1-c606-41c6-8974-116e236f0c4c"
+    "camera": {
+      "position": {
+        "x": 30.42105940882714,
+        "y": 63.40220165196557,
+        "z": -15.257009466545652
+      },
+      "target": {
+        "x": 7.003759375987601,
+        "y": 45.058352706257274,
+        "z": -15.280961159818538
+      }
+    }
+  },
+  {
+    "teamName": "Skyline Engineers AG",
+    "teamRole": "Structural",
+    "teamDescription": "Expert structural engineering firm with extensive experience in designing high-rise buildings for durability and strength.",
+    "contactName": "Anna Schmidt",
+    "contactPhone": "+49 30 987 654 321",
+    "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    "fragmentMap": {
+      "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": [
+        "82444",
+        "82490",
+        "82526",
+        "82562",
+        "82598",
+        "82667",
+        "82713",
+        "82749",
+        "82797",
+        "82842",
+        "82878",
+        "82914",
+        "82950",
+        "82986",
+        "83022",
+        "83058",
+        "83094",
+        "83130",
+        "83166",
+        "83214",
+        "83259",
+        "83295",
+        "83331",
+        "83367",
+        "83403",
+        "83439",
+        "83475",
+        "83523",
+        "83568",
+        "83604",
+        "83640",
+        "83676",
+        "83712",
+        "83748",
+        "83784",
+        "83820",
+        "83856",
+        "83892",
+        "83928",
+        "83964",
+        "84000",
+        "84036",
+        "84072",
+        "84108",
+        "84144",
+        "84180",
+        "84216",
+        "84252",
+        "84288",
+        "84324",
+        "84360",
+        "84396",
+        "84432",
+        "84468",
+        "84504",
+        "84540",
+        "84576",
+        "84612",
+        "84648",
+        "84684",
+        "84720",
+        "84756",
+        "84792",
+        "84828",
+        "84864",
+        "84900",
+        "84936",
+        "84972",
+        "85008",
+        "85044",
+        "85080",
+        "85116",
+        "85152",
+        "85188",
+        "85224",
+        "85260",
+        "85296",
+        "85332",
+        "85368",
+        "85404",
+        "85440",
+        "85476",
+        "85512",
+        "85548",
+        "85584",
+        "85620",
+        "85656",
+        "85692",
+        "85728",
+        "85797",
+        "85843",
+        "85912",
+        "85958",
+        "85994",
+        "86030",
+        "86066",
+        "86114",
+        "86171",
+        "86216",
+        "86252",
+        "86288",
+        "86324",
+        "86360",
+        "86396"
+      ]
+    },
+    "camera": {
+      "position": {
+        "x": 30.464836359113487,
+        "y": -84.48082651604888,
+        "z": -5.86570866471228
+      },
+      "target": {
+        "x": -4.166282100135081,
+        "y": -24.63835969782891,
+        "z": -16.395126182877952
+      }
+    }
   }
 ]
