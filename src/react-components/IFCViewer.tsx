@@ -103,6 +103,8 @@ export function IFCViewer(props: Props) {
 
     ifcLoader.onIfcLoaded.add(async (model) => {
       onModelLoaded(model);
+      // exportToFRAG(model);
+      // exportToJSON(model);
     });
 
     fragmentManager.onFragmentsLoaded.add((model) => {
@@ -241,6 +243,30 @@ export function IFCViewer(props: Props) {
     //     reader.readAsText(filesList[0]);
     //   });
     //   input.click();
+    // }
+
+    // // Export model into FRAG file
+    // function exportToJSON(model: FragmentsGroup) {
+    //   const json = JSON.stringify(model.properties, null, 2);
+    //   const blob = new Blob([json], { type: "application/json" });
+    //   const url = URL.createObjectURL(blob);
+    //   const a = document.createElement("a");
+    //   a.href = url;
+    //   a.download = `${model.name.replace(".ifc", "")}`;
+    //   a.click();
+    //   URL.revokeObjectURL(url);
+    // }
+
+    // // Export model into FRAG file
+    // function exportToFRAG(model: FragmentsGroup) {
+    //   const fragmentBinary = fragmentManager.export(model);
+    //   const blob = new Blob([fragmentBinary]);
+    //   const url = URL.createObjectURL(blob);
+    //   const a = document.createElement("a");
+    //   a.href = url;
+    //   a.download = `${model.name.replace(".ifc", "")}.frag`;
+    //   a.click();
+    //   URL.revokeObjectURL(url);
     // }
 
     //Instance of ToDoCreator and setup method
