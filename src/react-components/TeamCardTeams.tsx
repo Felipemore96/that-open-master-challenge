@@ -87,65 +87,86 @@ export function TeamCardTeams(props: Props) {
         </div>
       </dialog>
       <div className="team-card">
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            <span
-              className="material-icons-round"
-              style={{
-                padding: 10,
-                backgroundColor: "#686868",
-                borderRadius: 10,
-                fontSize: 20,
-              }}
-            >
-              {iconConversion(props.team.teamRole)}
-            </span>
-          </div>
-          <p style={{ fontSize: "15px", margin: "10px" }}>
-            {props.team.teamName}
-          </p>
-          <div
-            style={{ paddingLeft: "20px", cursor: "pointer" }}
-            onClick={onDeleteTeamButton}
-          >
-            <span
-              className="material-icons-round"
-              style={{
-                padding: 10,
-                backgroundColor: "#686868",
-                borderRadius: 10,
-                fontSize: 20,
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = "#ff4d4d";
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = "#686868";
-              }}
-            >
-              delete
-            </span>
-          </div>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            padding: 3,
-          }}
-        >
-          <p>{props.team.contactName}</p>
-          <p>{props.team.contactPhone}</p>
-        </div>
         <div>
-          <p>Number of elements: {props.team.numberOfElements}</p>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <span
+                className="material-icons-round"
+                style={{
+                  padding: 10,
+                  backgroundColor: "#686868",
+                  borderRadius: 10,
+                  fontSize: 20,
+                }}
+              >
+                {iconConversion(props.team.teamRole)}
+              </span>
+            </div>
+            <p style={{ fontSize: "15px", margin: "5px 10px" }}>
+              {props.team.teamName}
+            </p>
+          </div>
+          <div
+            style={{
+              alignItems: "center",
+              width: "100%",
+              padding: 3,
+            }}
+          >
+            <p>Contact name: {props.team.contactName}</p>
+            <p>Contact number: {props.team.contactPhone}</p>
+            <p>Number of elements: {props.team.numberOfElements}</p>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            rowGap: "5px",
+            cursor: "pointer",
+          }}
+          onClick={onDeleteTeamButton}
+        >
+          <span
+            className="material-icons-round"
+            style={{
+              padding: 10,
+              backgroundColor: "#686868",
+              borderRadius: 10,
+              fontSize: 17,
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#ff4d4d";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#686868";
+            }}
+          >
+            delete
+          </span>
+          <span
+            className="material-icons-round"
+            style={{
+              padding: 10,
+              backgroundColor: "#686868",
+              borderRadius: 10,
+              fontSize: 17,
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#ff4d4d";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#686868";
+            }}
+          >
+            info
+          </span>
         </div>
       </div>
     </div>
