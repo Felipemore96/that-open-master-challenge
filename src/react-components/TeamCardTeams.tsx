@@ -27,11 +27,15 @@ export function TeamCardTeams(props: Props) {
     toggleModal("delete-popup");
   };
 
-  const onClosePopup = () => {
+  const onCloseDeletePopup = () => {
     toggleModal("delete-popup");
   };
 
   const onTeamInfoButton = () => {
+    toggleModal("info-popup");
+  };
+
+  const onCloseInfoPopup = () => {
     toggleModal("info-popup");
   };
 
@@ -86,8 +90,6 @@ export function TeamCardTeams(props: Props) {
               padding: 3,
             }}
           >
-            <p>Contact name: {props.team.contactName}</p>
-            <p>Contact number: {props.team.contactPhone}</p>
             <p>Number of elements: {props.team.numberOfElements}</p>
           </div>
         </div>
@@ -150,7 +152,7 @@ export function TeamCardTeams(props: Props) {
             style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
           >
             <button
-              onClick={onClosePopup}
+              onClick={onCloseDeletePopup}
               type="button"
               style={{
                 padding: "10px 20px",
@@ -175,7 +177,76 @@ export function TeamCardTeams(props: Props) {
         </div>
       </dialog>
       <dialog id="info-popup">
-        <div id="info-message"></div>
+        <form id="new-team-form">
+          <h2>Team's Information</h2>
+          <div className="input-list">
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">apartment</span>Name
+              </label>
+              <input name="teamName" type="text" value={props.team.teamName} />
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">assignment_ind</span>Role
+              </label>
+              <select name="teamRole" value={props.team.teamRole}>
+                <option>BIM Manager</option>
+                <option>Structural</option>
+                <option>MEP</option>
+                <option>Architect</option>
+                <option>Contractor</option>
+              </select>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">subject</span>Description
+              </label>
+              <textarea
+                name="teamDescription"
+                cols={30}
+                rows={5}
+                value={props.team.teamDescription}
+                defaultValue={""}
+              />
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">person</span>Contact
+              </label>
+              <div
+                style={{ display: "flex", flexDirection: "column", rowGap: 2 }}
+              >
+                <input name="contactName" value={props.team.contactName} />
+                <input name="contactPhone" value={props.team.contactPhone} />
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                margin: "10px 0px 10px auto",
+                columnGap: 10,
+              }}
+            >
+              <button
+                onClick={onCloseInfoPopup}
+                id="cancel-new-team-btn"
+                type="button"
+                style={{ backgroundColor: "transparent" }}
+              >
+                Cancel
+              </button>
+              <button
+                // onClick={(e) => onSubmitNewTeam(e)}
+                id="submit-new-team-btn"
+                type="button"
+                style={{ backgroundColor: "rgb(18, 145, 18)" }}
+              >
+                Accept
+              </button>
+            </div>
+          </div>
+        </form>
       </dialog>
     </div>
   );

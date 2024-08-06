@@ -284,9 +284,7 @@ export function TeamsCard(props: Props) {
         </div>
       </div>
       {teams.length > 0 ? (
-        <div id="teams-list" className="nav-buttons">
-          {teamsCards}
-        </div>
+        <div id="teams-list">{teamsCards}</div>
       ) : (
         <h4
           style={{
