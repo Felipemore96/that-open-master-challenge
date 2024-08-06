@@ -536,6 +536,24 @@ export class ProjectsManager {
   }
 
   exportToJSON(fileName: string = "project-info") {
+    // const teamsListCopy = this.teamsList.map((team) => {
+    //   return {
+    //     ...team,
+    //     fragmentMap: team.fragmentMap
+    //       ? Object.fromEntries(
+    //           Object.entries(team.fragmentMap).map(([key, value]) => [
+    //             key,
+    //             [...value],
+    //           ])
+    //         )
+    //       : undefined,
+    //   };
+    // });
+    // const json = JSON.stringify(
+    //   { projects: this.projectsList, teams: teamsListCopy },
+    //   null,
+    //   2
+    // );
     const json = JSON.stringify(
       { projects: this.projectsList, teams: this.teamsList },
       null,
@@ -562,7 +580,20 @@ export class ProjectsManager {
       }
       const importData = JSON.parse(json as string);
       const projects: IProject[] = importData.projects;
-      const teams: ITeam[] = importData.teams;
+      // const teams: ITeam[] = importData.teams;
+
+      const teams: ITeam[] = importData.teams.map((team) => {
+        if (team.fragmentMap) {
+          team.fragmentMap = Object.fromEntries(
+            Object.entries(team.fragmentMap).map(([key, value]) => [
+              key,
+              new Set(value as string[]),
+            ])
+          );
+        }
+        return team;
+      });
+
       for (const team of teams) {
         try {
           this.newTeam(team);
