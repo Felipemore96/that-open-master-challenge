@@ -224,7 +224,7 @@ select:focus {
 }
 
 #error-message,
-#team-info-message {
+#info-message {
   display: flex;
   padding: 15px;
   border-radius: 10px;
