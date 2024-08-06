@@ -7,8 +7,8 @@ import {
   ProjectType,
   toggleModal,
   Project,
-  ITeam,
 } from "../class/projects";
+import { ITeam } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
 import { SearchBox } from "./SearchBox";

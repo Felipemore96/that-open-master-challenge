@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as OBC from "openbim-components";
 import * as THREE from "three";
-import { ITeam, Project, Team, TeamRole, toggleModal } from "../class/projects";
+import { Project, toggleModal } from "../class/projects";
+import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 // import * as Firestore from "firebase/firestore";
 // import { getCollection } from "../firebase";
@@ -140,6 +141,7 @@ export function TeamsCard(props: Props) {
     if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
       highlighter.highlightByID("select", team.fragmentMap);
     }
+    console.log(team);
   };
 
   // const teamsCards = teams.map((team) => {

@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { IProject, Project, ITeam, Team, toggleModal } from "../class/projects";
+import { IProject, Project, toggleModal } from "../class/projects";
+import { ITeam, Team } from "../class/teams";
 import { v4 as uuidv4 } from "uuid";
 
 export class ProjectsManager {
@@ -97,272 +98,408 @@ export class ProjectsManager {
         ),
       },
     });
-    //   this.newProject({
-    //     projectName: "Urban Loft",
-    //     projectDescription:
-    //       "Structural design for a contemporary one-floor building, blending seamlessly into the urban landscape.",
-    //     projectStatus: "Pending",
-    //     projectCost: "350,000.00",
-    //     projectType: "Mixed-use",
-    //     projectAddress: "Prenzlauer Berg, Berlin, Germany",
-    //     projectFinishDate: new Date(2025, 8, 15),
-    //     projectProgress: "75",
-    //     id: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
-    //     fragRoute: "../../assets/default-model2.frag",
-    //     jsonRoute: "../../assets/default-model2.json",
-    //   });
-    //   this.newTeam({
-    //     teamName: "Urban Architects Collective",
-    //     teamRole: "Architect",
-    //     teamDescription:
-    //       "Renowned construction company known for implementing cutting-edge techniques and delivering high-quality results.",
-    //     contactName: "Sarah Johnson",
-    //     contactPhone: "+49 123 456 789",
-    //     teamProjectId: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
-    //     fragmentMap: {
-    //       "0bf94918-91fd-48e5-a9b9-c8096421ed5e": new Set([
-    //         "2024",
-    //         "2025",
-    //         "14015",
-    //         "1909",
-    //         "2299",
-    //       ]),
-    //       "77b9dc24-8541-4c18-884d-3798e9097d75": new Set(["16022", "14749"]),
-    //       "6300fe10-43bb-41a5-88fc-66913934b928": new Set(["12052"]),
-    //     },
-    //     camera: {
-    //       position: new THREE.Vector3(
-    //         37.7661077230378,
-    //         16.506804101129756,
-    //         34.90037938293105
-    //       ),
-    //       target: new THREE.Vector3(
-    //         8.455718350089347,
-    //         1.5425332388016395,
-    //         23.60425851131652
-    //       ),
-    //     },
-    //   });
-    //   this.newTeam({
-    //     teamName: "Construction Innovators Ltd.",
-    //     teamRole: "Contractor",
-    //     teamDescription:
-    //       "Innovative architectural firm specializing in urban design, creating spaces that inspire and transform communities.",
-    //     contactName: "Michael Brown",
-    //     contactPhone: "+49 987 654 321",
-    //     teamProjectId: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
-    //     fragmentMap: {
-    //       "8a846781-a5e5-448d-ab3b-69d9404ad774": new Set(["13606", "7265"]),
-    //       "6300fe10-43bb-41a5-88fc-66913934b928": new Set([
-    //         "2230",
-    //         "13263",
-    //         "13263.1",
-    //         "13263.2",
-    //         "13263.3",
-    //         "13263.4",
-    //         "13340",
-    //         "13340.1",
-    //         "13416",
-    //         "13416.1",
-    //         "13492",
-    //         "13492.1",
-    //         "13681",
-    //         "13681.1",
-    //         "13757",
-    //         "13757.1",
-    //         "13833",
-    //         "13833.1",
-    //         "13942",
-    //         "15714",
-    //         "15768",
-    //         "1328",
-    //         "1328.1",
-    //         "14076",
-    //         "1269",
-    //         "1269.1",
-    //         "2536",
-    //         "2536.1",
-    //         "1387",
-    //         "1387.1",
-    //         "2477",
-    //         "2477.1",
-    //         "2418",
-    //         "2418.1",
-    //         "1505",
-    //         "1505.1",
-    //         "4726",
-    //         "7073",
-    //         "7073.1",
-    //         "7073.2",
-    //         "7073.3",
-    //         "7073.4",
-    //         "4840",
-    //         "4555",
-    //         "4441",
-    //         "1209",
-    //         "1209.1",
-    //         "1617",
-    //         "1617.1",
-    //         "1676",
-    //         "1676.1",
-    //         "1446",
-    //         "1446.1",
-    //         "1735",
-    //         "1735.1",
-    //         "7330",
-    //         "4212",
-    //         "4327",
-    //         "4270",
-    //         "7606",
-    //         "4384",
-    //         "7537",
-    //         "4498",
-    //         "7468",
-    //         "4612",
-    //         "7399",
-    //         "4669",
-    //         "4783",
-    //         "7143",
-    //       ]),
-    //     },
-    //     camera: {
-    //       position: new THREE.Vector3(
-    //         -37.68052988820838,
-    //         7.812333124771319,
-    //         40.48046677685305
-    //       ),
-    //       target: new THREE.Vector3(
-    //         -25.987722991348015,
-    //         -2.3622430229106635,
-    //         17.521449428338766
-    //       ),
-    //     },
-    //   });
-    //   this.newProject({
-    //     projectName: "City Plaza Office",
-    //     projectDescription:
-    //       "A small, sleek office space designed for efficiency and productivity in the heart of the city.",
-    //     projectStatus: "Finished",
-    //     projectCost: "250,000.00",
-    //     projectType: "Commercial",
-    //     projectAddress: "Plaça de Catalunya, Barcelona, Spain",
-    //     projectFinishDate: new Date(2024, 4, 1),
-    //     projectProgress: "100",
-    //     id: "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
-    //     fragRoute: "../../assets/default-model3.frag",
-    //     jsonRoute: "../../assets/default-model3.json",
-    //   });
-    //   this.newTeam({
-    //     teamName: "City Builders Ltd.",
-    //     teamRole: "Contractor",
-    //     teamDescription:
-    //       "Experienced in constructing commercial spaces with a focus on quality craftsmanship and attention to detail.",
-    //     contactName: "David Garcia",
-    //     contactPhone: "+34 987 654 321",
-    //     teamProjectId: "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
-    //     fragmentMap: {
-    //       "0b5ca25a-0513-42ad-bdde-42c8424fdec4": new Set(["373"]),
-    //       "b56f98fc-3334-4875-b95f-991b3758829f": new Set([
-    //         "193",
-    //         "228",
-    //         "286",
-    //         "321",
-    //         "422",
-    //         "48211",
-    //         "66501",
-    //         "66536",
-    //       ]),
-    //       "cf044753-5157-4c07-aa0d-77816e479231": new Set(["131", "479"]),
-    //     },
-    //     camera: {
-    //       position: new THREE.Vector3(
-    //         -7.226429637383608,
-    //         10.738794396720527,
-    //         18.766907751409658
-    //       ),
-    //       target: new THREE.Vector3(
-    //         5.054411304597669,
-    //         0.5308368421946721,
-    //         3.556021565268745
-    //       ),
-    //     },
-    //   });
-    //   this.newTeam({
-    //     teamName: "Sustainable Solutions GmbH",
-    //     teamRole: "MEP",
-    //     teamDescription:
-    //       "Leaders in sustainable building solutions, integrating energy-efficient systems for eco-friendly office environments.",
-    //     contactName: "Maria Rodriguez",
-    //     contactPhone: "+34 111 222 333",
-    //     teamProjectId: "1cc235e1-6b55-419b-a865-d8fc7270b5fb",
-    //     fragmentMap: {
-    //       "60f58114-0178-4eee-b2c2-26a3bcdf4b93": new Set(["67778"]),
-    //       "98e1a487-2746-4226-8f6d-54095258c706": new Set([
-    //         "66783",
-    //         "66816",
-    //         "66844",
-    //         "66872",
-    //         "66900",
-    //         "66929",
-    //         "66957",
-    //         "66986",
-    //         "67015",
-    //         "67043",
-    //         "67071",
-    //       ]),
-    //       "660f6108-c9e3-4c47-8c2d-2b89dfd14521": new Set([
-    //         "66783",
-    //         "66816",
-    //         "66844",
-    //         "66872",
-    //         "66900",
-    //         "66929",
-    //         "66957",
-    //         "66986",
-    //         "67015",
-    //         "67043",
-    //         "67071",
-    //       ]),
-    //       "cd0414ba-2f03-484e-93af-b61dcafb37b6": new Set([
-    //         "66783",
-    //         "66816",
-    //         "66844",
-    //         "66872",
-    //         "66900",
-    //         "66929",
-    //         "66957",
-    //         "66986",
-    //         "67015",
-    //         "67043",
-    //         "67071",
-    //       ]),
-    //       "f6bb763a-b191-47b8-b261-0b1bbd0c2ffc": new Set([
-    //         "66783",
-    //         "66816",
-    //         "66844",
-    //         "66872",
-    //         "66900",
-    //         "66929",
-    //         "66957",
-    //         "66986",
-    //         "67015",
-    //         "67043",
-    //         "67071",
-    //       ]),
-    //     },
-    //     camera: {
-    //       position: new THREE.Vector3(
-    //         3.3353490654157847,
-    //         1.9499768134226,
-    //         -0.8673931329864668
-    //       ),
-    //       target: new THREE.Vector3(
-    //         2.0024586315438944,
-    //         1.059952912812076,
-    //         0.7209902232022298
-    //       ),
-    //     },
-    //   });
+    this.newProject({
+      projectName: "Urban Loft",
+      projectDescription:
+        "Structural design for a contemporary one-floor building, blending seamlessly into the urban landscape.",
+      projectStatus: "Pending",
+      projectCost: "350,000.00",
+      projectType: "Mixed-use",
+      projectAddress: "Prenzlauer Berg, Berlin, Germany",
+      projectFinishDate: new Date(2025, 8, 15),
+      projectProgress: "75",
+      id: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
+      fragRoute: "../../assets/default-model2.frag",
+      jsonRoute: "../../assets/default-model2.json",
+    });
+    this.newTeam({
+      teamName: "Urban Architects Collective",
+      teamRole: "Architect",
+      teamDescription:
+        "Renowned construction company known for implementing cutting-edge techniques and delivering high-quality results.",
+      contactName: "Sarah Johnson",
+      contactPhone: "+49 123 456 789",
+      teamProjectId: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
+      fragmentMap: {
+        "0bf94918-91fd-48e5-a9b9-c8096421ed5e": new Set([
+          "2024",
+          "2025",
+          "14015",
+          "1909",
+          "2299",
+        ]),
+        "77b9dc24-8541-4c18-884d-3798e9097d75": new Set(["16022", "14749"]),
+        "6300fe10-43bb-41a5-88fc-66913934b928": new Set(["12052"]),
+      },
+      camera: {
+        position: new THREE.Vector3(
+          37.7661077230378,
+          16.506804101129756,
+          34.90037938293105
+        ),
+        target: new THREE.Vector3(
+          8.455718350089347,
+          1.5425332388016395,
+          23.60425851131652
+        ),
+      },
+    });
+    this.newTeam({
+      teamName: "Construction Innovators Ltd.",
+      teamRole: "Contractor",
+      teamDescription:
+        "Innovative architectural firm specializing in urban design, creating spaces that inspire and transform communities.",
+      contactName: "Michael Brown",
+      contactPhone: "+49 987 654 321",
+      teamProjectId: "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
+      fragmentMap: {
+        "8a846781-a5e5-448d-ab3b-69d9404ad774": new Set(["13606", "7265"]),
+        "6300fe10-43bb-41a5-88fc-66913934b928": new Set([
+          "2230",
+          "13263",
+          "13263.1",
+          "13263.2",
+          "13263.3",
+          "13263.4",
+          "13340",
+          "13340.1",
+          "13416",
+          "13416.1",
+          "13492",
+          "13492.1",
+          "13681",
+          "13681.1",
+          "13757",
+          "13757.1",
+          "13833",
+          "13833.1",
+          "13942",
+          "15714",
+          "15768",
+          "1328",
+          "1328.1",
+          "14076",
+          "1269",
+          "1269.1",
+          "2536",
+          "2536.1",
+          "1387",
+          "1387.1",
+          "2477",
+          "2477.1",
+          "2418",
+          "2418.1",
+          "1505",
+          "1505.1",
+          "4726",
+          "7073",
+          "7073.1",
+          "7073.2",
+          "7073.3",
+          "7073.4",
+          "4840",
+          "4555",
+          "4441",
+          "1209",
+          "1209.1",
+          "1617",
+          "1617.1",
+          "1676",
+          "1676.1",
+          "1446",
+          "1446.1",
+          "1735",
+          "1735.1",
+          "7330",
+          "4212",
+          "4327",
+          "4270",
+          "7606",
+          "4384",
+          "7537",
+          "4498",
+          "7468",
+          "4612",
+          "7399",
+          "4669",
+          "4783",
+          "7143",
+        ]),
+      },
+      camera: {
+        position: new THREE.Vector3(
+          -37.68052988820838,
+          7.812333124771319,
+          40.48046677685305
+        ),
+        target: new THREE.Vector3(
+          -25.987722991348015,
+          -2.3622430229106635,
+          17.521449428338766
+        ),
+      },
+    });
+
+    // this.newProject({
+    //   projectName: "Scholarly Heights",
+    //   projectDescription:
+    //     "A 10-storey building featuring modern concrete floors and robust steel columns, designed to host educational institutions with flexible, unfinished interiors for customizable classroom and office spaces.",
+    //   projectStatus: "Active",
+    //   projectCost: "1,500,000.00",
+    //   projectType: "Institutional",
+    //   projectAddress: "Champs-Élysées, Paris, France",
+    //   projectFinishDate: new Date("2026-11-20T06:00:00.000Z"),
+    //   projectProgress: "45",
+    //   id: "f29347c4-c5c6-4a0d-900b-f99c29417d44",
+    //   fragRoute: "../../assets/default-model4.frag",
+    //   jsonRoute: "../../assets/default-model4.json",
+    // });
+    // this.newTeam({
+    //   teamName: "Paris Architects Ltd.",
+    //   teamRole: "Architect",
+    //   teamDescription:
+    //     "A renowned architectural firm specializing in educational buildings, known for innovative designs and sustainable practices.",
+    //   contactName: "Jean-Luc Moreau",
+    //   contactPhone: "+33 1 23 45 67 89",
+    //   teamProjectId: "f29347c4-c5c6-4a0d-900b-f99c29417d44",
+    //   fragmentMap: {
+    //     "a51eecbd-bbe7-4e0e-bb1b-442d2b2b31b6": new Set(["39906"]),
+    //     "7d9623f7-2975-4088-bf6a-0bedc0af3785": new Set([
+    //       "236485",
+    //       "236463",
+    //       "236529",
+    //       "236507",
+    //       "234666",
+    //       "234160",
+    //       "234644",
+    //       "234490",
+    //       "234622",
+    //       "234512",
+    //     ]),
+    //     "b603f280-76ae-4db1-881a-d61595eacdef": new Set([
+    //       "237108",
+    //       "236673",
+    //       "236963",
+    //       "234810",
+    //       "236818",
+    //       "235535",
+    //       "235390",
+    //       "235245",
+    //       "235680",
+    //       "235100",
+    //       "234955",
+    //     ]),
+    //   },
+    //   camera: {
+    //     position: new THREE.Vector3(
+    //       12.553366146986615,
+    //       38.46856235492788,
+    //       29.39914826595409
+    //     ),
+    //     target: new THREE.Vector3(
+    //       -2.2194998664771184,
+    //       13.68476256313977,
+    //       6.501061443611134
+    //     ),
+    //   },
+    // });
+    // this.newProject({
+    //   projectName: "Heritage Townhouses",
+    //   projectDescription:
+    //     "A residential complex of townhouses designed to blend with the historic charm of the neighborhood while offering modern amenities and sustainable features.",
+    //   projectStatus: "Finished",
+    //   projectCost: "2,000,000.00",
+    //   projectType: "Residential",
+    //   projectAddress: "Montmartre, Paris, France",
+    //   projectFinishDate: new Date("2023-06-15T06:00:00.000Z"),
+    //   projectProgress: "100",
+    //   id: "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    //   fragRoute: "../../assets/default-model5.frag",
+    //   jsonRoute: "../../assets/default-model5.json",
+    // });
+    // this.newTeam({
+    //   teamName: "EcoSmart Solutions Ltd.",
+    //   teamRole: "MEP",
+    //   teamDescription:
+    //     "Innovative MEP firm specializing in integrating eco-friendly and energy-efficient systems into high-rise buildings.",
+    //   contactName: "Greta Weber",
+    //   contactPhone: "+33 456 789 123",
+    //   teamProjectId: "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    //   fragmentMap: {
+    //     "e3b65195-9478-4256-bf27-b06345a17396": new Set(["81052"]),
+    //   },
+    //   camera: {
+    //     position: new THREE.Vector3(
+    //       31.21658384570606,
+    //       9.364908702705275,
+    //       -8.762025929547349
+    //     ),
+    //     target: new THREE.Vector3(
+    //       3.68089317098457,
+    //       -0.701106895541809,
+    //       -13.794756569717139
+    //     ),
+    //   },
+    // });
+    // this.newTeam({
+    //   teamName: "Heritage Construction Co.",
+    //   teamRole: "Contractor",
+    //   teamDescription:
+    //     "Specializes in constructing residential buildings that integrate modern living with historical aesthetics.",
+    //   contactName: "Charlie Black",
+    //   contactPhone: "+49 30 123 456 789",
+    //   teamProjectId: "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    //   fragmentMap: {
+    //     "e3b65195-9478-4256-bf27-b06345a17396": new Set(["73107"]),
+    //     "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": new Set([
+    //       "89272",
+    //       "89384",
+    //       "89221",
+    //       "89326",
+    //     ]),
+    //   },
+    //   camera: {
+    //     position: new THREE.Vector3(
+    //       30.42105940882714,
+    //       63.40220165196557,
+    //       -15.257009466545652
+    //     ),
+    //     target: new THREE.Vector3(
+    //       7.003759375987601,
+    //       45.058352706257274,
+    //       -15.280961159818538
+    //     ),
+    //   },
+    // });
+    // this.newTeam({
+    //   teamName: "Skyline Engineers AG",
+    //   teamRole: "Structural",
+    //   teamDescription:
+    //     "Expert structural engineering firm with extensive experience in designing high-rise buildings for durability and strength.",
+    //   contactName: "Anna Schmidt",
+    //   contactPhone: "+49 30 987 654 321",
+    //   teamProjectId: "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    //   fragmentMap: {
+    //     "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": new Set([
+    //       "82444",
+    //       "82490",
+    //       "82526",
+    //       "82562",
+    //       "82598",
+    //       "82667",
+    //       "82713",
+    //       "82749",
+    //       "82797",
+    //       "82842",
+    //       "82878",
+    //       "82914",
+    //       "82950",
+    //       "82986",
+    //       "83022",
+    //       "83058",
+    //       "83094",
+    //       "83130",
+    //       "83166",
+    //       "83214",
+    //       "83259",
+    //       "83295",
+    //       "83331",
+    //       "83367",
+    //       "83403",
+    //       "83439",
+    //       "83475",
+    //       "83523",
+    //       "83568",
+    //       "83604",
+    //       "83640",
+    //       "83676",
+    //       "83712",
+    //       "83748",
+    //       "83784",
+    //       "83820",
+    //       "83856",
+    //       "83892",
+    //       "83928",
+    //       "83964",
+    //       "84000",
+    //       "84036",
+    //       "84072",
+    //       "84108",
+    //       "84144",
+    //       "84180",
+    //       "84216",
+    //       "84252",
+    //       "84288",
+    //       "84324",
+    //       "84360",
+    //       "84396",
+    //       "84432",
+    //       "84468",
+    //       "84504",
+    //       "84540",
+    //       "84576",
+    //       "84612",
+    //       "84648",
+    //       "84684",
+    //       "84720",
+    //       "84756",
+    //       "84792",
+    //       "84828",
+    //       "84864",
+    //       "84900",
+    //       "84936",
+    //       "84972",
+    //       "85008",
+    //       "85044",
+    //       "85080",
+    //       "85116",
+    //       "85152",
+    //       "85188",
+    //       "85224",
+    //       "85260",
+    //       "85296",
+    //       "85332",
+    //       "85368",
+    //       "85404",
+    //       "85440",
+    //       "85476",
+    //       "85512",
+    //       "85548",
+    //       "85584",
+    //       "85620",
+    //       "85656",
+    //       "85692",
+    //       "85728",
+    //       "85797",
+    //       "85843",
+    //       "85912",
+    //       "85958",
+    //       "85994",
+    //       "86030",
+    //       "86066",
+    //       "86114",
+    //       "86171",
+    //       "86216",
+    //       "86252",
+    //       "86288",
+    //       "86324",
+    //       "86360",
+    //       "86396",
+    //     ]),
+    //   },
+    //   camera: {
+    //     position: new THREE.Vector3(
+    //       30.464836359113487,
+    //       -84.48082651604888,
+    //       -5.86570866471228
+    //     ),
+    //     target: new THREE.Vector3(
+    //       -4.166282100135081,
+    //       -24.63835969782891,
+    //       -16.395126182877952
+    //     ),
+    //   },
+    // });
   }
 
   filterProjects(value: string) {
@@ -378,6 +515,7 @@ export class ProjectsManager {
     });
     return project;
   }
+
   getTeam(id: string) {
     const team = this.teamsList.find((team) => {
       return team.id === id;
@@ -398,6 +536,24 @@ export class ProjectsManager {
   }
 
   exportToJSON(fileName: string = "project-info") {
+    // const teamsListCopy = this.teamsList.map((team) => {
+    //   return {
+    //     ...team,
+    //     fragmentMap: team.fragmentMap
+    //       ? Object.fromEntries(
+    //           Object.entries(team.fragmentMap).map(([key, value]) => [
+    //             key,
+    //             [...value],
+    //           ])
+    //         )
+    //       : undefined,
+    //   };
+    // });
+    // const json = JSON.stringify(
+    //   { projects: this.projectsList, teams: teamsListCopy },
+    //   null,
+    //   2
+    // );
     const json = JSON.stringify(
       { projects: this.projectsList, teams: this.teamsList },
       null,
@@ -424,7 +580,20 @@ export class ProjectsManager {
       }
       const importData = JSON.parse(json as string);
       const projects: IProject[] = importData.projects;
-      const teams: ITeam[] = importData.teams;
+      // const teams: ITeam[] = importData.teams;
+
+      const teams: ITeam[] = importData.teams.map((team) => {
+        if (team.fragmentMap) {
+          team.fragmentMap = Object.fromEntries(
+            Object.entries(team.fragmentMap).map(([key, value]) => [
+              key,
+              new Set(value as string[]),
+            ])
+          );
+        }
+        return team;
+      });
+
       for (const team of teams) {
         try {
           this.newTeam(team);

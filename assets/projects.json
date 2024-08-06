@@ -1,0 +1,256 @@
+[
+  {
+    "projectName": "Scholarly Heights",
+    "projectDescription": "A 10-storey building featuring modern concrete floors and robust steel columns, designed to host educational institutions with flexible, unfinished interiors for customizable classroom and office spaces.",
+    "projectStatus": "Active",
+    "projectCost": "1,500,000.00",
+    "projectType": "Institutional",
+    "projectAddress": "Champs-Élysées, Paris, France",
+    "projectFinishDate": "2026-11-20T06:00:00.000Z",
+    "projectProgress": "45",
+    "id": "f29347c4-c5c6-4a0d-900b-f99c29417d44",
+    "fragRoute": "../../assets/default-model4.frag",
+    "jsonRoute": "../../assets/default-model4.json"
+  },
+  {
+    "projectName": "Heritage Townhouses",
+    "projectDescription": "A residential complex of townhouses designed to blend with the historic charm of the neighborhood while offering modern amenities and sustainable features.",
+    "projectStatus": "Finished",
+    "projectCost": "2,000,000.00",
+    "projectType": "Residential",
+    "projectAddress": "Montmartre, Paris, France",
+    "projectFinishDate": "2023-06-15T06:00:00.000Z",
+    "projectProgress": "100",
+    "id": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    "fragRoute": "../../assets/default-model5.frag",
+    "jsonRoute": "../../assets/default-model5.json"
+  },
+  {
+    "teamName": "Paris Architects Ltd.",
+    "teamRole": "Architect",
+    "teamDescription": "A renowned architectural firm specializing in educational buildings, known for innovative designs and sustainable practices.",
+    "contactName": "Jean-Luc Moreau",
+    "contactPhone": "+33 1 23 45 67 89",
+    "teamProjectId": "f29347c4-c5c6-4a0d-900b-f99c29417d44",
+    "fragmentMap": {
+      "a51eecbd-bbe7-4e0e-bb1b-442d2b2b31b6": ["39906"],
+      "7d9623f7-2975-4088-bf6a-0bedc0af3785": [
+        "236485",
+        "236463",
+        "236529",
+        "236507",
+        "234666",
+        "234160",
+        "234644",
+        "234490",
+        "234622",
+        "234512"
+      ],
+      "b603f280-76ae-4db1-881a-d61595eacdef": [
+        "237108",
+        "236673",
+        "236963",
+        "234810",
+        "236818",
+        "235535",
+        "235390",
+        "235245",
+        "235680",
+        "235100",
+        "234955"
+      ]
+    },
+    "camera": {
+      "position": {
+        "x": 12.553366146986615,
+        "y": 38.46856235492788,
+        "z": 29.39914826595409
+      },
+      "target": {
+        "x": -2.2194998664771184,
+        "y": 13.68476256313977,
+        "z": 6.501061443611134
+      }
+    }
+  },
+  {
+    "teamName": "EcoSmart Solutions Ltd.",
+    "teamRole": "MEP",
+    "teamDescription": "Innovative MEP firm specializing in integrating eco-friendly and energy-efficient systems into high-rise buildings.",
+    "contactName": "Greta Weber",
+    "contactPhone": "+33 456 789 123",
+    "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    "fragmentMap": {
+      "e3b65195-9478-4256-bf27-b06345a17396": ["81052"]
+    },
+    "camera": {
+      "position": {
+        "x": 31.21658384570606,
+        "y": 9.364908702705275,
+        "z": -8.762025929547349
+      },
+      "target": {
+        "x": 3.68089317098457,
+        "y": -0.701106895541809,
+        "z": -13.794756569717139
+      }
+    }
+  },
+  {
+    "teamName": "Heritage Construction Co.",
+    "teamRole": "Contractor",
+    "teamDescription": "Specializes in constructing residential buildings that integrate modern living with historical aesthetics.",
+    "contactName": "Charlie Black",
+    "contactPhone": "+49 30 123 456 789",
+    "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    "fragmentMap": {
+      "e3b65195-9478-4256-bf27-b06345a17396": ["73107"],
+      "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": [
+        "89272",
+        "89384",
+        "89221",
+        "89326"
+      ]
+    },
+    "camera": {
+      "position": {
+        "x": 30.42105940882714,
+        "y": 63.40220165196557,
+        "z": -15.257009466545652
+      },
+      "target": {
+        "x": 7.003759375987601,
+        "y": 45.058352706257274,
+        "z": -15.280961159818538
+      }
+    }
+  },
+  {
+    "teamName": "Skyline Engineers AG",
+    "teamRole": "Structural",
+    "teamDescription": "Expert structural engineering firm with extensive experience in designing high-rise buildings for durability and strength.",
+    "contactName": "Anna Schmidt",
+    "contactPhone": "+49 30 987 654 321",
+    "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+    "fragmentMap": {
+      "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": [
+        "82444",
+        "82490",
+        "82526",
+        "82562",
+        "82598",
+        "82667",
+        "82713",
+        "82749",
+        "82797",
+        "82842",
+        "82878",
+        "82914",
+        "82950",
+        "82986",
+        "83022",
+        "83058",
+        "83094",
+        "83130",
+        "83166",
+        "83214",
+        "83259",
+        "83295",
+        "83331",
+        "83367",
+        "83403",
+        "83439",
+        "83475",
+        "83523",
+        "83568",
+        "83604",
+        "83640",
+        "83676",
+        "83712",
+        "83748",
+        "83784",
+        "83820",
+        "83856",
+        "83892",
+        "83928",
+        "83964",
+        "84000",
+        "84036",
+        "84072",
+        "84108",
+        "84144",
+        "84180",
+        "84216",
+        "84252",
+        "84288",
+        "84324",
+        "84360",
+        "84396",
+        "84432",
+        "84468",
+        "84504",
+        "84540",
+        "84576",
+        "84612",
+        "84648",
+        "84684",
+        "84720",
+        "84756",
+        "84792",
+        "84828",
+        "84864",
+        "84900",
+        "84936",
+        "84972",
+        "85008",
+        "85044",
+        "85080",
+        "85116",
+        "85152",
+        "85188",
+        "85224",
+        "85260",
+        "85296",
+        "85332",
+        "85368",
+        "85404",
+        "85440",
+        "85476",
+        "85512",
+        "85548",
+        "85584",
+        "85620",
+        "85656",
+        "85692",
+        "85728",
+        "85797",
+        "85843",
+        "85912",
+        "85958",
+        "85994",
+        "86030",
+        "86066",
+        "86114",
+        "86171",
+        "86216",
+        "86252",
+        "86288",
+        "86324",
+        "86360",
+        "86396"
+      ]
+    },
+    "camera": {
+      "position": {
+        "x": 30.464836359113487,
+        "y": -84.48082651604888,
+        "z": -5.86570866471228
+      },
+      "target": {
+        "x": -4.166282100135081,
+        "y": -24.63835969782891,
+        "z": -16.395126182877952
+      }
+    }
+  }
+]
