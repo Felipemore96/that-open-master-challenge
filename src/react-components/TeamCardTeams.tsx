@@ -39,6 +39,15 @@ export function TeamCardTeams(props: Props) {
     toggleModal("info-popup");
   };
 
+  const onEditTeamInfo = () => {
+    toggleModal("info-popup");
+    toggleModal("edit-info-popup");
+  };
+
+  const onCloseEditTeamPopup = () => {
+    toggleModal("edit-info-popup");
+  };
+
   const iconConversion = (teamRole: TeamRole): string => {
     switch (teamRole) {
       case "BIM Manager":
@@ -177,8 +186,64 @@ export function TeamCardTeams(props: Props) {
         </div>
       </dialog>
       <dialog id="info-popup">
-        <form id="new-team-form">
+        <form>
           <h2>Team's Information</h2>
+          <div className="input-list">
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">apartment</span>Name
+              </label>
+              <p>{props.team.teamName}</p>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">assignment_ind</span>Role
+              </label>
+              <p>{props.team.teamRole}</p>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">subject</span>Description
+              </label>
+              <p>{props.team.teamDescription}</p>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">person</span>Contact
+              </label>
+              <p>{props.team.contactName}</p>
+              <p>{props.team.contactPhone}</p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                margin: "10px 0px 10px auto",
+                columnGap: 10,
+              }}
+            >
+              <button
+                onClick={onCloseInfoPopup}
+                id="cancel-new-team-btn"
+                type="button"
+                style={{ backgroundColor: "transparent" }}
+              >
+                Close
+              </button>
+              <button
+                onClick={() => onEditTeamInfo()}
+                id="submit-new-team-btn"
+                type="button"
+                style={{ backgroundColor: "rgb(18, 145, 18)" }}
+              >
+                Edit Information
+              </button>
+            </div>
+          </div>
+        </form>
+      </dialog>
+      <dialog id="edit-info-popup">
+        <form>
+          <h2>Edit Team's Information</h2>
           <div className="input-list">
             <div className="form-field-container">
               <label>
@@ -238,7 +303,7 @@ export function TeamCardTeams(props: Props) {
               }}
             >
               <button
-                onClick={onCloseInfoPopup}
+                onClick={onCloseEditTeamPopup}
                 id="cancel-new-team-btn"
                 type="button"
                 style={{ backgroundColor: "transparent" }}
