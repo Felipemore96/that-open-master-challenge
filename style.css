@@ -224,7 +224,7 @@ select:focus {
 }
 
 #error-message,
-#team-info-message {
+#info-message {
   display: flex;
   padding: 15px;
   border-radius: 10px;
@@ -279,12 +279,13 @@ select:focus {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+  overflow: auto;
 }
 
 .team-card {
   padding: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   /* row-gap: 20px; */
   background-color: var(--primary-300);
   border-radius: 10px;

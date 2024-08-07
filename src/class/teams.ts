@@ -53,19 +53,3 @@ export class Team implements ITeam {
     return totalElements;
   }
 }
-
-// DOM element to display team information
-const teamInfo = document.getElementById("team-info") as HTMLElement;
-
-// Function to update team information in the UI
-function updateTeamInfo(team: Team) {
-  if (team) {
-    teamInfo.innerHTML = `
-      <p>Company in charge: ${team.teamName}</p>
-      <p>Company's role: ${team.teamRole}</p>
-      <p>Description: ${team.teamDescription}</p>
-      <p>Contact Name: ${team.contactName}</p>
-      <p>Phone number: ${team.contactPhone}</p>
-      <p>Project: Arreglar esto !!!</p>`;
-  }
-}

@@ -284,7 +284,7 @@ export function TeamsCard(props: Props) {
         </div>
       </div>
       {teams.length > 0 ? (
-        <div id="teams-list" className="nav-buttons">
+        <div id="teams-list" style={{ overflow: "auto" }}>
           {teamsCards}
         </div>
       ) : (

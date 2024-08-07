@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as OBC from "openbim-components";
 import { IProject, Project, toggleModal } from "../class/projects";
 import { ITeam, Team } from "../class/teams";
 import { v4 as uuidv4 } from "uuid";
@@ -566,61 +567,6 @@ export class ProjectsManager {
     a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
-  }
-
-  importFromJSON() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "application/json";
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      const json = reader.result;
-      if (!json) {
-        return;
-      }
-      const importData = JSON.parse(json as string);
-      const projects: IProject[] = importData.projects;
-      // const teams: ITeam[] = importData.teams;
-
-      const teams: ITeam[] = importData.teams.map((team) => {
-        if (team.fragmentMap) {
-          team.fragmentMap = Object.fromEntries(
-            Object.entries(team.fragmentMap).map(([key, value]) => [
-              key,
-              new Set(value as string[]),
-            ])
-          );
-        }
-        return team;
-      });
-
-      for (const team of teams) {
-        try {
-          this.newTeam(team);
-        } catch (err) {
-          const errorMessage = document.getElementById("err") as HTMLElement;
-          errorMessage.textContent = err;
-          toggleModal("error-popup");
-        }
-      }
-      for (const project of projects) {
-        try {
-          this.newProject(project);
-        } catch (err) {
-          const errorMessage = document.getElementById("err") as HTMLElement;
-          errorMessage.textContent = err;
-          toggleModal("error-popup");
-        }
-      }
-    });
-    input.addEventListener("change", () => {
-      const filesList = input.files;
-      if (!filesList) {
-        return;
-      }
-      reader.readAsText(filesList[0]);
-    });
-    input.click();
   }
 
   newProject(data: IProject, id?: string, modelRoute?: string) {

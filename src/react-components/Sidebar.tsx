@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
+import * as OBC from "openbim-components";
 import { useNavigate } from "react-router-dom";
 import {
   IProject,
@@ -48,9 +49,9 @@ export function Sidebar(props: Props) {
   //   }
   // };
 
-  React.useEffect(() => {
-    // getFirestoreProjects();
-  }, []);
+  // React.useEffect(() => {
+  //   getFirestoreProjects();
+  // }, []);
 
   const projectsCards = projects.map((project) => {
     return (
@@ -150,6 +151,13 @@ export function Sidebar(props: Props) {
             props.projectsManager.newProject(item, item.id);
             navigate(`/project/${item.id}`);
           } else if (isTeam(item)) {
+            const fragmentIdMap: OBC.FragmentIdMap = {};
+            for (const key in item.fragmentMap) {
+              if (Array.isArray(item.fragmentMap[key])) {
+                fragmentIdMap[key] = new Set(item.fragmentMap[key]);
+              }
+            }
+            item.fragmentMap = fragmentIdMap;
             props.projectsManager.newTeam(item);
           }
         } catch (error) {
