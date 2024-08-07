@@ -49,9 +49,9 @@ export function Sidebar(props: Props) {
   //   }
   // };
 
-  React.useEffect(() => {
-    // getFirestoreProjects();
-  }, []);
+  // React.useEffect(() => {
+  //   getFirestoreProjects();
+  // }, []);
 
   const projectsCards = projects.map((project) => {
     return (
