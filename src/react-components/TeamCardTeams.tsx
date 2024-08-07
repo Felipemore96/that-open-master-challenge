@@ -184,13 +184,17 @@ export function TeamCardTeams(props: Props) {
               <label>
                 <span className="material-icons-round">apartment</span>Name
               </label>
-              <input name="teamName" type="text" value={props.team.teamName} />
+              <input
+                name="teamName"
+                type="text"
+                defaultValue={props.team.teamName}
+              />
             </div>
             <div className="form-field-container">
               <label>
                 <span className="material-icons-round">assignment_ind</span>Role
               </label>
-              <select name="teamRole" value={props.team.teamRole}>
+              <select name="teamRole" defaultValue={props.team.teamRole}>
                 <option>BIM Manager</option>
                 <option>Structural</option>
                 <option>MEP</option>
@@ -206,8 +210,7 @@ export function TeamCardTeams(props: Props) {
                 name="teamDescription"
                 cols={30}
                 rows={5}
-                value={props.team.teamDescription}
-                defaultValue={""}
+                defaultValue={props.team.teamDescription}
               />
             </div>
             <div className="form-field-container">
@@ -217,8 +220,14 @@ export function TeamCardTeams(props: Props) {
               <div
                 style={{ display: "flex", flexDirection: "column", rowGap: 2 }}
               >
-                <input name="contactName" value={props.team.contactName} />
-                <input name="contactPhone" value={props.team.contactPhone} />
+                <input
+                  name="contactName"
+                  defaultValue={props.team.contactName}
+                />
+                <input
+                  name="contactPhone"
+                  defaultValue={props.team.contactPhone}
+                />
               </div>
             </div>
             <div

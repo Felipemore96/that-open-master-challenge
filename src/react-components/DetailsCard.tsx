@@ -15,7 +15,10 @@ export function DetailsCard(props: Props) {
   };
 
   return (
-    <div className="dashboard-card" style={{ padding: "15px" }}>
+    <div
+      className="dashboard-card"
+      style={{ padding: "15px", maxHeight: "30vh" }}
+    >
       <div
         style={{
           display: "flex",

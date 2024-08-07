@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as OBC from "openbim-components";
 import { IProject, Project, toggleModal } from "../class/projects";
 import { ITeam, Team } from "../class/teams";
 import { v4 as uuidv4 } from "uuid";
@@ -582,14 +583,15 @@ export class ProjectsManager {
       const projects: IProject[] = importData.projects;
       // const teams: ITeam[] = importData.teams;
 
-      const teams: ITeam[] = importData.teams.map((team) => {
+      const teams: ITeam[] = (importData.teams || []).map((team) => {
         if (team.fragmentMap) {
-          team.fragmentMap = Object.fromEntries(
-            Object.entries(team.fragmentMap).map(([key, value]) => [
-              key,
-              new Set(value as string[]),
-            ])
-          );
+          const fragmentIdMap: OBC.FragmentIdMap = {};
+          for (const key in team.fragmentMap) {
+            if (Array.isArray(team.fragmentMap[key])) {
+              fragmentIdMap[key] = new Set(team.fragmentMap[key]);
+            }
+          }
+          team.fragmentMap = fragmentIdMap;
         }
         return team;
       });
