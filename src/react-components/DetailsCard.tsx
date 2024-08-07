@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Project } from "../class/projects";
 import { toggleModal } from "../class/projects";
-import { div } from "three/examples/jsm/nodes/Nodes.js";
 
 interface Props {
   project: Project;
@@ -122,7 +121,7 @@ export function DetailsCard(props: Props) {
         </div>
       </dialog>
       <dialog id="edit-project-modal">
-        <form>
+        <form className="project-form">
           <h2>New Project</h2>
           <div className="input-list">
             <div className="form-field-container">

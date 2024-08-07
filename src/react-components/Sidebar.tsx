@@ -220,7 +220,7 @@ export function Sidebar(props: Props) {
   return (
     <aside id="sidebar">
       <dialog id="new-project-modal">
-        <form id="new-project-form">
+        <form className="project-form">
           <h2>New Project</h2>
           <div className="input-list">
             <div className="form-field-container">
