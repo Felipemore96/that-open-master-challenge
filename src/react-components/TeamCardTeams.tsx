@@ -2,6 +2,7 @@ import * as React from "react";
 import { Project, ProjectType, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
+import { cloneUniformsGroups } from "three";
 
 interface Props {
   team: Team;
@@ -13,17 +14,14 @@ export function TeamCardTeams(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
     props.projectsManager.teamsList
   );
+  const [selectedTeam, setSelectedTeam] = React.useState<Team | null>(null);
+
   props.projectsManager.onProjectDeleted = () => {
     setTeams([...props.projectsManager.teamsList]);
   };
-  const onDeleteTeam = () => {
-    props.projectsManager.deleteTeam(props.team.id);
-    props.onTeamDeleted();
-    console.log(props.projectsManager.teamsList);
-    toggleModal("delete-popup");
-  };
 
   const onDeleteTeamButton = () => {
+    setSelectedTeam(props.team);
     toggleModal("delete-popup");
   };
 
@@ -31,7 +29,13 @@ export function TeamCardTeams(props: Props) {
     toggleModal("delete-popup");
   };
 
+  props.projectsManager.onTeamDeleted = (id) => {
+    props.onTeamDeleted();
+    toggleModal("delete-popup");
+  };
+
   const onTeamInfoButton = () => {
+    setSelectedTeam(props.team);
     toggleModal("info-popup");
   };
 
@@ -137,7 +141,7 @@ export function TeamCardTeams(props: Props) {
               borderRadius: 10,
               fontSize: 17,
             }}
-            onClick={onTeamInfoButton}
+            onClick={() => onTeamInfoButton()}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#468f3f";
             }}
@@ -172,7 +176,9 @@ export function TeamCardTeams(props: Props) {
               Close
             </button>
             <button
-              onClick={(e) => onDeleteTeam()}
+              onClick={() => {
+                props.projectsManager.deleteTeam(props.team.id);
+              }}
               type="button"
               style={{
                 padding: "10px 20px",
