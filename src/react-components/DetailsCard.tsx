@@ -122,7 +122,7 @@ export function DetailsCard(props: Props) {
       </dialog>
       <dialog id="edit-project-modal">
         <form className="project-form">
-          <h2>New Project</h2>
+          <h2>Edit Project</h2>
           <div className="input-list">
             <div className="form-field-container">
               <label>
@@ -133,16 +133,6 @@ export function DetailsCard(props: Props) {
                 type="text"
                 defaultValue={props.project.projectName}
               />
-              <p
-                style={{
-                  color: "gray",
-                  fontSize: "var(--font-sm)",
-                  marginTop: 5,
-                  fontStyle: "italic",
-                }}
-              >
-                TIP: Give it a short name
-              </p>
             </div>
             <div className="form-field-container">
               <label>

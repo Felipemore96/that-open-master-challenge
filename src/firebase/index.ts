@@ -21,7 +21,16 @@ export function getCollection<T>(path: string) {
   ) as Firestore.CollectionReference<T>;
 }
 
-export function deleteDocument(path: string, id: string) {
+export async function deleteDocument(path: string, id: string) {
   const doc = Firestore.doc(firestoreDB, `${path}/${id}`);
-  Firestore.deleteDoc(doc);
+  await Firestore.deleteDoc(doc);
+}
+
+export async function updateDocumen<T extends Record<string, any>>(
+  path: string,
+  id: string,
+  data: T
+) {
+  const doc = Firestore.doc(firestoreDB, `${path}/${id}`);
+  await Firestore.updateDoc(doc, data);
 }

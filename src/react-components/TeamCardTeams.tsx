@@ -16,8 +16,11 @@ export function TeamCardTeams(props: Props) {
   );
   const [selectedTeam, setSelectedTeam] = React.useState<Team | null>(null);
 
-  props.projectsManager.onProjectDeleted = () => {
+  props.projectsManager.onTeamDeleted = async (id) => {
+    props.onTeamDeleted();
+    toggleModal("delete-popup");
     setTeams([...props.projectsManager.teamsList]);
+    // await deleteDocument("/teams", id);
   };
 
   const onDeleteTeamButton = () => {
@@ -26,11 +29,6 @@ export function TeamCardTeams(props: Props) {
   };
 
   const onCloseDeletePopup = () => {
-    toggleModal("delete-popup");
-  };
-
-  props.projectsManager.onTeamDeleted = (id) => {
-    props.onTeamDeleted();
     toggleModal("delete-popup");
   };
 
