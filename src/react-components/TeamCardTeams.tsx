@@ -1,30 +1,49 @@
 import * as React from "react";
+import * as OBC from "openbim-components";
 import { Project, ProjectType, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { cloneUniformsGroups } from "three";
+import { ViewerContext } from "./IFCViewer";
 
 interface Props {
+  project: Project;
   team: Team;
   projectsManager: ProjectsManager;
-  onTeamDeleted: () => void;
+  // modelLoaded: boolean;
+  // onTeamDeleted: () => void;
 }
 
 export function TeamCardTeams(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
     props.projectsManager.teamsList
   );
-  const [selectedTeam, setSelectedTeam] = React.useState<Team | null>(null);
+  // const [selectedTeam, setSelectedTeam] = React.useState<Team>(props.team);
 
-  props.projectsManager.onTeamDeleted = async (id) => {
-    props.onTeamDeleted();
-    toggleModal("delete-popup");
+  props.projectsManager.onTeamDeleted = () => {
+    filterTeams();
     setTeams([...props.projectsManager.teamsList]);
+    toggleModal("delete-popup");
+    console.log("team deleted");
     // await deleteDocument("/teams", id);
   };
 
+  const filterTeams = () => {
+    const filteredTeams = props.projectsManager.teamsList.filter(
+      (team) => team.teamProjectId === props.project.id
+    );
+    setTeams(filteredTeams);
+    console.log(filteredTeams);
+  };
+
+  React.useEffect(() => {
+    // getFirestoreTeams();
+    // filterTeams();
+    console.log("HOLA 2");
+  }, [teams]);
+
   const onDeleteTeamButton = () => {
-    setSelectedTeam(props.team);
+    // setSelectedTeam(props.team);
     toggleModal("delete-popup");
   };
 
@@ -33,7 +52,7 @@ export function TeamCardTeams(props: Props) {
   };
 
   const onTeamInfoButton = () => {
-    setSelectedTeam(props.team);
+    // setSelectedTeam(props.team);
     toggleModal("info-popup");
   };
 
@@ -67,6 +86,36 @@ export function TeamCardTeams(props: Props) {
     }
   };
 
+  const { viewer } = React.useContext(ViewerContext);
+  let modelLoaded: boolean = false;
+
+  const onTeamClicked = async (team: Team) => {
+    if (!viewer) return;
+    const camera = viewer.camera;
+    if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+      throw new Error(
+        "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+      );
+    }
+    modelLoaded = true;
+    const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+
+    if (team.camera) {
+      camera.controls.setLookAt(
+        team.camera.position.x,
+        team.camera.position.y,
+        team.camera.position.z,
+        team.camera.target.x,
+        team.camera.target.y,
+        team.camera.target.z,
+        true
+      );
+    }
+    if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
+      highlighter.highlightByID("select", team.fragmentMap);
+    }
+  };
+
   return (
     <div>
       <div className="team-card">
@@ -77,7 +126,7 @@ export function TeamCardTeams(props: Props) {
               alignItems: "center",
             }}
           >
-            <div>
+            <div onClick={() => onTeamClicked(props.team)}>
               <span
                 className="material-icons-round"
                 style={{

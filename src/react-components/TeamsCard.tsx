@@ -21,6 +21,9 @@ export function TeamsCard(props: Props) {
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamsList]);
   };
+  // props.projectsManager.onTeamDeleted = () => {
+  //   filterTeams();
+  // };
 
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamsList.filter(
@@ -30,13 +33,15 @@ export function TeamsCard(props: Props) {
   };
 
   React.useEffect(() => {
-    filterTeams();
-  }, [props.project.id, props.projectsManager.teamsList]);
-
-  React.useEffect(() => {
     // getFirestoreTeams();
     filterTeams();
   }, [props.project.id]);
+
+  // React.useEffect(() => {
+  //   // getFirestoreTeams();
+  //   filterTeams();
+  //   console.log("HOLA 2");
+  // }, [teams]);
 
   const { viewer } = React.useContext(ViewerContext);
   let modelLoaded: boolean = false;
@@ -116,48 +121,24 @@ export function TeamsCard(props: Props) {
     }
   };
 
-  const onTeamClicked = async (team: Team) => {
-    if (!viewer) return;
-    const camera = viewer.camera;
-    if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-      throw new Error(
-        "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
-      );
-    }
-    modelLoaded = true;
-    const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
-
-    if (team.camera) {
-      camera.controls.setLookAt(
-        team.camera.position.x,
-        team.camera.position.y,
-        team.camera.position.z,
-        team.camera.target.x,
-        team.camera.target.y,
-        team.camera.target.z,
-        true
-      );
-    }
-    if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
-      highlighter.highlightByID("select", team.fragmentMap);
-    }
-  };
-
   // const teamsCards = teams.map((team) => {
   //   return <TeamCardTeams team={team} key={team.id} />;
   // });
 
-  const onTeamDeleted = () => {
-    filterTeams();
-  };
+  // const onTeamDeleted = () => {
+  //   filterTeams();
+  // };
 
   const teamsCards = teams.map((team) => {
     return (
-      <div onClick={() => onTeamClicked(team)} key={team.id}>
+      <div>
         <TeamCardTeams
+          project={props.project}
           team={team}
           projectsManager={props.projectsManager}
-          onTeamDeleted={filterTeams}
+          key={team.id}
+          // modelLoaded={modelLoaded}
+          // onTeamDeleted={filterTeams}
         />
       </div>
     );
@@ -249,14 +230,6 @@ export function TeamsCard(props: Props) {
             id="close-error-popup"
             type="button"
           >
-            Close
-          </button>
-        </div>
-      </dialog>
-      <dialog id="team-info-popup">
-        <div id="team-info-message">
-          <p id="team-info" />
-          <button id="close-team-info-popup" type="button">
             Close
           </button>
         </div>
