@@ -37,11 +37,27 @@ export function TeamsCard(props: Props) {
     filterTeams();
   }, [props.project.id]);
 
-  // React.useEffect(() => {
-  //   // getFirestoreTeams();
+  React.useEffect(() => {}, [teams]);
+  // getFirestoreTeams();
+  // setTeams(teams);
+  // filterTeams();
+
+  // const onTeamDeleted = () => {
   //   filterTeams();
-  //   console.log("HOLA 2");
-  // }, [teams]);
+  // };
+
+  const teamsCards = teams.map((team) => {
+    return (
+      <TeamCardTeams
+        project={props.project}
+        team={team}
+        projectsManager={props.projectsManager}
+        key={team.id}
+        // modelLoaded={modelLoaded}
+        // onTeamDeleted={filterTeams}
+      />
+    );
+  });
 
   const { viewer } = React.useContext(ViewerContext);
   let modelLoaded: boolean = false;
@@ -120,29 +136,6 @@ export function TeamsCard(props: Props) {
       toggleModal("error-popup");
     }
   };
-
-  // const teamsCards = teams.map((team) => {
-  //   return <TeamCardTeams team={team} key={team.id} />;
-  // });
-
-  // const onTeamDeleted = () => {
-  //   filterTeams();
-  // };
-
-  const teamsCards = teams.map((team) => {
-    return (
-      <div>
-        <TeamCardTeams
-          project={props.project}
-          team={team}
-          projectsManager={props.projectsManager}
-          key={team.id}
-          // modelLoaded={modelLoaded}
-          // onTeamDeleted={filterTeams}
-        />
-      </div>
-    );
-  });
 
   return (
     <div className="dashboard-card" style={{ flexGrow: 1 }}>

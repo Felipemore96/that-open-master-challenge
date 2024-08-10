@@ -1,16 +1,14 @@
 import * as React from "react";
 import * as OBC from "openbim-components";
-import { Project, ProjectType, toggleModal } from "../class/projects";
+import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-import { cloneUniformsGroups } from "three";
 import { ViewerContext } from "./IFCViewer";
 
 interface Props {
   project: Project;
   team: Team;
   projectsManager: ProjectsManager;
-  // modelLoaded: boolean;
   // onTeamDeleted: () => void;
 }
 
@@ -33,14 +31,9 @@ export function TeamCardTeams(props: Props) {
       (team) => team.teamProjectId === props.project.id
     );
     setTeams(filteredTeams);
-    console.log(filteredTeams);
   };
 
-  React.useEffect(() => {
-    // getFirestoreTeams();
-    // filterTeams();
-    console.log("HOLA 2");
-  }, [teams]);
+  React.useEffect(() => {}, [teams]);
 
   const onDeleteTeamButton = () => {
     // setSelectedTeam(props.team);
