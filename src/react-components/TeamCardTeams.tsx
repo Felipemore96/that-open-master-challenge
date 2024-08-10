@@ -9,28 +9,20 @@ interface Props {
   project: Project;
   team: Team;
   projectsManager: ProjectsManager;
-  // onTeamDeleted: () => void;
+  filterTeams: () => void;
 }
 
 export function TeamCardTeams(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
     props.projectsManager.teamsList
   );
-  // const [selectedTeam, setSelectedTeam] = React.useState<Team>(props.team);
 
   props.projectsManager.onTeamDeleted = () => {
-    filterTeams();
+    props.filterTeams();
     setTeams([...props.projectsManager.teamsList]);
     toggleModal("delete-popup");
     console.log("team deleted");
     // await deleteDocument("/teams", id);
-  };
-
-  const filterTeams = () => {
-    const filteredTeams = props.projectsManager.teamsList.filter(
-      (team) => team.teamProjectId === props.project.id
-    );
-    setTeams(filteredTeams);
   };
 
   React.useEffect(() => {}, [teams]);

@@ -21,9 +21,6 @@ export function TeamsCard(props: Props) {
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamsList]);
   };
-  // props.projectsManager.onTeamDeleted = () => {
-  //   filterTeams();
-  // };
 
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamsList.filter(
@@ -37,24 +34,14 @@ export function TeamsCard(props: Props) {
     filterTeams();
   }, [props.project.id]);
 
-  React.useEffect(() => {}, [teams]);
-  // getFirestoreTeams();
-  // setTeams(teams);
-  // filterTeams();
-
-  // const onTeamDeleted = () => {
-  //   filterTeams();
-  // };
-
   const teamsCards = teams.map((team) => {
     return (
       <TeamCardTeams
+        key={team.id}
         project={props.project}
         team={team}
         projectsManager={props.projectsManager}
-        key={team.id}
-        // modelLoaded={modelLoaded}
-        // onTeamDeleted={filterTeams}
+        filterTeams={filterTeams}
       />
     );
   });

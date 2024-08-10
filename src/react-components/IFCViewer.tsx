@@ -33,7 +33,7 @@ export function IFCViewer(props: Props) {
   let viewer: OBC.Components;
 
   // openBIM-components viewer
-  const createViewer = async (props: Props) => {
+  const createViewer = async () => {
     let defaultProject: boolean = false;
     if (props.project.fragRoute) {
       defaultProject = true;
@@ -298,7 +298,7 @@ export function IFCViewer(props: Props) {
 
   // This useEffect hook runs whenever props.project changes
   React.useEffect(() => {
-    createViewer(props); // Create a new viewer instance with updated project
+    createViewer(); // Create a new viewer instance with updated project
     return () => {
       viewer.dispose(); // Dispose the previous viewer instance
       setViewer(null);
