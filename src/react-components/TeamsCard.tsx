@@ -38,8 +38,8 @@ export function TeamsCard(props: Props) {
     return (
       <TeamCardTeams
         key={team.id}
-        project={props.project}
         team={team}
+        project={props.project}
         projectsManager={props.projectsManager}
         filterTeams={filterTeams}
       />

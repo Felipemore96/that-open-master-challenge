@@ -6,8 +6,8 @@ import { ProjectsManager } from "../class/projectsManager";
 import { ViewerContext } from "./IFCViewer";
 
 interface Props {
-  project: Project;
   team: Team;
+  project: Project;
   projectsManager: ProjectsManager;
   filterTeams: () => void;
 }
@@ -103,7 +103,7 @@ export function TeamCardTeams(props: Props) {
 
   return (
     <div>
-      <div className="team-card">
+      <div className="team-card" onClick={() => onTeamClicked(props.team)}>
         <div>
           <div
             style={{
@@ -111,7 +111,7 @@ export function TeamCardTeams(props: Props) {
               alignItems: "center",
             }}
           >
-            <div onClick={() => onTeamClicked(props.team)}>
+            <div>
               <span
                 className="material-icons-round"
                 style={{
@@ -155,7 +155,7 @@ export function TeamCardTeams(props: Props) {
               borderRadius: 10,
               fontSize: 17,
             }}
-            onClick={onDeleteTeamButton}
+            onClick={(e) => onDeleteTeamButton()}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#ff4d4d";
             }}
