@@ -17,6 +17,8 @@ export function TeamCardTeams(props: Props) {
     props.projectsManager.teamsList
   );
 
+  const [selectedTeam, setSelectedTeam] = React.useState<Team>(props.team);
+
   props.projectsManager.onTeamDeleted = () => {
     props.filterTeams();
     setTeams([...props.projectsManager.teamsList]);
@@ -27,18 +29,18 @@ export function TeamCardTeams(props: Props) {
 
   React.useEffect(() => {}, [teams]);
 
-  const onDeleteTeamButton = () => {
-    // setSelectedTeam(props.team);
-    toggleModal("delete-popup");
-  };
-
-  const onCloseDeletePopup = () => {
+  const onDeleteTeamButton = (team: Team) => {
+    setSelectedTeam(team);
     toggleModal("delete-popup");
   };
 
   const onTeamInfoButton = () => {
     // setSelectedTeam(props.team);
     toggleModal("info-popup");
+  };
+
+  const onCloseDeletePopup = () => {
+    toggleModal("delete-popup");
   };
 
   const onCloseInfoPopup = () => {
@@ -138,7 +140,6 @@ export function TeamCardTeams(props: Props) {
             <p>Number of elements: {props.team.numberOfElements}</p>
           </div>
         </div>
-
         <div
           style={{
             display: "flex",
@@ -148,6 +149,7 @@ export function TeamCardTeams(props: Props) {
           }}
         >
           <span
+            onClick={() => onDeleteTeamButton(props.team)}
             className="material-icons-round"
             style={{
               padding: 10,
@@ -155,7 +157,6 @@ export function TeamCardTeams(props: Props) {
               borderRadius: 10,
               fontSize: 17,
             }}
-            onClick={(e) => onDeleteTeamButton()}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#ff4d4d";
             }}
@@ -166,6 +167,7 @@ export function TeamCardTeams(props: Props) {
             delete
           </span>
           <span
+            onClick={() => onTeamInfoButton()}
             className="material-icons-round"
             style={{
               padding: 10,
@@ -173,7 +175,6 @@ export function TeamCardTeams(props: Props) {
               borderRadius: 10,
               fontSize: 17,
             }}
-            onClick={() => onTeamInfoButton()}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#468f3f";
             }}
