@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import * as Router from "react-router-dom";
-import { toggleModal } from "./class/projects";
 import { Sidebar } from "./react-components/Sidebar";
 import { ProjectsManager } from "./class/projectsManager";
 import { DetailsPage } from "./react-components/DetailsPage";
@@ -13,25 +12,23 @@ const projectsManager = new ProjectsManager();
 const rootElement = document.getElementById("app") as HTMLDivElement;
 const appRoot = ReactDOM.createRoot(rootElement);
 appRoot.render(
-  <>
-    <Router.BrowserRouter>
-      <ViewerProvider>
-        <Router.Routes>
-          <Router.Route
-            path="/"
-            element={<HomePage projectsManager={projectsManager} />}
-          ></Router.Route>
-          <Router.Route
-            path="/project/:id"
-            element={
-              <>
-                <Sidebar projectsManager={projectsManager} />
-                <DetailsPage projectsManager={projectsManager} />
-              </>
-            }
-          ></Router.Route>
-        </Router.Routes>
-      </ViewerProvider>
-    </Router.BrowserRouter>
-  </>
+  <Router.BrowserRouter>
+    <ViewerProvider>
+      <Router.Routes>
+        <Router.Route
+          path="/"
+          element={<HomePage projectsManager={projectsManager} />}
+        ></Router.Route>
+        <Router.Route
+          path="/project/:id"
+          element={
+            <>
+              <Sidebar projectsManager={projectsManager} />
+              <DetailsPage projectsManager={projectsManager} />
+            </>
+          }
+        ></Router.Route>
+      </Router.Routes>
+    </ViewerProvider>
+  </Router.BrowserRouter>
 );

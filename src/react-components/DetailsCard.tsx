@@ -7,97 +7,122 @@ interface Props {
 }
 
 export function DetailsCard(props: Props) {
-  const onClickEditButton = () => {};
-  const onCancelEdits = () => {};
+  const onClickEditButton = () => {
+    toggleModal("edit-project-modal");
+  };
+  const onCancelEdits = () => {
+    toggleModal("edit-project-modal");
+  };
   const onSubmitEditedProject = (e) => {};
   const onCloseErrorPopup = () => {
     toggleModal("error-popup");
   };
 
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   return (
-    <div
-      className="dashboard-card"
-      style={{ padding: "15px", maxHeight: "30vh" }}
-    >
+    <div>
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 10,
-        }}
+        className="dashboard-card"
+        style={{ padding: "15px", maxHeight: "30vh" }}
       >
-        <h4 />
-        <button onClick={onClickEditButton} className="btn-secondary">
-          <p style={{ width: "100%" }}>Edit</p>
-        </button>
-      </div>
-      <div>
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
             justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
           }}
         >
-          <div className="card-content">
-            <div className="card-property">
-              <p style={{ color: "#969696" }}>Status</p>
-              <p id="project-status" data-project-info="status">
-                {props.project.projectStatus}
-              </p>
-            </div>
-            <div className="card-property">
-              <p style={{ color: "#969696" }}>Cost</p>
-              <p id="project-cost" data-project-info="cost">
-                {props.project.projectCost}
-              </p>
-            </div>
-            <div className="card-property">
-              <p style={{ color: "#969696" }}>Type</p>
-              <p id="project-type" data-project-info="type">
-                {props.project.projectType}
-              </p>
-            </div>
-            <div className="card-property">
-              <p style={{ color: "#969696" }}>Address</p>
-              <p id="project-address" data-project-info="address">
-                {props.project.projectAddress}
-              </p>
-            </div>
-            <div className="card-property">
-              <p style={{ color: "#969696" }}>Finish Date</p>
-              <p id="project-finish-date" data-project-info="finishDate">
-                {props.project.projectFinishDate.toDateString()}
-              </p>
-            </div>
-            <div
-              className="card-property"
-              style={{
-                backgroundColor: "#404040",
-                borderRadius: 9999,
-                overflow: "auto",
-              }}
-            >
+          <h4 />
+          <button onClick={onClickEditButton} className="btn-secondary">
+            <p style={{ width: "100%" }}>Edit</p>
+          </button>
+        </div>
+        <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <div className="card-content">
+              <div className="card-property">
+                <p style={{ color: "#969696" }}>Status</p>
+                <p id="project-status" data-project-info="status">
+                  {props.project.projectStatus}
+                </p>
+              </div>
+              <div className="card-property">
+                <p style={{ color: "#969696" }}>Cost</p>
+                <p id="project-cost" data-project-info="cost">
+                  {props.project.projectCost}
+                </p>
+              </div>
+              <div className="card-property">
+                <p style={{ color: "#969696" }}>Type</p>
+                <p id="project-type" data-project-info="type">
+                  {props.project.projectType}
+                </p>
+              </div>
+              <div className="card-property">
+                <p style={{ color: "#969696" }}>Address</p>
+                <p id="project-address" data-project-info="address">
+                  {props.project.projectAddress}
+                </p>
+              </div>
+              <div className="card-property">
+                <p style={{ color: "#969696" }}>Finish Date</p>
+                <p id="project-finish-date" data-project-info="finishDate">
+                  {props.project.projectFinishDate.toDateString()}
+                </p>
+              </div>
               <div
-                id="project-progress"
-                data-project-info="progress"
+                className="card-property"
                 style={{
-                  width: `${props.project.projectProgress}%`,
-                  backgroundColor: "#468f3f",
-                  padding: "4px 0",
-                  textAlign: "center",
+                  backgroundColor: "#404040",
+                  borderRadius: 9999,
+                  overflow: "auto",
                 }}
               >
-                {props.project.projectProgress}%
+                <div
+                  id="project-progress"
+                  data-project-info="progress"
+                  style={{
+                    width: `${props.project.projectProgress}%`,
+                    backgroundColor: "#468f3f",
+                    padding: "4px 0",
+                    textAlign: "center",
+                  }}
+                >
+                  {props.project.projectProgress}%
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <dialog id="new-project-modal">
-        <form id="new-project-form">
-          <h2>New Project</h2>
+      <dialog id="error-popup">
+        <div id="error-message">
+          <p id="err" />
+          <button
+            onClick={onCloseErrorPopup}
+            id="close-error-popup"
+            type="button"
+          >
+            Close
+          </button>
+        </div>
+      </dialog>
+      <dialog id="edit-project-modal">
+        <form className="project-form">
+          <h2>Edit Project</h2>
           <div className="input-list">
             <div className="form-field-container">
               <label>
@@ -106,18 +131,8 @@ export function DetailsCard(props: Props) {
               <input
                 name="project-name"
                 type="text"
-                placeholder="What's the name of your project?"
+                defaultValue={props.project.projectName}
               />
-              <p
-                style={{
-                  color: "gray",
-                  fontSize: "var(--font-sm)",
-                  marginTop: 5,
-                  fontStyle: "italic",
-                }}
-              >
-                TIP: Give it a short name
-              </p>
             </div>
             <div className="form-field-container">
               <label>
@@ -127,8 +142,7 @@ export function DetailsCard(props: Props) {
                 name="project-description"
                 cols={30}
                 rows={5}
-                placeholder="Project's description"
-                defaultValue={""}
+                defaultValue={props.project.projectDescription}
               />
             </div>
             <div className="form-field-container">
@@ -138,7 +152,10 @@ export function DetailsCard(props: Props) {
                 </span>
                 Status
               </label>
-              <select name="project-status">
+              <select
+                name="project-status"
+                defaultValue={props.project.projectStatus}
+              >
                 <option>Pending</option>
                 <option>Active</option>
                 <option>Finished</option>
@@ -151,14 +168,17 @@ export function DetailsCard(props: Props) {
               <input
                 name="project-cost"
                 type="text"
-                placeholder="Project's cost"
+                defaultValue={props.project.projectCost}
               />
             </div>
             <div className="form-field-container">
               <label>
                 <span className="material-icons-round">category</span>Type
               </label>
-              <select name="project-type">
+              <select
+                name="project-type"
+                defaultValue={props.project.projectType}
+              >
                 <option>Residential</option>
                 <option>Commercial</option>
                 <option>Institutional</option>
@@ -174,7 +194,7 @@ export function DetailsCard(props: Props) {
               <input
                 name="project-address"
                 type="text"
-                placeholder="Project's address"
+                defaultValue={props.project.projectAddress}
               />
             </div>
             <div className="form-field-container">
@@ -182,7 +202,11 @@ export function DetailsCard(props: Props) {
                 <span className="material-icons-round">calendar_month</span>
                 Finish Date
               </label>
-              <input name="finishDate" type="date" />
+              <input
+                name="finishDate"
+                type="date"
+                defaultValue={formatDate(props.project.projectFinishDate)}
+              />
             </div>
             <div className="form-field-container">
               <label>
@@ -194,7 +218,7 @@ export function DetailsCard(props: Props) {
               <input
                 name="project-progress"
                 type="text"
-                placeholder="Project's progress from 0 to 100"
+                defaultValue={props.project.projectProgress}
               />
             </div>
             <div
@@ -213,7 +237,7 @@ export function DetailsCard(props: Props) {
                 Cancel
               </button>
               <button
-                onClick={(e) => onSubmitEditedProject(e)}
+                // onClick={(e) => onSubmitEditedProject(e)}
                 id="submit-new-project-btn"
                 type="button"
                 style={{ backgroundColor: "rgb(18, 145, 18)" }}
@@ -223,18 +247,6 @@ export function DetailsCard(props: Props) {
             </div>
           </div>
         </form>
-      </dialog>
-      <dialog id="error-popup">
-        <div id="error-message">
-          <p id="err" />
-          <button
-            onClick={onCloseErrorPopup}
-            id="close-error-popup"
-            type="button"
-          >
-            Close
-          </button>
-        </div>
       </dialog>
     </div>
   );

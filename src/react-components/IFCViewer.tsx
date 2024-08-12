@@ -29,25 +29,17 @@ export function ViewerProvider(props: { children: React.ReactNode }) {
 }
 
 export function IFCViewer(props: Props) {
-  const { viewer, setViewer } = React.useContext(ViewerContext);
-
-  // This useEffect hook runs whenever props.project changes
-  React.useEffect(() => {
-    if (viewer) {
-      viewer.dispose(); // Dispose the previous viewer instance
-      setViewer(null);
-    }
-    createViewer(props); // Create a new viewer instance with updated project
-  }, [props.project.id]); // Dependency on props.project
+  const { setViewer } = React.useContext(ViewerContext);
+  let viewer: OBC.Components;
 
   // openBIM-components viewer
-  const createViewer = async (props: Props) => {
+  const createViewer = async () => {
     let defaultProject: boolean = false;
     if (props.project.fragRoute) {
       defaultProject = true;
     }
 
-    const viewer = new OBC.Components();
+    viewer = new OBC.Components();
     setViewer(viewer);
 
     //Scene tool setup
@@ -303,6 +295,15 @@ export function IFCViewer(props: Props) {
     );
     viewer.ui.addToolbar(toolbar);
   };
+
+  // This useEffect hook runs whenever props.project changes
+  React.useEffect(() => {
+    createViewer(); // Create a new viewer instance with updated project
+    return () => {
+      viewer.dispose(); // Dispose the previous viewer instance
+      setViewer(null);
+    };
+  }, [props.project.id]); // Dependency on props.project
 
   return (
     <div

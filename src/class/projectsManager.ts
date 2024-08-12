@@ -10,9 +10,9 @@ export class ProjectsManager {
   currentProject: Project | null = null;
   teamProject: string;
   onProjectCreated = (project: Project) => {};
-  onProjectDeleted = () => {};
+  onProjectDeleted = (id: string) => {};
   onTeamCreated = (team: Team) => {};
-  onTeamDeleted = () => {};
+  onTeamDeleted = (id: string) => {};
 
   constructor() {
     this.newProject({
@@ -533,7 +533,7 @@ export class ProjectsManager {
       return project.id !== id;
     });
     this.projectsList = remaining;
-    this.onProjectDeleted();
+    this.onProjectDeleted(id);
   }
 
   exportToJSON(fileName: string = "project-info") {
@@ -613,6 +613,6 @@ export class ProjectsManager {
       return team.id !== id;
     });
     this.teamsList = remaining;
-    this.onTeamDeleted();
+    this.onTeamDeleted(id);
   }
 }

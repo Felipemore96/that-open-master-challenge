@@ -235,6 +235,11 @@ select:focus {
   row-gap: 10px;
 }
 
+.project-form {
+  max-height: calc(90vh);
+  overflow-y: auto;
+}
+
 /* Project details page*/
 
 .dashboard-card {

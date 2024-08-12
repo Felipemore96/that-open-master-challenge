@@ -1,42 +1,59 @@
 import * as React from "react";
-import { Project, ProjectType, toggleModal } from "../class/projects";
+import * as OBC from "openbim-components";
+import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
+import { ViewerContext } from "./IFCViewer";
 
 interface Props {
   team: Team;
+  project: Project;
   projectsManager: ProjectsManager;
-  onTeamDeleted: () => void;
+  filterTeams: () => void;
 }
 
 export function TeamCardTeams(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
     props.projectsManager.teamsList
   );
-  props.projectsManager.onProjectDeleted = () => {
+
+  const [selectedTeam, setSelectedTeam] = React.useState<Team>(props.team);
+
+  props.projectsManager.onTeamDeleted = () => {
+    props.filterTeams();
     setTeams([...props.projectsManager.teamsList]);
+    toggleModal("delete-popup");
+    console.log("team deleted");
+    // await deleteDocument("/teams", id);
   };
-  const onDeleteTeam = () => {
-    props.projectsManager.deleteTeam(props.team.id);
-    props.onTeamDeleted();
-    console.log(props.projectsManager.teamsList);
+
+  React.useEffect(() => {}, [teams]);
+
+  const onDeleteTeamButton = (team: Team) => {
+    setSelectedTeam(team);
     toggleModal("delete-popup");
   };
 
-  const onDeleteTeamButton = () => {
-    toggleModal("delete-popup");
+  const onTeamInfoButton = () => {
+    // setSelectedTeam(props.team);
+    toggleModal("info-popup");
   };
 
   const onCloseDeletePopup = () => {
     toggleModal("delete-popup");
   };
 
-  const onTeamInfoButton = () => {
+  const onCloseInfoPopup = () => {
     toggleModal("info-popup");
   };
 
-  const onCloseInfoPopup = () => {
+  const onEditTeamInfo = () => {
     toggleModal("info-popup");
+    toggleModal("edit-info-popup");
+  };
+
+  const onCloseEditTeamPopup = () => {
+    toggleModal("edit-info-popup");
   };
 
   const iconConversion = (teamRole: TeamRole): string => {
@@ -56,9 +73,39 @@ export function TeamCardTeams(props: Props) {
     }
   };
 
+  const { viewer } = React.useContext(ViewerContext);
+  let modelLoaded: boolean = false;
+
+  const onTeamClicked = async (team: Team) => {
+    if (!viewer) return;
+    const camera = viewer.camera;
+    if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+      throw new Error(
+        "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+      );
+    }
+    modelLoaded = true;
+    const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+
+    if (team.camera) {
+      camera.controls.setLookAt(
+        team.camera.position.x,
+        team.camera.position.y,
+        team.camera.position.z,
+        team.camera.target.x,
+        team.camera.target.y,
+        team.camera.target.z,
+        true
+      );
+    }
+    if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
+      highlighter.highlightByID("select", team.fragmentMap);
+    }
+  };
+
   return (
     <div>
-      <div className="team-card">
+      <div className="team-card" onClick={() => onTeamClicked(props.team)}>
         <div>
           <div
             style={{
@@ -93,7 +140,6 @@ export function TeamCardTeams(props: Props) {
             <p>Number of elements: {props.team.numberOfElements}</p>
           </div>
         </div>
-
         <div
           style={{
             display: "flex",
@@ -103,6 +149,7 @@ export function TeamCardTeams(props: Props) {
           }}
         >
           <span
+            onClick={() => onDeleteTeamButton(props.team)}
             className="material-icons-round"
             style={{
               padding: 10,
@@ -110,7 +157,6 @@ export function TeamCardTeams(props: Props) {
               borderRadius: 10,
               fontSize: 17,
             }}
-            onClick={onDeleteTeamButton}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#ff4d4d";
             }}
@@ -121,6 +167,7 @@ export function TeamCardTeams(props: Props) {
             delete
           </span>
           <span
+            onClick={() => onTeamInfoButton()}
             className="material-icons-round"
             style={{
               padding: 10,
@@ -128,7 +175,6 @@ export function TeamCardTeams(props: Props) {
               borderRadius: 10,
               fontSize: 17,
             }}
-            onClick={onTeamInfoButton}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = "#468f3f";
             }}
@@ -163,7 +209,9 @@ export function TeamCardTeams(props: Props) {
               Close
             </button>
             <button
-              onClick={(e) => onDeleteTeam()}
+              onClick={() => {
+                props.projectsManager.deleteTeam(props.team.id);
+              }}
               type="button"
               style={{
                 padding: "10px 20px",
@@ -177,8 +225,64 @@ export function TeamCardTeams(props: Props) {
         </div>
       </dialog>
       <dialog id="info-popup">
-        <form id="new-team-form">
+        <form>
           <h2>Team's Information</h2>
+          <div className="input-list">
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">apartment</span>Name
+              </label>
+              <p>{props.team.teamName}</p>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">assignment_ind</span>Role
+              </label>
+              <p>{props.team.teamRole}</p>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">subject</span>Description
+              </label>
+              <p>{props.team.teamDescription}</p>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">person</span>Contact
+              </label>
+              <p>{props.team.contactName}</p>
+              <p>{props.team.contactPhone}</p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                margin: "10px 0px 10px auto",
+                columnGap: 10,
+              }}
+            >
+              <button
+                onClick={onCloseInfoPopup}
+                id="cancel-new-team-btn"
+                type="button"
+                style={{ backgroundColor: "transparent" }}
+              >
+                Close
+              </button>
+              <button
+                onClick={() => onEditTeamInfo()}
+                id="submit-new-team-btn"
+                type="button"
+                style={{ backgroundColor: "rgb(18, 145, 18)" }}
+              >
+                Edit Information
+              </button>
+            </div>
+          </div>
+        </form>
+      </dialog>
+      <dialog id="edit-info-popup">
+        <form>
+          <h2>Edit Team's Information</h2>
           <div className="input-list">
             <div className="form-field-container">
               <label>
@@ -238,7 +342,7 @@ export function TeamCardTeams(props: Props) {
               }}
             >
               <button
-                onClick={onCloseInfoPopup}
+                onClick={onCloseEditTeamPopup}
                 id="cancel-new-team-btn"
                 type="button"
                 style={{ backgroundColor: "transparent" }}
