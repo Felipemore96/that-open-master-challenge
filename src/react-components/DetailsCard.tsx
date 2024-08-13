@@ -7,6 +7,7 @@ import {
 } from "../class/projects";
 import { toggleModal } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   project: Project;
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export function DetailsCard(props: Props) {
+  const navigate = useNavigate();
+
   const onClickEditButton = () => {
     toggleModal("edit-project-modal");
   };
@@ -35,6 +38,9 @@ export function DetailsCard(props: Props) {
       projectAddress: formData.get("project-address") as string,
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
+      id: props.project.id,
+      fragRoute: props.project.fragRoute,
+      jsonRoute: props.project.jsonRoute,
     };
     try {
       // const projectsCollection = getCollection<IProject>("/projects");
@@ -45,6 +51,7 @@ export function DetailsCard(props: Props) {
         props.project,
       );
       console.log(updatedProject);
+      navigate(`/project/${updatedProject.id}`);
       // getFirestoreProjects();
       toggleModal("edit-project-modal");
     } catch (err) {
