@@ -13,7 +13,7 @@ interface Props {
 
 export function DetailsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.projectsList
+    props.projectsManager.projectsList,
   );
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
@@ -35,7 +35,10 @@ export function DetailsPage(props: Props) {
       <DetailsPageHeader project={currentProject} />
       <div className="main-page-content">
         <div style={{ display: "flex", flexDirection: "column", rowGap: 20 }}>
-          <DetailsCard project={currentProject} />
+          <DetailsCard
+            project={currentProject}
+            projectsManager={props.projectsManager}
+          />
           <TeamsCard
             project={currentProject}
             projectsManager={props.projectsManager}

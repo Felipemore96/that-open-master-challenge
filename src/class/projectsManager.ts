@@ -7,8 +7,6 @@ import { v4 as uuidv4 } from "uuid";
 export class ProjectsManager {
   projectsList: Project[] = [];
   teamsList: Team[] = [];
-  currentProject: Project | null = null;
-  teamProject: string;
   onProjectCreated = (project: Project) => {};
   onProjectDeleted = (id: string) => {};
   onTeamCreated = (team: Team) => {};
@@ -52,12 +50,12 @@ export class ProjectsManager {
         position: new THREE.Vector3(
           81.81247929233817,
           49.0409386329085,
-          130.86505719708884
+          130.86505719708884,
         ),
         target: new THREE.Vector3(
           -14.413127277813626,
           -34.892857845120155,
-          49.53080950635257
+          49.53080950635257,
         ),
       },
     });
@@ -90,12 +88,12 @@ export class ProjectsManager {
         position: new THREE.Vector3(
           -3.5619167211226213,
           -65.33176411094537,
-          117.32517728289218
+          117.32517728289218,
         ),
         target: new THREE.Vector3(
           22.520271827043366,
           3.650672103879617,
-          71.925365230357
+          71.925365230357,
         ),
       },
     });
@@ -136,12 +134,12 @@ export class ProjectsManager {
         position: new THREE.Vector3(
           37.7661077230378,
           16.506804101129756,
-          34.90037938293105
+          34.90037938293105,
         ),
         target: new THREE.Vector3(
           8.455718350089347,
           1.5425332388016395,
-          23.60425851131652
+          23.60425851131652,
         ),
       },
     });
@@ -231,12 +229,12 @@ export class ProjectsManager {
         position: new THREE.Vector3(
           -37.68052988820838,
           7.812333124771319,
-          40.48046677685305
+          40.48046677685305,
         ),
         target: new THREE.Vector3(
           -25.987722991348015,
           -2.3622430229106635,
-          17.521449428338766
+          17.521449428338766,
         ),
       },
     });
@@ -537,28 +535,10 @@ export class ProjectsManager {
   }
 
   exportToJSON(fileName: string = "project-info") {
-    // const teamsListCopy = this.teamsList.map((team) => {
-    //   return {
-    //     ...team,
-    //     fragmentMap: team.fragmentMap
-    //       ? Object.fromEntries(
-    //           Object.entries(team.fragmentMap).map(([key, value]) => [
-    //             key,
-    //             [...value],
-    //           ])
-    //         )
-    //       : undefined,
-    //   };
-    // });
-    // const json = JSON.stringify(
-    //   { projects: this.projectsList, teams: teamsListCopy },
-    //   null,
-    //   2
-    // );
     const json = JSON.stringify(
       { projects: this.projectsList, teams: this.teamsList },
       null,
-      2
+      2,
     );
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -571,17 +551,17 @@ export class ProjectsManager {
 
   newProject(data: IProject, id?: string, modelRoute?: string) {
     const nameInUse = this.projectsList.some(
-      (project) => project.projectName === data.projectName
+      (project) => project.projectName === data.projectName,
     );
 
     const projectId = data.id;
     const idInUse = this.projectsList.some(
-      (project) => project.id === projectId
+      (project) => project.id === projectId,
     );
 
     if (nameInUse) {
       throw new Error(
-        `A project with name "${data.projectName}" already exists`
+        `A project with name "${data.projectName}" already exists`,
       );
     }
     if (idInUse) {
@@ -590,8 +570,6 @@ export class ProjectsManager {
 
     const project = new Project(data, data.id);
     this.projectsList.push(project);
-    this.currentProject = project;
-    this.teamProject = project.projectName;
     this.onProjectCreated(project);
 
     return project;
@@ -614,5 +592,31 @@ export class ProjectsManager {
     });
     this.teamsList = remaining;
     this.onTeamDeleted(id);
+  }
+
+  editProject(newData: IProject, originalData: IProject) {
+    const nameKept = newData.projectName === originalData.projectName;
+    const nameInUse = this.projectsList.some(
+      (project) => project.projectName === newData.projectName,
+    );
+
+    if (!nameKept && nameInUse) {
+      throw new Error(
+        `A project with name "${newData.projectName}" already exists`,
+      );
+    }
+
+    const originalProjectIndex = this.projectsList.findIndex(
+      (project) => project.id === originalData.id,
+    );
+
+    if (originalProjectIndex === -1) {
+      throw new Error(`Project with ID "${originalData.id}" not found.`);
+    }
+
+    const updatedProject = new Project(newData, originalData.id);
+    this.projectsList[originalProjectIndex] = updatedProject;
+
+    return updatedProject;
   }
 }

@@ -1,19 +1,66 @@
 import * as React from "react";
-import { Project } from "../class/projects";
+import {
+  IProject,
+  Project,
+  ProjectStatus,
+  ProjectType,
+} from "../class/projects";
 import { toggleModal } from "../class/projects";
+import { ProjectsManager } from "../class/projectsManager";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   project: Project;
+  projectsManager: ProjectsManager;
 }
 
 export function DetailsCard(props: Props) {
+  const navigate = useNavigate();
+
   const onClickEditButton = () => {
     toggleModal("edit-project-modal");
   };
   const onCancelEdits = () => {
     toggleModal("edit-project-modal");
   };
-  const onSubmitEditedProject = (e) => {};
+  const onSubmitEditedProject = (e) => {
+    e.preventDefault();
+    const projectForm = document.getElementById(
+      "edit-project-form",
+    ) as HTMLFormElement;
+    const formData = new FormData(projectForm);
+    const newProjectData: IProject = {
+      projectName: formData.get("project-name") as string,
+      projectDescription: formData.get("project-description") as string,
+      projectStatus: formData.get("project-status") as ProjectStatus,
+      projectCost: formData.get("project-cost") as string,
+      projectType: formData.get("project-type") as ProjectType,
+      projectAddress: formData.get("project-address") as string,
+      projectFinishDate: new Date(formData.get("finishDate") as string),
+      projectProgress: formData.get("project-progress") as string,
+      id: props.project.id,
+      fragRoute: props.project.fragRoute,
+      jsonRoute: props.project.jsonRoute,
+    };
+    try {
+      // const projectsCollection = getCollection<IProject>("/projects");
+      // Firestore.addDoc(projectsCollection, projectData);
+
+      const updatedProject = props.projectsManager.editProject(
+        newProjectData,
+        props.project,
+      );
+      console.log(updatedProject);
+      navigate(`/project/${updatedProject.id}`);
+      // getFirestoreProjects();
+      toggleModal("edit-project-modal");
+    } catch (err) {
+      const errorMessage = document.getElementById("err") as HTMLElement;
+      errorMessage.textContent = err;
+      toggleModal("error-popup");
+    }
+  };
+
   const onCloseErrorPopup = () => {
     toggleModal("error-popup");
   };
@@ -121,7 +168,7 @@ export function DetailsCard(props: Props) {
         </div>
       </dialog>
       <dialog id="edit-project-modal">
-        <form className="project-form">
+        <form className="project-form" id="edit-project-form">
           <h2>Edit Project</h2>
           <div className="input-list">
             <div className="form-field-container">
@@ -237,7 +284,7 @@ export function DetailsCard(props: Props) {
                 Cancel
               </button>
               <button
-                // onClick={(e) => onSubmitEditedProject(e)}
+                onClick={(e) => onSubmitEditedProject(e)}
                 id="submit-new-project-btn"
                 type="button"
                 style={{ backgroundColor: "rgb(18, 145, 18)" }}

@@ -24,7 +24,7 @@ interface Props {
 export function Sidebar(props: Props) {
   // const [projectsManager] = React.useState(new ProjectsManager())
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.projectsList
+    props.projectsManager.projectsList,
   );
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
@@ -76,7 +76,7 @@ export function Sidebar(props: Props) {
 
   const onCancelNewProject = () => {
     const projectForm = document.getElementById(
-      "new-project-modal"
+      "new-project-modal",
     ) as HTMLFormElement;
     if (!(projectForm && projectForm instanceof HTMLDialogElement)) {
       return;
@@ -91,7 +91,7 @@ export function Sidebar(props: Props) {
   const onSubmitNewProject = (e: React.FormEvent) => {
     e.preventDefault();
     const projectForm = document.getElementById(
-      "new-project-form"
+      "new-project-form",
     ) as HTMLFormElement;
     // Gather form data and create a new project
     const formData = new FormData(projectForm);
@@ -126,7 +126,7 @@ export function Sidebar(props: Props) {
     const filteredProjects = props.projectsManager.projectsList.filter(
       (project) => {
         return project.projectName.includes(value);
-      }
+      },
     );
     setProjects(filteredProjects);
   };
@@ -220,7 +220,7 @@ export function Sidebar(props: Props) {
   return (
     <aside id="sidebar">
       <dialog id="new-project-modal">
-        <form className="project-form">
+        <form className="project-form" id="new-project-form">
           <h2>New Project</h2>
           <div className="input-list">
             <div className="form-field-container">

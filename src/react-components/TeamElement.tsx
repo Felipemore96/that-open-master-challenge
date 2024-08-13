@@ -12,22 +12,15 @@ interface Props {
   filterTeams: () => void;
 }
 
-export function TeamCardTeams(props: Props) {
-  const [teams, setTeams] = React.useState<Team[]>(
-    props.projectsManager.teamsList
-  );
-
+export function TeamElement(props: Props) {
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(props.team);
 
   props.projectsManager.onTeamDeleted = () => {
     props.filterTeams();
-    setTeams([...props.projectsManager.teamsList]);
     toggleModal("delete-popup");
     console.log("team deleted");
     // await deleteDocument("/teams", id);
   };
-
-  React.useEffect(() => {}, [teams]);
 
   const onDeleteTeamButton = (team: Team) => {
     setSelectedTeam(team);
@@ -81,7 +74,7 @@ export function TeamCardTeams(props: Props) {
     const camera = viewer.camera;
     if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
       throw new Error(
-        "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+        "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
       );
     }
     modelLoaded = true;
@@ -95,7 +88,7 @@ export function TeamCardTeams(props: Props) {
         team.camera.target.x,
         team.camera.target.y,
         team.camera.target.z,
-        true
+        true,
       );
     }
     if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
