@@ -6,7 +6,7 @@ import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 // import * as Firestore from "firebase/firestore";
 // import { getCollection } from "../firebase";
-import { TeamCardTeams } from "./TeamCardTeams";
+import { TeamElement } from "./TeamElement";
 import { ViewerContext } from "./IFCViewer";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 
 export function TeamsCard(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
-    props.projectsManager.teamsList
+    props.projectsManager.teamsList,
   );
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamsList]);
@@ -24,7 +24,7 @@ export function TeamsCard(props: Props) {
 
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamsList.filter(
-      (team) => team.teamProjectId === props.project.id
+      (team) => team.teamProjectId === props.project.id,
     );
     setTeams(filteredTeams);
   };
@@ -36,7 +36,7 @@ export function TeamsCard(props: Props) {
 
   const teamsCards = teams.map((team) => {
     return (
-      <TeamCardTeams
+      <TeamElement
         key={team.id}
         team={team}
         project={props.project}
@@ -59,7 +59,7 @@ export function TeamsCard(props: Props) {
 
   const onCancelNewTeam = () => {
     const teamForm = document.getElementById(
-      "new-team-form"
+      "new-team-form",
     ) as HTMLFormElement;
     teamForm.reset();
     toggleModal("new-team-modal");
@@ -68,7 +68,7 @@ export function TeamsCard(props: Props) {
   const onSubmitNewTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     const teamForm = document.getElementById(
-      "new-team-form"
+      "new-team-form",
     ) as HTMLFormElement;
 
     const formData = new FormData(teamForm);
@@ -83,7 +83,7 @@ export function TeamsCard(props: Props) {
       const camera = viewer.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(
-          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+          "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
         );
       }
       modelLoaded = true;
