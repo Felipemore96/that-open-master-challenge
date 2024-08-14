@@ -7,14 +7,8 @@ interface Props {
 
 export function HomePageProjectCard(props: Props) {
   return (
-    <div
-      className="dashboard-card"
-      style={{
-        padding: "30px 10px",
-        width: "20vw",
-      }}
-    >
-      <div style={{ padding: "0 30px" }}>
+    <div className="homepage-project-card">
+      <div>
         <div
           style={{
             display: "flex",
@@ -22,7 +16,10 @@ export function HomePageProjectCard(props: Props) {
             justifyContent: "space-between",
           }}
         >
-          <div className="card-content">
+          <div className="homepage-card-content">
+            <h2 id="project-name" data-project-info="name">
+              {props.project.projectName}
+            </h2>
             <div className="card-property">
               <h5 style={{ color: "#969696" }}>Status</h5>
               <h5 id="project-status" data-project-info="status">
@@ -30,14 +27,12 @@ export function HomePageProjectCard(props: Props) {
               </h5>
             </div>
             <div className="card-property">
-              <h5 style={{ color: "#969696" }}>Type</h5>
-              <h5 id="project-type" data-project-info="type">
-                {props.project.projectType}
-              </h5>
-            </div>
-            <div className="card-property">
               <h5 style={{ color: "#969696" }}>Address</h5>
-              <h5 id="project-address" data-project-info="address">
+              <h5
+                id="project-address"
+                data-project-info="address"
+                style={{ whiteSpace: "nowrap" }}
+              >
                 {props.project.projectAddress}
               </h5>
             </div>

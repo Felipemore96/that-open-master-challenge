@@ -88,10 +88,6 @@ button:hover {
   height: 120px;
 }
 
-#homepage-company-logo {
-  height: 200px;
-}
-
 #new-project-btn {
   border-radius: 10px;
 }
@@ -153,6 +149,7 @@ header {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  overflow: hidden;
 }
 
 /* Form Styles */
@@ -302,4 +299,64 @@ select:focus {
 
 .team-card:hover {
   background-color: var(--primary-200);
+}
+
+/*HOMEPAGE */
+
+.homepage {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.homepage-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
+}
+
+#homepage-company-logo {
+  height: 200px;
+  max-width: 100%;
+  margin-right: 20px;
+}
+
+.projects-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+  height: calc(100% - 250px);
+  overflow-y: auto
+}
+
+#homepage-new-project-btn {
+  position: absolute;
+  right: calc(50% - 200px); /* Adjust according to the logo's size */
+  transform: translateX(100%);
+}
+
+
+.homepage-project-card {
+  background-color: var(--background-200);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 100px);
+  padding: 15px;
+  max-width: 25vw;
+}
+
+.homepage-card-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  align-items: start;
+  font-size: var(--font-base);
+  padding: 8px;
 }
