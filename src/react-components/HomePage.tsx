@@ -145,7 +145,7 @@ export function HomePage(props: Props) {
         {projectCards}
       </div>
       <dialog id="new-project-modal">
-        <form id="new-project-form">
+        <form id="new-project-form" className="project-form">
           <h2>New Project</h2>
           <div className="input-list">
             <div className="form-field-container">
