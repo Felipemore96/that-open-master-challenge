@@ -6,8 +6,8 @@
   --primary-200: #415a66;
   --primary-300: #468f3f;
   --primary-400: #50ef5e;
-  --background: #2e2e2e;
-  --background-100: #525252;
+  --background: #2d2d2d;
+  --background-100: #3b3b3b;
   --background-200: #535353;
   --font-xs: 8px;
   --font-sm: 10px;
@@ -305,9 +305,6 @@ select:focus {
 
 .homepage {
   width: 100vw;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
   padding: 20px;
 }
 
@@ -329,10 +326,12 @@ select:focus {
 .projects-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 15px;
   width: 100%;
-  height: calc(100% - 250px);
-  overflow-y: auto
+  max-height: 65%;
+  overflow-y: auto;
+  background: var(--background-100);
+  padding: 15px;
 }
 
 #homepage-new-project-btn {
