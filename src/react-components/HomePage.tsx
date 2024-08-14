@@ -20,7 +20,7 @@ interface Props {
 
 export function HomePage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.projectsList
+    props.projectsManager.projectsList,
   );
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
@@ -69,7 +69,7 @@ export function HomePage(props: Props) {
 
   const onCancelNewProject = () => {
     const projectForm = document.getElementById(
-      "new-project-modal"
+      "new-project-modal",
     ) as HTMLFormElement;
     if (!(projectForm && projectForm instanceof HTMLDialogElement)) {
       return;
@@ -84,7 +84,7 @@ export function HomePage(props: Props) {
   const onSubmitNewProject = (e: React.FormEvent) => {
     e.preventDefault();
     const projectForm = document.getElementById(
-      "new-project-form"
+      "new-project-form",
     ) as HTMLFormElement;
 
     const formData = new FormData(projectForm);
@@ -116,34 +116,16 @@ export function HomePage(props: Props) {
   };
 
   return (
-    <div
-      className="homepage"
-      style={{
-        width: "100vw",
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        padding: "100px",
-        gap: "150px",
-      }}
-    >
-      <img
-        id="homepage-company-logo"
-        src="./assets/company-logo.svg"
-        alt="Construction Company"
-      />
-      <div
-        id="projects-list"
-        style={{
-          display: "flex",
-          gap: "40px",
-          justifyContent: "center",
-        }}
-      >
-        {projectCards}
+    <div className="homepage">
+      <div className="homepage-header">
+        <img
+          id="homepage-company-logo"
+          src="./assets/company-logo.svg"
+          alt="Construction Company"
+        />
         <button
           onClick={onNewProject}
-          id="new-project-btn"
+          id="homepage-new-project-btn"
           className="btn-secondary"
           style={{ width: "150px", height: "60px", padding: 15, fontSize: 12 }}
         >
@@ -158,6 +140,9 @@ export function HomePage(props: Props) {
             Add New Project
           </h4>
         </button>
+      </div>
+      <div id="projects-list" className="projects-list">
+        {projectCards}
       </div>
       <dialog id="new-project-modal">
         <form id="new-project-form">
