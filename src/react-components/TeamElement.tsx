@@ -13,8 +13,6 @@ interface Props {
 }
 
 export function TeamElement(props: Props) {
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(props.team);
-
   props.projectsManager.onTeamDeleted = () => {
     props.filterTeams();
     toggleModal("delete-modal");

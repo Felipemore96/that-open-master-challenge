@@ -177,6 +177,7 @@ form h2 {
   padding: 20px;
   border-bottom: 2px solid var(--background-200);
   justify-content: center;
+  margin-bottom: 20px;
 }
 
 form .input-list {
