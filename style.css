@@ -232,6 +232,16 @@ select:focus {
   row-gap: 10px;
 }
 
+.error-modal {
+display: flex;
+padding: 15px;
+border-radius: 10px;
+background-color: var(--background-100);
+color: white;
+align-items: center;
+flex-direction: column;
+}
+
 .project-form {
   max-height: calc(90vh);
   overflow-y: auto;
@@ -336,7 +346,7 @@ select:focus {
 
 #homepage-new-project-btn {
   position: absolute;
-  right: calc(50% - 200px); /* Adjust according to the logo's size */
+  right: calc(50% - 200px);
   transform: translateX(100%);
 }
 
