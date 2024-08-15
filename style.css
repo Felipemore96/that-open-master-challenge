@@ -328,7 +328,7 @@ select:focus {
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   width: 100%;
-  max-height: 65%;
+  height: 65%;
   overflow-y: auto;
   background: var(--background-100);
   padding: 15px;
