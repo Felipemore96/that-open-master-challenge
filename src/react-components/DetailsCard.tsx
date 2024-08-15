@@ -18,6 +18,10 @@ export function DetailsCard(props: Props) {
   const navigate = useNavigate();
 
   const onClickEditButton = () => {
+    const projectForm = document.getElementById(
+      "edit-project-form",
+    ) as HTMLFormElement;
+    projectForm.reset();
     toggleModal("edit-project-modal");
   };
   const onCancelEdits = () => {
