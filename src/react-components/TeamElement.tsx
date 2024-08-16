@@ -13,40 +13,45 @@ interface Props {
 }
 
 export function TeamElement(props: Props) {
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(props.team);
-
   props.projectsManager.onTeamDeleted = () => {
     props.filterTeams();
-    toggleModal("delete-popup");
+    toggleModal("delete-modal");
     console.log("team deleted");
     // await deleteDocument("/teams", id);
   };
 
-  const onDeleteTeamButton = (team: Team) => {
-    setSelectedTeam(team);
-    toggleModal("delete-popup");
+  const onDeleteTeamButton = () => {
+    console.log(props.team);
+    toggleModal("delete-modal");
   };
 
   const onTeamInfoButton = () => {
-    // setSelectedTeam(props.team);
-    toggleModal("info-popup");
+    const teamForm = document.getElementById(
+      "team-info-form",
+    ) as HTMLFormElement;
+    teamForm.reset();
+    toggleModal("info-modal");
   };
 
   const onCloseDeletePopup = () => {
-    toggleModal("delete-popup");
+    toggleModal("delete-modal");
   };
 
   const onCloseInfoPopup = () => {
-    toggleModal("info-popup");
+    toggleModal("info-modal");
   };
 
   const onEditTeamInfo = () => {
-    toggleModal("info-popup");
-    toggleModal("edit-info-popup");
+    const editTeamForm = document.getElementById(
+      "edit-team-info-form",
+    ) as HTMLFormElement;
+    editTeamForm.reset();
+    toggleModal("info-modal");
+    toggleModal("edit-info-modal");
   };
 
   const onCloseEditTeamPopup = () => {
-    toggleModal("edit-info-popup");
+    toggleModal("edit-info-modal");
   };
 
   const iconConversion = (teamRole: TeamRole): string => {
@@ -142,7 +147,7 @@ export function TeamElement(props: Props) {
           }}
         >
           <span
-            onClick={() => onDeleteTeamButton(props.team)}
+            onClick={() => onDeleteTeamButton()}
             className="material-icons-round"
             style={{
               padding: 10,
@@ -179,8 +184,8 @@ export function TeamElement(props: Props) {
           </span>
         </div>
       </div>
-      <dialog id="delete-popup">
-        <div id="error-message">
+      <dialog id="delete-modal">
+        <div className="error-modal" id="delete-team-error-message">
           <section style={{ marginBottom: "20px" }}>
             <p style={{ fontSize: "16px", margin: "10px" }}>
               Are you sure you want to delete the team: "
@@ -217,8 +222,8 @@ export function TeamElement(props: Props) {
           </footer>
         </div>
       </dialog>
-      <dialog id="info-popup">
-        <form>
+      <dialog id="info-modal">
+        <form className="project-form" id="team-info-form">
           <h2>Team's Information</h2>
           <div className="input-list">
             <div className="form-field-container">
@@ -273,8 +278,8 @@ export function TeamElement(props: Props) {
           </div>
         </form>
       </dialog>
-      <dialog id="edit-info-popup">
-        <form>
+      <dialog id="edit-info-modal">
+        <form className="project-form" id="edit-team-info-form">
           <h2>Edit Team's Information</h2>
           <div className="input-list">
             <div className="form-field-container">
