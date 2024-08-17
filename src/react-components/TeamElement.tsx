@@ -15,14 +15,14 @@ interface Props {
 export function TeamElement(props: Props) {
   props.projectsManager.onTeamDeleted = () => {
     props.filterTeams();
-    toggleModal("delete-modal");
+    toggleModal(`delete-modal-${props.team.id}`);
     console.log("team deleted");
     // await deleteDocument("/teams", id);
   };
 
   const onDeleteTeamButton = () => {
     console.log(props.team);
-    toggleModal("delete-modal");
+    toggleModal(`delete-modal-${props.team.id}`);
   };
 
   const onTeamInfoButton = () => {
@@ -30,15 +30,15 @@ export function TeamElement(props: Props) {
       "team-info-form",
     ) as HTMLFormElement;
     teamForm.reset();
-    toggleModal("info-modal");
+    toggleModal(`info-modal-${props.team.id}`);
   };
 
   const onCloseDeletePopup = () => {
-    toggleModal("delete-modal");
+    toggleModal(`delete-modal-${props.team.id}`);
   };
 
   const onCloseInfoPopup = () => {
-    toggleModal("info-modal");
+    toggleModal(`info-modal-${props.team.id}`);
   };
 
   const onEditTeamInfo = () => {
@@ -46,12 +46,12 @@ export function TeamElement(props: Props) {
       "edit-team-info-form",
     ) as HTMLFormElement;
     editTeamForm.reset();
-    toggleModal("info-modal");
-    toggleModal("edit-info-modal");
+    toggleModal(`info-modal-${props.team.id}`);
+    toggleModal(`edit-info-modal-${props.team.id}`);
   };
 
   const onCloseEditTeamPopup = () => {
-    toggleModal("edit-info-modal");
+    toggleModal(`edit-info-modal-${props.team.id}`);
   };
 
   const iconConversion = (teamRole: TeamRole): string => {
@@ -184,8 +184,8 @@ export function TeamElement(props: Props) {
           </span>
         </div>
       </div>
-      <dialog id="delete-modal">
-        <div className="error-modal" id="delete-team-error-message">
+      <dialog id={`delete-modal-${props.team.id}`}>
+        <div className="error-modal">
           <section style={{ marginBottom: "20px" }}>
             <p style={{ fontSize: "16px", margin: "10px" }}>
               Are you sure you want to delete the team: "
@@ -222,7 +222,7 @@ export function TeamElement(props: Props) {
           </footer>
         </div>
       </dialog>
-      <dialog id="info-modal">
+      <dialog id={`info-modal-${props.team.id}`}>
         <form className="project-form" id="team-info-form">
           <h2>Team's Information</h2>
           <div className="input-list">
@@ -278,7 +278,7 @@ export function TeamElement(props: Props) {
           </div>
         </form>
       </dialog>
-      <dialog id="edit-info-modal">
+      <dialog id={`edit-info-modal-${props.team.id}`}>
         <form className="project-form" id="edit-team-info-form">
           <h2>Edit Team's Information</h2>
           <div className="input-list">
