@@ -619,4 +619,28 @@ export class ProjectsManager {
 
     return updatedProject;
   }
+
+  editTeam(newData: ITeam, originalData: ITeam) {
+    const nameKept = newData.teamName === originalData.teamName;
+    const nameInUse = this.teamsList.some(
+      (team) => team.teamName === newData.teamName,
+    );
+
+    if (!nameKept && nameInUse) {
+      throw new Error(`A team with name "${newData.teamName}" already exists`);
+    }
+
+    const originalTeamIndex = this.teamsList.findIndex(
+      (team) => team.id === originalData.id,
+    );
+
+    if (originalTeamIndex === -1) {
+      throw new Error(`Team with ID "${originalData.id}" not found.`);
+    }
+
+    const updatedTeam = new Team(newData, originalData.id);
+    this.teamsList[originalTeamIndex] = updatedTeam;
+
+    return updatedTeam;
+  }
 }
