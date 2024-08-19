@@ -9,7 +9,7 @@ interface Props {
 
 export function DetailsPageHeader(props: Props) {
   return (
-    <header>
+    <header style={{ height: "60px", overflow: "hidden" }}>
       <div>
         <h2 id="project-name" data-project-info="name">
           {props.project.projectName}

@@ -80,7 +80,7 @@ export function DetailsCard(props: Props) {
     <div>
       <div
         className="dashboard-card"
-        style={{ padding: "15px", maxHeight: "30vh" }}
+        style={{ padding: "15px", height: "210px" }}
       >
         <div
           style={{
