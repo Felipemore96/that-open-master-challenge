@@ -108,10 +108,6 @@ export function TeamsCard(props: Props) {
       camera: teamCamera,
     };
 
-    console.log(teamData);
-    console.log(teamData.fragmentMap);
-    console.log(teamData.camera);
-
     try {
       const team = props.projectsManager.newTeam(teamData);
       teamForm.reset();

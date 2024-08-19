@@ -25,12 +25,10 @@ export function TeamElement(props: Props) {
   props.projectsManager.onTeamDeleted = () => {
     props.filterTeams();
     toggleModal(`delete-modal-${props.team.id}`);
-    console.log("team deleted");
     // await deleteDocument("/teams", id);
   };
 
   const onDeleteTeamButton = () => {
-    console.log(props.team);
     toggleModal(`delete-modal-${props.team.id}`);
   };
 
@@ -138,6 +136,7 @@ export function TeamElement(props: Props) {
       console.log(updatedTeam);
       // getFirestoreProjects();
       editTeamForm.reset();
+      props.filterTeams();
       toggleModal(`edit-info-modal-${props.team.id}`);
     } catch (err) {
       const errorMessage = document.getElementById("err") as HTMLElement;
