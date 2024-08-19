@@ -1,9 +1,16 @@
 import * as React from "react";
 import * as OBC from "openbim-components";
-import { Project, toggleModal } from "../class/projects";
+import {
+  IProject,
+  Project,
+  ProjectStatus,
+  ProjectType,
+  toggleModal,
+} from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { ViewerContext } from "./IFCViewer";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   team: Team;
@@ -13,16 +20,16 @@ interface Props {
 }
 
 export function TeamElement(props: Props) {
+  const navigate = useNavigate();
+
   props.projectsManager.onTeamDeleted = () => {
     props.filterTeams();
-    toggleModal("delete-modal");
-    console.log("team deleted");
+    toggleModal(`delete-modal-${props.team.id}`);
     // await deleteDocument("/teams", id);
   };
 
   const onDeleteTeamButton = () => {
-    console.log(props.team);
-    toggleModal("delete-modal");
+    toggleModal(`delete-modal-${props.team.id}`);
   };
 
   const onTeamInfoButton = () => {
@@ -30,28 +37,28 @@ export function TeamElement(props: Props) {
       "team-info-form",
     ) as HTMLFormElement;
     teamForm.reset();
-    toggleModal("info-modal");
+    toggleModal(`info-modal-${props.team.id}`);
   };
 
   const onCloseDeletePopup = () => {
-    toggleModal("delete-modal");
+    toggleModal(`delete-modal-${props.team.id}`);
   };
 
   const onCloseInfoPopup = () => {
-    toggleModal("info-modal");
+    toggleModal(`info-modal-${props.team.id}`);
   };
 
   const onEditTeamInfo = () => {
     const editTeamForm = document.getElementById(
-      "edit-team-info-form",
+      `edit-team-form-${props.team.id}`,
     ) as HTMLFormElement;
     editTeamForm.reset();
-    toggleModal("info-modal");
-    toggleModal("edit-info-modal");
+    toggleModal(`info-modal-${props.team.id}`);
+    toggleModal(`edit-info-modal-${props.team.id}`);
   };
 
   const onCloseEditTeamPopup = () => {
-    toggleModal("edit-info-modal");
+    toggleModal(`edit-info-modal-${props.team.id}`);
   };
 
   const iconConversion = (teamRole: TeamRole): string => {
@@ -98,6 +105,43 @@ export function TeamElement(props: Props) {
     }
     if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
       highlighter.highlightByID("select", team.fragmentMap);
+    }
+  };
+
+  const onSubmitEditedTeam = (e) => {
+    e.preventDefault();
+    const editTeamForm = document.getElementById(
+      `edit-team-form-${props.team.id}`,
+    ) as HTMLFormElement;
+    const formData = new FormData(editTeamForm);
+    const newTeamData: ITeam = {
+      teamName: formData.get("team-name") as string,
+      teamRole: formData.get("team-role") as TeamRole,
+      teamDescription: formData.get("team-description") as string,
+      contactName: formData.get("contact-name") as string,
+      contactPhone: formData.get("contact-phone") as string,
+      teamProjectId: props.team.teamProjectId,
+      fragmentMap: props.team.fragmentMap,
+      camera: props.team.camera,
+      id: props.team.id,
+    };
+    try {
+      // const projectsCollection = getCollection<IProject>("/projects");
+      // Firestore.addDoc(projectsCollection, projectData);
+
+      const updatedTeam = props.projectsManager.editTeam(
+        newTeamData,
+        props.team,
+      );
+      console.log(updatedTeam);
+      // getFirestoreProjects();
+      editTeamForm.reset();
+      props.filterTeams();
+      toggleModal(`edit-info-modal-${props.team.id}`);
+    } catch (err) {
+      const errorMessage = document.getElementById("err") as HTMLElement;
+      errorMessage.textContent = err;
+      toggleModal("error-popup");
     }
   };
 
@@ -184,8 +228,8 @@ export function TeamElement(props: Props) {
           </span>
         </div>
       </div>
-      <dialog id="delete-modal">
-        <div className="error-modal" id="delete-team-error-message">
+      <dialog id={`delete-modal-${props.team.id}`}>
+        <div className="error-modal">
           <section style={{ marginBottom: "20px" }}>
             <p style={{ fontSize: "16px", margin: "10px" }}>
               Are you sure you want to delete the team: "
@@ -222,7 +266,7 @@ export function TeamElement(props: Props) {
           </footer>
         </div>
       </dialog>
-      <dialog id="info-modal">
+      <dialog id={`info-modal-${props.team.id}`}>
         <form className="project-form" id="team-info-form">
           <h2>Team's Information</h2>
           <div className="input-list">
@@ -278,8 +322,8 @@ export function TeamElement(props: Props) {
           </div>
         </form>
       </dialog>
-      <dialog id="edit-info-modal">
-        <form className="project-form" id="edit-team-info-form">
+      <dialog id={`edit-info-modal-${props.team.id}`}>
+        <form className="project-form" id={`edit-team-form-${props.team.id}`}>
           <h2>Edit Team's Information</h2>
           <div className="input-list">
             <div className="form-field-container">
@@ -287,7 +331,7 @@ export function TeamElement(props: Props) {
                 <span className="material-icons-round">apartment</span>Name
               </label>
               <input
-                name="teamName"
+                name="team-name"
                 type="text"
                 defaultValue={props.team.teamName}
               />
@@ -296,7 +340,7 @@ export function TeamElement(props: Props) {
               <label>
                 <span className="material-icons-round">assignment_ind</span>Role
               </label>
-              <select name="teamRole" defaultValue={props.team.teamRole}>
+              <select name="team-role" defaultValue={props.team.teamRole}>
                 <option>BIM Manager</option>
                 <option>Structural</option>
                 <option>MEP</option>
@@ -309,7 +353,7 @@ export function TeamElement(props: Props) {
                 <span className="material-icons-round">subject</span>Description
               </label>
               <textarea
-                name="teamDescription"
+                name="team-description"
                 cols={30}
                 rows={5}
                 defaultValue={props.team.teamDescription}
@@ -323,11 +367,11 @@ export function TeamElement(props: Props) {
                 style={{ display: "flex", flexDirection: "column", rowGap: 2 }}
               >
                 <input
-                  name="contactName"
+                  name="contact-name"
                   defaultValue={props.team.contactName}
                 />
                 <input
-                  name="contactPhone"
+                  name="contact-phone"
                   defaultValue={props.team.contactPhone}
                 />
               </div>
@@ -348,7 +392,7 @@ export function TeamElement(props: Props) {
                 Cancel
               </button>
               <button
-                // onClick={(e) => onSubmitNewTeam(e)}
+                onClick={(e) => onSubmitEditedTeam(e)}
                 id="submit-new-team-btn"
                 type="button"
                 style={{ backgroundColor: "rgb(18, 145, 18)" }}

@@ -16,6 +16,7 @@ export interface ITeam {
   contactName: string;
   contactPhone: string;
   teamProjectId: string;
+  id?: string;
   fragmentMap?: OBC.FragmentIdMap;
   camera?: { position: THREE.Vector3; target: THREE.Vector3 };
 }

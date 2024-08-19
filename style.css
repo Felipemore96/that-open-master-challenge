@@ -260,8 +260,8 @@ flex-direction: column;
 
 #project-details > .main-page-content {
   display: grid;
-  padding: 20px 20px;
-  gap: 20px;
+  padding: 10px 15px;
+  gap: 15px;
   grid-template-columns: 300px 1fr;
   height: 100%;
 }
@@ -287,12 +287,14 @@ flex-direction: column;
 }
 
 #teams-list {
-  padding: 15px;
+  /*padding: 15px;*/
   padding-top: 0;
   display: flex;
   flex-direction: column;
   row-gap: 15px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  max-height: inherit;
 }
 
 .team-card {
@@ -329,7 +331,7 @@ flex-direction: column;
 }
 
 #homepage-company-logo {
-  height: 200px;
+  height: 20vh;
   max-width: 100%;
   margin-right: 20px;
 }
@@ -339,7 +341,7 @@ flex-direction: column;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   width: 100%;
-  height: 65%;
+  height: 75%;
   overflow-y: auto;
   background: var(--background-100);
   padding: 15px;
