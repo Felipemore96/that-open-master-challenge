@@ -376,20 +376,22 @@ export function Sidebar(props: Props) {
         <button
           onClick={onClickExportButton}
           className="btn-secondary"
-          style={{ width: "100%" }}
+          style={{ width: "100%", height: "100%" }}
         >
-          <span style={{ width: "100%" }} className="material-icons-round">
-            file_download
-          </span>
+          <p>Download Projects</p>
+          {/*<span style={{ width: "100%" }} className="material-icons-round">*/}
+          {/*  file_download*/}
+          {/*</span>*/}
         </button>
         <button
           onClick={onClickImportButton}
           className="btn-secondary"
-          style={{ width: "100%" }}
+          style={{ width: "100%", height: "100%" }}
         >
-          <span style={{ width: "100%" }} className="material-icons-round">
-            file_upload
-          </span>
+          <p>Upload Projects</p>
+          {/*<span style={{ width: "100%" }} className="material-icons-round">*/}
+          {/*  file_upload*/}
+          {/*</span>*/}
         </button>
       </div>
       <div style={{ display: "flex", alignItems: "center", columnGap: 10 }}>
