@@ -280,7 +280,7 @@ flex-direction: column;
 }
 
 #teams-header {
-  padding: 15px;
+  padding-bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;

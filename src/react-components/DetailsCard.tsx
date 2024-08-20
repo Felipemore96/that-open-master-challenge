@@ -90,7 +90,7 @@ export function DetailsCard(props: Props) {
             marginBottom: 10,
           }}
         >
-          <h4 />
+          <h4>Details</h4>
           <button onClick={onClickEditButton} className="btn-secondary">
             <p style={{ width: "100%" }}>Edit</p>
           </button>
