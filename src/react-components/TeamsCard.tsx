@@ -1,13 +1,17 @@
 import * as React from "react";
 import * as OBC from "openbim-components";
 import * as THREE from "three";
-import { Project, toggleModal } from "../class/projects";
+import { IProject, Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 // import * as Firestore from "firebase/firestore";
 // import { getCollection } from "../firebase";
 import { TeamElement } from "./TeamElement";
 import { ViewerContext } from "./IFCViewer";
+import { getCollection } from "../firebase";
+import * as Firestore from "firebase/firestore";
+import { Simulate } from "react-dom/test-utils";
+import keyDown = Simulate.keyDown;
 
 interface Props {
   project: Project;
@@ -22,6 +26,38 @@ export function TeamsCard(props: Props) {
     setTeams([...props.projectsManager.teamsList]);
   };
 
+  const getFirestoreTeams = async () => {
+    const teamsCollection = getCollection<ITeam>("/teams");
+    const firebaseTeams = await Firestore.getDocs(teamsCollection);
+    for (const doc of firebaseTeams.docs) {
+      const data = doc.data();
+      const fragmentIdMap: OBC.FragmentIdMap = {};
+      for (const key in data.fragmentMap) {
+        if (Object.prototype.hasOwnProperty.call(data.fragmentMap, key)) {
+          const value = data.fragmentMap[key];
+          if (Array.isArray(value)) {
+            fragmentIdMap[key] = new Set(value);
+          }
+        }
+      }
+      const team: ITeam = {
+        ...data,
+        fragmentMap: fragmentIdMap,
+      };
+
+      try {
+        props.projectsManager.newTeam(team, doc.id);
+      } catch (error) {
+        //project already exists so update its properties
+      }
+    }
+    filterTeams();
+  };
+
+  React.useEffect(() => {
+    getFirestoreTeams();
+  }, []);
+
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamsList.filter(
       (team) => team.teamProjectId === props.project.id,
@@ -30,7 +66,6 @@ export function TeamsCard(props: Props) {
   };
 
   React.useEffect(() => {
-    // getFirestoreTeams();
     filterTeams();
   }, [props.project.id]);
 

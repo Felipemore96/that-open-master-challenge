@@ -46,7 +46,6 @@ export function Sidebar(props: Props) {
       };
       try {
         props.projectsManager.newProject(project, doc.id);
-        console.log(project);
       } catch (error) {
         //project already exists so update its properties
       }
@@ -383,9 +382,6 @@ export function Sidebar(props: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <p>Download Projects</p>
-          {/*<span style={{ width: "100%" }} className="material-icons-round">*/}
-          {/*  file_download*/}
-          {/*</span>*/}
         </button>
         <button
           onClick={onClickImportButton}
@@ -393,9 +389,6 @@ export function Sidebar(props: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <p>Upload Projects</p>
-          {/*<span style={{ width: "100%" }} className="material-icons-round">*/}
-          {/*  file_upload*/}
-          {/*</span>*/}
         </button>
       </div>
       <div style={{ display: "flex", alignItems: "center", columnGap: 10 }}>
