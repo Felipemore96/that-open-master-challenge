@@ -16,6 +16,8 @@ import { SearchBox } from "./SearchBox";
 // import * as Firestore from "firebase/firestore";
 // import { getCollection } from "../firebase";
 import { v4 as uuidv4 } from "uuid";
+import { getCollection } from "../firebase";
+import * as Firestore from "firebase/firestore";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -31,27 +33,29 @@ export function Sidebar(props: Props) {
   };
   const navigate = useNavigate();
 
-  // const getFirestoreProjects = async () => {
-  // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
-  // const projectsCollenction = getCollection<IProject>("/projects");
-  // const firebaseProjects = await Firestore.getDocs(projectsCollenction);
-  //   for (const doc of firebaseProjects.docs) {
-  //     const data = doc.data();
-  //     const project: IProject = {
-  //       ...data,
-  //       projectFinishDate: (
-  //         data.projectFinishDate as unknown as Firestore.Timestamp
-  //       ).toDate(),
-  //     };
-  //     try {
-  //       props.projectsManager.newProject(project, doc.id);
-  //     } catch (error) {}
-  //   }
-  // };
+  const getFirestoreProjects = async () => {
+    const projectsCollection = getCollection<IProject>("/projects");
+    const firebaseProjects = await Firestore.getDocs(projectsCollection);
+    for (const doc of firebaseProjects.docs) {
+      const data = doc.data();
+      const project: IProject = {
+        ...data,
+        projectFinishDate: (
+          data.projectFinishDate as unknown as Firestore.Timestamp
+        ).toDate(),
+      };
+      try {
+        props.projectsManager.newProject(project, doc.id);
+        console.log(project);
+      } catch (error) {
+        //project already exists so update its properties
+      }
+    }
+  };
 
-  // React.useEffect(() => {
-  //   getFirestoreProjects();
-  // }, []);
+  React.useEffect(() => {
+    getFirestoreProjects();
+  }, []);
 
   const projectsCards = projects.map((project) => {
     return (
@@ -407,9 +411,7 @@ export function Sidebar(props: Props) {
         <SearchBox onChange={(value) => onProjectSearch(value)} />
       </div>
       {projects.length > 0 ? (
-        <div id="projects-list" className="nav-buttons">
-          {projectsCards}
-        </div>
+        <div className="nav-buttons">{projectsCards}</div>
       ) : (
         <p>There is no projects to display</p>
       )}

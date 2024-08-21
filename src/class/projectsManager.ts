@@ -13,52 +13,52 @@ export class ProjectsManager {
   onTeamDeleted = (id: string) => {};
 
   constructor() {
-    this.newProject({
-      projectName: "Riverside Bridge",
-      projectDescription:
-        "A modern bridge spanning the river, connecting two bustling districts.",
-      projectStatus: "Active",
-      projectCost: "500,000.00",
-      projectType: "Heavy civil",
-      projectAddress: "Seine River, Paris, France",
-      projectFinishDate: new Date(2025, 4, 30),
-      projectProgress: "30",
-      id: "3826a263-f931-4406-94e7-4f62f717b2e1",
-      fragRoute: "../../assets/default-model1.frag",
-      jsonRoute: "../../assets/default-model1.json",
-    });
-    this.newTeam({
-      teamName: "Bridge Builders Ltd.",
-      teamRole: "Contractor",
-      teamDescription:
-        "Experienced in constructing bridges of all sizes, specializing in structural integrity and on-time delivery.",
-      contactName: "John Smith",
-      contactPhone: "+33 123 456 789",
-      teamProjectId: "3826a263-f931-4406-94e7-4f62f717b2e1",
-      fragmentMap: {
-        "7c7a4379-f1c5-40ce-89f2-31d207e8861f": new Set([
-          "138293",
-          "130448",
-          "130684",
-          "138578",
-          "145431",
-          "130212",
-        ]),
-        "363f376d-41bf-4c8d-b744-07bc8fc340f9": new Set(["97892"]),
-      },
-      camera: {
-        position: new THREE.Vector3(
-          81.81247929233817,
-          49.0409386329085,
-          130.86505719708884,
-        ),
-        target: new THREE.Vector3(
-          -14.413127277813626,
-          -34.892857845120155,
-          49.53080950635257,
-        ),
-      },
-    });
+    // this.newProject({
+    //   projectName: "Riverside Bridge",
+    //   projectDescription:
+    //     "A modern bridge spanning the river, connecting two bustling districts.",
+    //   projectStatus: "Active",
+    //   projectCost: "500,000.00",
+    //   projectType: "Heavy civil",
+    //   projectAddress: "Seine River, Paris, France",
+    //   projectFinishDate: new Date(2025, 4, 30),
+    //   projectProgress: "30",
+    //   id: "3826a263-f931-4406-94e7-4f62f717b2e1",
+    //   fragRoute: "../../assets/default-model1.frag",
+    //   jsonRoute: "../../assets/default-model1.json",
+    // });
+    // this.newTeam({
+    //   teamName: "Bridge Builders Ltd.",
+    //   teamRole: "Contractor",
+    //   teamDescription:
+    //     "Experienced in constructing bridges of all sizes, specializing in structural integrity and on-time delivery.",
+    //   contactName: "John Smith",
+    //   contactPhone: "+33 123 456 789",
+    //   teamProjectId: "3826a263-f931-4406-94e7-4f62f717b2e1",
+    //   fragmentMap: {
+    //     "7c7a4379-f1c5-40ce-89f2-31d207e8861f": new Set([
+    //       "138293",
+    //       "130448",
+    //       "130684",
+    //       "138578",
+    //       "145431",
+    //       "130212",
+    //     ]),
+    //     "363f376d-41bf-4c8d-b744-07bc8fc340f9": new Set(["97892"]),
+    //   },
+    //   camera: {
+    //     position: new THREE.Vector3(
+    //       81.81247929233817,
+    //       49.0409386329085,
+    //       130.86505719708884,
+    //     ),
+    //     target: new THREE.Vector3(
+    //       -14.413127277813626,
+    //       -34.892857845120155,
+    //       49.53080950635257,
+    //     ),
+    //   },
+    // });
     this.newTeam({
       teamName: "Bridge Design Group",
       teamRole: "Structural",

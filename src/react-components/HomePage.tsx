@@ -10,8 +10,8 @@ import {
   toggleModal,
 } from "../class/projects";
 import { HomePageProjectCard } from "./HomePageProjectCard";
-// import * as Firestore from "firebase/firestore";
-// import { getCollection } from "../firebase";
+import * as Firestore from "firebase/firestore";
+import { getCollection } from "../firebase";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
@@ -29,26 +29,27 @@ export function HomePage(props: Props) {
 
   const navigate = useNavigate();
 
-  // const getFirestoreProjects = async () => {
-  //   // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
-  //   const projectsCollenction = getCollection<IProject>("/projects");
-  //   const firebaseProjects = await Firestore.getDocs(projectsCollenction);
-  //   for (const doc of firebaseProjects.docs) {
-  //     const data = doc.data();
-  //     const project: IProject = {
-  //       ...data,
-  //       projectFinishDate: (
-  //         data.projectFinishDate as unknown as Firestore.Timestamp
-  //       ).toDate(),
-  //     };
-  //     try {
-  //       props.projectsManager.newProject(project, doc.id);
-  //     } catch (error) {}
-  //   }
-  // };
+  const getFirestoreProjects = async () => {
+    const projectsCollection = getCollection<IProject>("/projects");
+    const firebaseProjects = await Firestore.getDocs(projectsCollection);
+    for (const doc of firebaseProjects.docs) {
+      const data = doc.data();
+      const project: IProject = {
+        ...data,
+        projectFinishDate: (
+          data.projectFinishDate as unknown as Firestore.Timestamp
+        ).toDate(),
+      };
+      try {
+        props.projectsManager.newProject(project, doc.id);
+      } catch (error) {
+        //project already exists so update its properties
+      }
+    }
+  };
 
   React.useEffect(() => {
-    // getFirestoreProjects();
+    getFirestoreProjects();
   }, []);
 
   const projectCards = projects.map((project) => {
