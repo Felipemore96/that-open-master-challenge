@@ -145,6 +145,33 @@ export function TeamsCard(props: Props) {
 
     try {
       const team = props.projectsManager.newTeam(teamData);
+      const teamsCollection = getCollection<ITeam>("/teams");
+      const firebaseTeamData = {
+        ...teamData,
+        fragmentMap: fragmentMap
+          ? Object.fromEntries(
+              Object.entries(fragmentMap).map(([key, value]) => [
+                key,
+                Array.from(value),
+              ]),
+            )
+          : undefined,
+        camera: teamCamera
+          ? {
+              position: {
+                x: teamCamera.position.x,
+                y: teamCamera.position.y,
+                z: teamCamera.position.z,
+              },
+              target: {
+                x: teamCamera.target.x,
+                y: teamCamera.target.y,
+                z: teamCamera.target.z,
+              },
+            }
+          : undefined,
+      };
+      Firestore.addDoc(teamsCollection, firebaseTeamData);
       teamForm.reset();
       toggleModal("new-team-modal");
       filterTeams();
