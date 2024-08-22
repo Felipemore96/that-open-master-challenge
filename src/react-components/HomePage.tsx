@@ -18,6 +18,8 @@ interface Props {
   projectsManager: ProjectsManager;
 }
 
+const projectsCollection = getCollection<IProject>("/projects");
+
 export function HomePage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
     props.projectsManager.projectsList,
@@ -30,7 +32,6 @@ export function HomePage(props: Props) {
   const navigate = useNavigate();
 
   const getFirestoreProjects = async () => {
-    const projectsCollection = getCollection<IProject>("/projects");
     const firebaseProjects = await Firestore.getDocs(projectsCollection);
     for (const doc of firebaseProjects.docs) {
       const data = doc.data();
@@ -101,9 +102,7 @@ export function HomePage(props: Props) {
     };
     const id = uuidv4();
     try {
-      // const projectsCollection = getCollection<IProject>("/projects");
-      // Firestore.addDoc(projectsCollection, projectData);
-
+      Firestore.addDoc(projectsCollection, projectData);
       const project = props.projectsManager.newProject({ ...projectData, id });
       navigate(`/project/${project.id}`);
       // getFirestoreProjects();
