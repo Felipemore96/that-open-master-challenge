@@ -7,15 +7,26 @@ import {
 } from "../class/projects";
 import { toggleModal } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
-import { useNavigate } from "react-router-dom";
+import { Router, useNavigate } from "react-router-dom";
+import firebase from "firebase/compat";
+import Firestore = firebase.firestore.Firestore;
+import { deleteDocument, getCollection } from "../firebase";
+import { ITeam } from "../class/teams";
 
 interface Props {
   project: Project;
   projectsManager: ProjectsManager;
 }
 
+const teamsCollection = getCollection<ITeam>("/teams");
+
 export function DetailsCard(props: Props) {
   const navigate = useNavigate();
+
+  props.projectsManager.onProjectDeleted = (id) => {
+    deleteDocument("/teams", id);
+    navigate("/");
+  };
 
   const onClickEditButton = () => {
     const projectForm = document.getElementById(
@@ -69,9 +80,9 @@ export function DetailsCard(props: Props) {
     toggleModal("error-popup");
   };
 
-  const onDeleteProject = (e) => {
-    e.preventDefault();
-  };
+  const onDeleteProject = () => {};
+
+  const onCloseDeletePopup = () => {};
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -175,6 +186,45 @@ export function DetailsCard(props: Props) {
           </button>
         </div>
       </dialog>
+      <dialog id={`delete-modal-${props.project.id}`}>
+        <div className="error-modal">
+          <section style={{ marginBottom: "20px" }}>
+            <p style={{ fontSize: "16px", margin: "10px" }}>
+              Are you sure you want to delete the project: "
+              <strong>{props.project.projectName}</strong>"?
+            </p>
+          </section>
+          <footer
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
+            <button
+              onClick={onCloseDeletePopup}
+              type="button"
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#535353",
+                color: "#fff",
+              }}
+            >
+              Close
+            </button>
+            <button
+              onClick={() => {
+                props.projectsManager.deleteProject(props.project.id);
+              }}
+              type="button"
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#ff4d4d",
+                color: "#fff",
+              }}
+            >
+              Delete
+            </button>
+          </footer>
+        </div>
+      </dialog>
+
       <dialog id="edit-project-modal">
         <form className="project-form" id="edit-project-form">
           <h2>Edit Project</h2>
