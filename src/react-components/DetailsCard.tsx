@@ -21,9 +21,8 @@ const teamsCollection = getCollection<ITeam>("/teams");
 export function DetailsCard(props: Props) {
   const navigate = useNavigate();
 
-  props.projectsManager.onProjectDeleted = (id) => {
-    console.log(id);
-    deleteDocument("/projects", id);
+  props.projectsManager.onProjectDeleted = async (id) => {
+    await deleteDocument("/projects", id);
     toggleModal(`delete-modal-${props.project.id}`);
     toggleModal("edit-project-modal");
     navigate("/");

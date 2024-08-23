@@ -83,7 +83,7 @@ export function HomePage(props: Props) {
     toggleModal("error-popup");
   };
 
-  const onSubmitNewProject = (e: React.FormEvent) => {
+  const onSubmitNewProject = async (e: React.FormEvent) => {
     e.preventDefault();
     const projectForm = document.getElementById(
       "new-project-form",
@@ -100,9 +100,10 @@ export function HomePage(props: Props) {
       projectProgress: formData.get("project-progress") as string,
     };
     try {
-      Firestore.addDoc(projectsCollection, projectData);
-      props.projectsManager.newProject(projectData);
-      navigate(`/`);
+      const docRef = await Firestore.addDoc(projectsCollection, projectData);
+      const projectId = docRef.id;
+      props.projectsManager.newProject(projectData, projectId);
+      navigate(`/project/${projectId}`);
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {

@@ -59,7 +59,7 @@ export class Project implements IProject {
   fragRoute?: string;
   jsonRoute?: string;
 
-  constructor(data: IProject, id = uuidv4()) {
+  constructor(data: IProject, id: string) {
     // Initialize properties with data
     for (const key in data) {
       if (key === "fragRoute") {
@@ -69,7 +69,8 @@ export class Project implements IProject {
       } else {
         this[key] = data[key];
       }
-      this.id = id;
     }
+    this.id = id;
+    console.log(id);
   }
 }
