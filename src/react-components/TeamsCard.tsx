@@ -144,7 +144,6 @@ export function TeamsCard(props: Props) {
     };
 
     try {
-      const team = props.projectsManager.newTeam(teamData);
       const teamsCollection = getCollection<ITeam>("/teams");
       const firebaseTeamData = {
         ...teamData,
@@ -171,7 +170,9 @@ export function TeamsCard(props: Props) {
             }
           : undefined,
       };
-      Firestore.addDoc(teamsCollection, firebaseTeamData);
+      const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
+      const teamId = docRef.id;
+      const team = props.projectsManager.newTeam(teamData, teamId);
       teamForm.reset();
       toggleModal("new-team-modal");
       filterTeams();

@@ -11,6 +11,7 @@ import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { ViewerContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
+import { deleteDocument, getCollection } from "../firebase";
 
 interface Props {
   team: Team;
@@ -22,10 +23,10 @@ interface Props {
 export function TeamElement(props: Props) {
   const navigate = useNavigate();
 
-  props.projectsManager.onTeamDeleted = () => {
+  props.projectsManager.onTeamDeleted = async (id) => {
+    await deleteDocument("/teams", id);
     props.filterTeams();
     toggleModal(`delete-modal-${props.team.id}`);
-    // await deleteDocument("/teams", id);
   };
 
   const onDeleteTeamButton = () => {
