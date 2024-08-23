@@ -65,10 +65,7 @@ export class ProjectsManager {
       (project) => project.projectName === data.projectName,
     );
 
-    const projectId = data.id;
-    const idInUse = this.projectsList.some(
-      (project) => project.id === projectId,
-    );
+    const idInUse = this.projectsList.some((project) => project.id === id);
 
     if (nameInUse) {
       throw new Error(
@@ -76,10 +73,10 @@ export class ProjectsManager {
       );
     }
     if (idInUse) {
-      throw new Error(`A project with the ID "${projectId}" already exists`);
+      throw new Error(`A project with the ID "${id}" already exists`);
     }
 
-    const project = new Project(data, data.id);
+    const project = new Project(data, id);
     this.projectsList.push(project);
     this.onProjectCreated(project);
 

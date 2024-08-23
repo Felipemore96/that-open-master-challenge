@@ -8,8 +8,6 @@ import {
 import { toggleModal } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 import { Router, useNavigate } from "react-router-dom";
-import firebase from "firebase/compat";
-import Firestore = firebase.firestore.Firestore;
 import { deleteDocument, getCollection } from "../firebase";
 import { ITeam } from "../class/teams";
 
@@ -24,7 +22,10 @@ export function DetailsCard(props: Props) {
   const navigate = useNavigate();
 
   props.projectsManager.onProjectDeleted = (id) => {
-    deleteDocument("/teams", id);
+    console.log(id);
+    deleteDocument("/projects", id);
+    toggleModal(`delete-modal-${props.project.id}`);
+    toggleModal("edit-project-modal");
     navigate("/");
   };
 
@@ -80,9 +81,13 @@ export function DetailsCard(props: Props) {
     toggleModal("error-popup");
   };
 
-  const onDeleteProject = () => {};
+  const onDeleteProject = () => {
+    toggleModal(`delete-modal-${props.project.id}`);
+  };
 
-  const onCloseDeletePopup = () => {};
+  const onCloseDeletePopup = () => {
+    toggleModal(`delete-modal-${props.project.id}`);
+  };
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -340,7 +345,7 @@ export function DetailsCard(props: Props) {
                 }}
               >
                 <button
-                  onClick={(e) => onDeleteProject(e)}
+                  onClick={(e) => onDeleteProject()}
                   id="delete-project-btn"
                   type="button"
                   style={{ backgroundColor: "rgb(206,31,31)" }}

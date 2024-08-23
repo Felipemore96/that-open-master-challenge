@@ -62,15 +62,14 @@ export class Project implements IProject {
   constructor(data: IProject, id = uuidv4()) {
     // Initialize properties with data
     for (const key in data) {
-      if (key === "id") {
-        this.id = data[key] || id;
-      } else if (key === "fragRoute") {
+      if (key === "fragRoute") {
         this.fragRoute = data[key];
       } else if (key === "jsonRoute") {
         this.jsonRoute = data[key];
       } else {
         this[key] = data[key];
       }
+      this.id = id;
     }
   }
 }

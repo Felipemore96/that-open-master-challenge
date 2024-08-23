@@ -109,12 +109,10 @@ export function Sidebar(props: Props) {
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
     };
-    const id = uuidv4();
     try {
       Firestore.addDoc(projectsCollection, projectData);
-      const project = props.projectsManager.newProject({ ...projectData, id });
-      navigate(`/project/${project.id}`);
-      // getFirestoreProjects();
+      const project = props.projectsManager.newProject(projectData);
+      navigate(`/`);
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {
