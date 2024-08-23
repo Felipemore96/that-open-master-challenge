@@ -97,7 +97,6 @@ export function Sidebar(props: Props) {
     const projectForm = document.getElementById(
       "new-project-form",
     ) as HTMLFormElement;
-    // Gather form data and create a new project
     const formData = new FormData(projectForm);
     const projectData: IProject = {
       projectName: formData.get("project-name") as string,
@@ -111,7 +110,7 @@ export function Sidebar(props: Props) {
     };
     try {
       Firestore.addDoc(projectsCollection, projectData);
-      const project = props.projectsManager.newProject(projectData);
+      props.projectsManager.newProject(projectData);
       navigate(`/`);
       projectForm.reset();
       toggleModal("new-project-modal");
