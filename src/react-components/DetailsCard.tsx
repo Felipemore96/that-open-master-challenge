@@ -69,6 +69,10 @@ export function DetailsCard(props: Props) {
     toggleModal("error-popup");
   };
 
+  const onDeleteProject = (e) => {
+    e.preventDefault();
+  };
+
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -275,26 +279,49 @@ export function DetailsCard(props: Props) {
             <div
               style={{
                 display: "flex",
-                margin: "10px 0px 10px auto",
+                justifyContent: "space-between",
+                margin: "10px 0px 10px",
                 columnGap: 10,
               }}
             >
-              <button
-                onClick={onCancelEdits}
-                id="cancel-new-project-btn"
-                type="button"
-                style={{ backgroundColor: "transparent" }}
+              <div
+                style={{
+                  margin: "0px 0px 0px",
+                }}
               >
-                Cancel
-              </button>
-              <button
-                onClick={(e) => onSubmitEditedProject(e)}
-                id="submit-new-project-btn"
-                type="button"
-                style={{ backgroundColor: "rgb(18, 145, 18)" }}
+                <button
+                  onClick={(e) => onDeleteProject(e)}
+                  id="delete-project-btn"
+                  type="button"
+                  style={{ backgroundColor: "rgb(206,31,31)" }}
+                >
+                  Delete Project
+                </button>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  margin: "0px 0px 0px auto",
+                  columnGap: 10,
+                }}
               >
-                Accept
-              </button>
+                <button
+                  onClick={onCancelEdits}
+                  id="cancel-new-project-btn"
+                  type="button"
+                  style={{ backgroundColor: "transparent" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={(e) => onSubmitEditedProject(e)}
+                  id="submit-new-project-btn"
+                  type="button"
+                  style={{ backgroundColor: "rgb(18, 145, 18)" }}
+                >
+                  Accept
+                </button>
+              </div>
             </div>
           </div>
         </form>
