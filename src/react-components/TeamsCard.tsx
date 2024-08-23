@@ -1,17 +1,13 @@
 import * as React from "react";
 import * as OBC from "openbim-components";
 import * as THREE from "three";
-import { IProject, Project, toggleModal } from "../class/projects";
+import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-// import * as Firestore from "firebase/firestore";
-// import { getCollection } from "../firebase";
 import { TeamElement } from "./TeamElement";
 import { ViewerContext } from "./IFCViewer";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
-import { Simulate } from "react-dom/test-utils";
-import keyDown = Simulate.keyDown;
 
 interface Props {
   project: Project;

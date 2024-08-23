@@ -1,6 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-import * as OBC from "openbim-components";
-
 export type ProjectStatus = "Pending" | "Active" | "Finished";
 export type ProjectType =
   | "Residential"

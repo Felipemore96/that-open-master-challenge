@@ -1,17 +1,11 @@
 import * as React from "react";
 import * as OBC from "openbim-components";
-import {
-  IProject,
-  Project,
-  ProjectStatus,
-  ProjectType,
-  toggleModal,
-} from "../class/projects";
+import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { ViewerContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
-import { deleteDocument, getCollection } from "../firebase";
+import { deleteDocument } from "../firebase";
 
 interface Props {
   team: Team;

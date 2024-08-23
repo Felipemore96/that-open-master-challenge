@@ -4,11 +4,11 @@ import {
   Project,
   ProjectStatus,
   ProjectType,
+  toggleModal,
 } from "../class/projects";
-import { toggleModal } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
-import { Router, useNavigate } from "react-router-dom";
-import { deleteDocument, getCollection } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { deleteDocument, getCollection, updateDocument } from "../firebase";
 import { ITeam } from "../class/teams";
 
 interface Props {
@@ -38,7 +38,7 @@ export function DetailsCard(props: Props) {
   const onCancelEdits = () => {
     toggleModal("edit-project-modal");
   };
-  const onSubmitEditedProject = (e) => {
+  const onSubmitEditedProject = async (e) => {
     e.preventDefault();
     const projectForm = document.getElementById(
       "edit-project-form",
@@ -54,21 +54,25 @@ export function DetailsCard(props: Props) {
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
       id: props.project.id,
-      fragRoute: props.project.fragRoute,
-      jsonRoute: props.project.jsonRoute,
     };
     try {
-      // const projectsCollection = getCollection<IProject>("/projects");
-      // Firestore.addDoc(projectsCollection, projectData);
-
       const updatedProject = props.projectsManager.editProject(
-        newProjectData,
+        {
+          ...newProjectData,
+          fragRoute: props.project.fragRoute,
+          jsonRoute: props.project.jsonRoute,
+        },
         props.project,
       );
       console.log(updatedProject);
       navigate(`/project/${updatedProject.id}`);
-      // getFirestoreProjects();
       toggleModal("edit-project-modal");
+      const projectsCollection = getCollection<IProject>("/projects");
+      await updateDocument<IProject>(
+        "/projects",
+        props.project.id,
+        newProjectData,
+      );
     } catch (err) {
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;

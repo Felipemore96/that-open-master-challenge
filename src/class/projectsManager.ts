@@ -1,8 +1,5 @@
-import * as THREE from "three";
-import * as OBC from "openbim-components";
-import { IProject, Project, toggleModal } from "../class/projects";
+import { IProject, Project } from "../class/projects";
 import { ITeam, Team } from "../class/teams";
-import { v4 as uuidv4 } from "uuid";
 
 export class ProjectsManager {
   projectsList: Project[] = [];
