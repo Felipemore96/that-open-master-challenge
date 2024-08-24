@@ -1,0 +1,226 @@
+{
+  "projectsList": [
+    {
+      "projectName": "Riverside Bridge",
+      "projectCost": "500,000.00",
+      "projectStatus": "Active",
+      "projectAddress": "Seine River, Paris, France",
+      "jsonRoute": "../../assets/default-model1.json",
+      "projectType": "Heavy civil",
+      "fragRoute": "../../assets/default-model1.frag",
+      "projectProgress": "30",
+      "projectDescription": "A modern bridge spanning the river, connecting two bustling districts.",
+      "projectFinishDate": "2025-04-30T06:00:00.355Z",
+      "id": "3826a263-f931-4406-94e7-4f62f717b2e1"
+    },
+    {
+      "projectAddress": "Prenzlauer Berg, Berlin, Germany",
+      "jsonRoute": "../../assets/default-model2.json",
+      "projectName": "Urban Loft",
+      "projectStatus": "Pending",
+      "projectDescription": "Structural design for a contemporary one-floor building, blending seamlessly into the urban landscape.",
+      "projectFinishDate": "2025-08-15T06:00:00.829Z",
+      "projectProgress": "75",
+      "fragRoute": "../../assets/default-model2.frag",
+      "projectType": "Mixed-use",
+      "projectCost": "350,000.00",
+      "id": "d581f18b-8030-41f3-80c7-a8a9d9ec8031"
+    },
+    {
+      "projectCost": "2,000,000.00",
+      "projectStatus": "Finished",
+      "projectFinishDate": "2023-06-15T06:00:00.618Z",
+      "projectProgress": "100",
+      "jsonRoute": "../../assets/default-model5.json",
+      "projectType": "Residential",
+      "projectDescription": "A residential complex of townhouses designed to blend with the historic charm of the neighborhood while offering modern amenities and sustainable features.",
+      "fragRoute": "../../assets/default-model5.frag",
+      "projectAddress": "Montmartre, Paris, France",
+      "projectName": "Heritage Townhouses",
+      "id": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d"
+    }
+  ],
+  "teamsList": [
+    {
+      "onCardClick": {
+        "handlers": []
+      },
+      "camera": {
+        "target": {
+          "x": "22.520271827043366",
+          "z": "71.925365230357",
+          "y": "3.650672103879617"
+        },
+        "position": {
+          "x": "-3.5619167211226213",
+          "z": "117.32517728289218",
+          "y": "-65.33176411094537"
+        }
+      },
+      "contactPhone": "+33 987 654 321",
+      "teamProjectId": "3826a263-f931-4406-94e7-4f62f717b2e1",
+      "teamDescription": "Experts in bridge design, ensuring safety and functionality while complementing the cityscape.",
+      "teamName": "Bridge Design Group",
+      "fragmentMap": {
+        "363f376d-41bf-4c8d-b744-07bc8fc340f9": {}
+      },
+      "contactName": "Emily Johnson",
+      "teamRole": "Structural",
+      "id": "24b440d2-a854-43fe-918b-c76705fa0be4"
+    },
+    {
+      "onCardClick": {
+        "handlers": []
+      },
+      "camera": {
+        "position": {
+          "x": "31.21658384570606",
+          "y": "9.364908702705275",
+          "z": "-8.762025929547349"
+        },
+        "target": {
+          "z": "-13.794756569717139",
+          "x": "3.68089317098457",
+          "y": "-0.701106895541809"
+        }
+      },
+      "teamDescription": "Innovative MEP firm specializing in integrating eco-friendly and energy-efficient systems into high-rise buildings.",
+      "teamName": "EcoSmart Solutions Ltd.",
+      "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+      "teamRole": "MEP",
+      "fragmentMap": {
+        "e3b65195-9478-4256-bf27-b06345a17396": {}
+      },
+      "contactPhone": "+33 456 789 123",
+      "contactName": "Greta Weber",
+      "id": "6bSlagVvm8P0SI6TI3N4"
+    },
+    {
+      "onCardClick": {
+        "handlers": []
+      },
+      "camera": {
+        "position": {
+          "x": "37.7661077230378",
+          "y": "16.506804101129756",
+          "z": "34.90037938293105"
+        },
+        "target": {
+          "x": "8.455718350089347",
+          "z": "23.60425851131652",
+          "y": "1.5425332388016395"
+        }
+      },
+      "contactPhone": "+49 123 456 789",
+      "fragmentMap": {
+        "6300fe10-43bb-41a5-88fc-66913934b928": {},
+        "0bf94918-91fd-48e5-a9b9-c8096421ed5e": {}
+      },
+      "teamProjectId": "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
+      "contactName": "Sarah Johnson",
+      "teamName": "Urban Architects Collective",
+      "teamDescription": "Renowned construction company known for implementing cutting-edge techniques and delivering high-quality results.",
+      "teamRole": "Architect",
+      "id": "DzsCU1HMwQWN0DzZUfyL"
+    },
+    {
+      "onCardClick": {
+        "handlers": []
+      },
+      "teamDescription": "Expert structural engineering firm with extensive experience in designing high-rise buildings for durability and strength.",
+      "camera": {
+        "position": {
+          "y": "-84.48082651604888",
+          "x": "30.464836359113487",
+          "z": "-5.86570866471228"
+        },
+        "target": {
+          "z": "-16.395126182877952",
+          "y": "-24.63835969782891",
+          "x": "-4.166282100135081"
+        }
+      },
+      "teamRole": "Structural",
+      "teamName": "Skyline Engineers AG",
+      "contactPhone": "+49 30 987 654 321",
+      "contactName": "Anna Schmidt",
+      "fragmentMap": {
+        "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": {}
+      },
+      "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+      "id": "cPr3XX3jFMQFN6SFtau6"
+    },
+    {
+      "onCardClick": {
+        "handlers": []
+      },
+      "camera": {
+        "position": {
+          "y": "49.0409386329085",
+          "x": "81.81247929233817",
+          "z": "130.86505719708884"
+        },
+        "target": {
+          "y": "-34.892857845120155",
+          "z": "49.53080950635257",
+          "x": "-14.413127277813626"
+        }
+      },
+      "teamName": "Bridge Builders Ltd.",
+      "teamProjectId": "3826a263-f931-4406-94e7-4f62f717b2e1",
+      "teamRole": "Contractor",
+      "teamDescription": "Experienced in constructing bridges of all sizes, specializing in structural integrity and on-time delivery.",
+      "fragmentMap": {
+        "7c7a4379-f1c5-40ce-89f2-31d207e8861f": {},
+        "363f376d-41bf-4c8d-b744-07bc8fc340f9": {}
+      },
+      "contactPhone": "+33 123 456 789",
+      "contactName": "John Smith",
+      "id": "kY5zppdmG5tnzSK16b6b"
+    },
+    {
+      "onCardClick": {
+        "handlers": []
+      },
+      "teamDescription": "Innovative architectural firm specializing in urban design, creating spaces that inspire and transform communities.",
+      "teamName": "Construction Innovators Ltd.",
+      "fragmentMap": {
+        "8a846781-a5e5-448d-ab3b-69d9404ad774": {},
+        "6300fe10-43bb-41a5-88fc-66913934b928": {}
+      },
+      "teamRole": "Contractor",
+      "teamProjectId": "d581f18b-8030-41f3-80c7-a8a9d9ec8031",
+      "contactName": "Michael Brown",
+      "contactPhone": "+49 987 654 321",
+      "id": "ojNdkwNJlUhKZwtnP4uH"
+    },
+    {
+      "onCardClick": {
+        "handlers": []
+      },
+      "contactPhone": "+49 30 123 456 789",
+      "camera": {
+        "target": {
+          "y": "45.058352706257274",
+          "z": "-15.280961159818538",
+          "x": "7.003759375987601"
+        },
+        "position": {
+          "y": "63.40220165196557",
+          "x": "30.42105940882714",
+          "z": "-15.257009466545652"
+        }
+      },
+      "contactName": "Charlie Black",
+      "teamProjectId": "d9b1c5e8-7c7a-4a0f-8d6b-5e9f5b9e7e7d",
+      "fragmentMap": {
+        "c4b0c4f7-8871-423a-aea4-14ba6496c4b2": {},
+        "e3b65195-9478-4256-bf27-b06345a17396": {}
+      },
+      "teamRole": "Contractor",
+      "teamDescription": "Specializes in constructing residential buildings that integrate modern living with historical aesthetics.",
+      "teamName": "Heritage Construction Co.",
+      "id": "xhwsVF15qOxjyKIAxyqg"
+    }
+  ]
+}
