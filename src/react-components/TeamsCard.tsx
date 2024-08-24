@@ -44,7 +44,8 @@ export function TeamsCard(props: Props) {
       try {
         props.projectsManager.newTeam(team, doc.id);
       } catch (error) {
-        //project already exists so update its properties
+        const previousTeam = props.projectsManager.getTeam(doc.id);
+        props.projectsManager.editTeam(team, previousTeam);
       }
     }
     filterTeams();

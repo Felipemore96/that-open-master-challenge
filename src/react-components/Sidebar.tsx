@@ -45,7 +45,8 @@ export function Sidebar(props: Props) {
       try {
         props.projectsManager.newProject(project, doc.id);
       } catch (error) {
-        //project already exists so update its properties
+        const previousProject = props.projectsManager.getProject(doc.id);
+        props.projectsManager.editProject(project, previousProject);
       }
     }
     setLoading(false);
