@@ -295,16 +295,14 @@ export function IFCViewer(props: Props) {
     viewer.ui.addToolbar(toolbar);
   };
 
-  const updateAndDisposeViewer = async () => {
-    await createViewer(); // Create a new viewer instance with updated project
-    return async () => {
-      await viewer.dispose(); // Dispose the previous viewer instance
-      setViewer(null);
-    };
-  };
+  const updateAndDisposeViewer = () => {};
   // This useEffect hook runs whenever props.project changes
   React.useEffect(() => {
-    updateAndDisposeViewer();
+    createViewer(); // Create a new viewer instance with updated project
+    return () => {
+      viewer.dispose(); // Dispose the previous viewer instance
+      setViewer(null);
+    };
   }, [props.project.id]); // Dependency on props.project
 
   return (

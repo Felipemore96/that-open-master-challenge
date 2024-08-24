@@ -81,6 +81,11 @@ export class ProjectsManager {
   }
 
   newTeam(data: ITeam, id?: string) {
+    const idInUse = this.teamsList.some((team) => team.id === id);
+
+    if (idInUse) {
+      throw new Error(`A project with the ID "${id}" already exists`);
+    }
     const team = new Team(data, id);
     this.teamsList.push(team);
     this.onTeamCreated(team);
