@@ -15,6 +15,7 @@ import { SidebarProject } from "./SidebarProject";
 import { SearchBox } from "./SearchBox";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
+import * as THREE from "three";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -133,7 +134,7 @@ export function Sidebar(props: Props) {
     input.accept = "application/json";
 
     const reader = new FileReader();
-    reader.addEventListener("load", () => {
+    reader.addEventListener("load", async () => {
       const json = reader.result;
       if (!json) {
         return;
@@ -144,8 +145,10 @@ export function Sidebar(props: Props) {
         try {
           if (isProject(item)) {
             item.projectFinishDate = new Date(item.projectFinishDate);
-            props.projectsManager.newProject(item, item.id);
-            navigate(`/project/${item.id}`);
+            const docRef = await Firestore.addDoc(projectsCollection, item);
+            const projectId = docRef.id;
+            props.projectsManager.newProject(item, projectId);
+            navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
             const fragmentIdMap: OBC.FragmentIdMap = {};
             for (const key in item.fragmentMap) {
@@ -154,7 +157,43 @@ export function Sidebar(props: Props) {
               }
             }
             item.fragmentMap = fragmentIdMap;
-            props.projectsManager.newTeam(item);
+            const teamCamera:
+              | { position: THREE.Vector3; target: THREE.Vector3 }
+              | undefined = undefined;
+
+            const teamsCollection = getCollection<ITeam>("/teams");
+            const firebaseTeamData = {
+              ...item,
+              fragmentMap: fragmentIdMap
+                ? Object.fromEntries(
+                    Object.entries(fragmentIdMap).map(([key, value]) => [
+                      key,
+                      Array.from(value),
+                    ]),
+                  )
+                : undefined,
+              camera: teamCamera
+                ? {
+                    position: {
+                      x: teamCamera.position.x,
+                      y: teamCamera.position.y,
+                      z: teamCamera.position.z,
+                    },
+                    target: {
+                      x: teamCamera.target.x,
+                      y: teamCamera.target.y,
+                      z: teamCamera.target.z,
+                    },
+                  }
+                : undefined,
+            };
+            const docRef = await Firestore.addDoc(
+              teamsCollection,
+              firebaseTeamData,
+            );
+            const teamId = docRef.id;
+            props.projectsManager.newTeam(item, teamId);
+            console.log("Team created");
           }
         } catch (error) {
           console.error("Error processing item:", item, error);
