@@ -17,8 +17,13 @@ export interface ITeam {
   contactPhone: string;
   teamProjectId: string;
   id?: string;
-  fragmentMap?: OBC.FragmentIdMap;
-  camera?: { position: THREE.Vector3; target: THREE.Vector3 };
+  fragmentMap?: OBC.FragmentIdMap | { [k: string]: string[] };
+  camera?:
+    | { position: THREE.Vector3; target: THREE.Vector3 }
+    | {
+        position: { x: number; y: number; z: number };
+        target: { x: number; y: number; z: number };
+      };
 }
 
 // Class representing a team

@@ -4,10 +4,10 @@ import * as THREE from "three";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-// import * as Firestore from "firebase/firestore";
-// import { getCollection } from "../firebase";
 import { TeamElement } from "./TeamElement";
 import { ViewerContext } from "./IFCViewer";
+import { getCollection } from "../firebase";
+import * as Firestore from "firebase/firestore";
 
 interface Props {
   project: Project;
@@ -22,6 +22,39 @@ export function TeamsCard(props: Props) {
     setTeams([...props.projectsManager.teamsList]);
   };
 
+  const getFirestoreTeams = async () => {
+    const teamsCollection = getCollection<ITeam>("/teams");
+    const firebaseTeams = await Firestore.getDocs(teamsCollection);
+    for (const doc of firebaseTeams.docs) {
+      const data = doc.data();
+      const fragmentIdMap: OBC.FragmentIdMap = {};
+      for (const key in data.fragmentMap) {
+        if (Object.prototype.hasOwnProperty.call(data.fragmentMap, key)) {
+          const value = data.fragmentMap[key];
+          if (Array.isArray(value)) {
+            fragmentIdMap[key] = new Set(value);
+          }
+        }
+      }
+      const team: ITeam = {
+        ...data,
+        fragmentMap: fragmentIdMap,
+      };
+
+      try {
+        props.projectsManager.newTeam(team, doc.id);
+      } catch (error) {
+        const previousTeam = props.projectsManager.getTeam(doc.id);
+        props.projectsManager.editTeam(team, previousTeam);
+      }
+    }
+    filterTeams();
+  };
+
+  React.useEffect(() => {
+    getFirestoreTeams();
+  }, []);
+
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamsList.filter(
       (team) => team.teamProjectId === props.project.id,
@@ -30,7 +63,6 @@ export function TeamsCard(props: Props) {
   };
 
   React.useEffect(() => {
-    // getFirestoreTeams();
     filterTeams();
   }, [props.project.id]);
 
@@ -109,7 +141,35 @@ export function TeamsCard(props: Props) {
     };
 
     try {
-      const team = props.projectsManager.newTeam(teamData);
+      const teamsCollection = getCollection<ITeam>("/teams");
+      const firebaseTeamData = {
+        ...teamData,
+        fragmentMap: fragmentMap
+          ? Object.fromEntries(
+              Object.entries(fragmentMap).map(([key, value]) => [
+                key,
+                Array.from(value),
+              ]),
+            )
+          : undefined,
+        camera: teamCamera
+          ? {
+              position: {
+                x: teamCamera.position.x,
+                y: teamCamera.position.y,
+                z: teamCamera.position.z,
+              },
+              target: {
+                x: teamCamera.target.x,
+                y: teamCamera.target.y,
+                z: teamCamera.target.z,
+              },
+            }
+          : undefined,
+      };
+      const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
+      const teamId = docRef.id;
+      const team = props.projectsManager.newTeam(teamData, teamId);
       teamForm.reset();
       toggleModal("new-team-modal");
       filterTeams();

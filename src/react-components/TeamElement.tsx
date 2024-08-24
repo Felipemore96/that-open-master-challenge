@@ -1,16 +1,11 @@
 import * as React from "react";
 import * as OBC from "openbim-components";
-import {
-  IProject,
-  Project,
-  ProjectStatus,
-  ProjectType,
-  toggleModal,
-} from "../class/projects";
+import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { ViewerContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
+import { deleteDocument, getCollection, updateDocument } from "../firebase";
 
 interface Props {
   team: Team;
@@ -22,10 +17,10 @@ interface Props {
 export function TeamElement(props: Props) {
   const navigate = useNavigate();
 
-  props.projectsManager.onTeamDeleted = () => {
+  props.projectsManager.onTeamDeleted = async (id) => {
+    await deleteDocument("/teams", id);
     props.filterTeams();
     toggleModal(`delete-modal-${props.team.id}`);
-    // await deleteDocument("/teams", id);
   };
 
   const onDeleteTeamButton = () => {
@@ -108,7 +103,7 @@ export function TeamElement(props: Props) {
     }
   };
 
-  const onSubmitEditedTeam = (e) => {
+  const onSubmitEditedTeam = async (e) => {
     e.preventDefault();
     const editTeamForm = document.getElementById(
       `edit-team-form-${props.team.id}`,
@@ -121,23 +116,22 @@ export function TeamElement(props: Props) {
       contactName: formData.get("contact-name") as string,
       contactPhone: formData.get("contact-phone") as string,
       teamProjectId: props.team.teamProjectId,
-      fragmentMap: props.team.fragmentMap,
-      camera: props.team.camera,
       id: props.team.id,
     };
     try {
-      // const projectsCollection = getCollection<IProject>("/projects");
-      // Firestore.addDoc(projectsCollection, projectData);
-
       const updatedTeam = props.projectsManager.editTeam(
-        newTeamData,
+        {
+          ...newTeamData,
+          fragmentMap: props.team.fragmentMap,
+          camera: props.team.camera,
+        },
         props.team,
       );
       console.log(updatedTeam);
-      // getFirestoreProjects();
       editTeamForm.reset();
       props.filterTeams();
       toggleModal(`edit-info-modal-${props.team.id}`);
+      await updateDocument<ITeam>("/teams", props.team.id, newTeamData);
     } catch (err) {
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;

@@ -10,13 +10,15 @@ import {
   toggleModal,
 } from "../class/projects";
 import { HomePageProjectCard } from "./HomePageProjectCard";
-// import * as Firestore from "firebase/firestore";
-// import { getCollection } from "../firebase";
+import * as Firestore from "firebase/firestore";
+import { getCollection } from "../firebase";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   projectsManager: ProjectsManager;
 }
+
+const projectsCollection = getCollection<IProject>("/projects");
 
 export function HomePage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
@@ -25,30 +27,29 @@ export function HomePage(props: Props) {
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
   };
-  // props.projectsManager.onProjectDeleted = () => { setProjects([...props.projectsManager.projectsList]) }
 
   const navigate = useNavigate();
 
-  // const getFirestoreProjects = async () => {
-  //   // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
-  //   const projectsCollenction = getCollection<IProject>("/projects");
-  //   const firebaseProjects = await Firestore.getDocs(projectsCollenction);
-  //   for (const doc of firebaseProjects.docs) {
-  //     const data = doc.data();
-  //     const project: IProject = {
-  //       ...data,
-  //       projectFinishDate: (
-  //         data.projectFinishDate as unknown as Firestore.Timestamp
-  //       ).toDate(),
-  //     };
-  //     try {
-  //       props.projectsManager.newProject(project, doc.id);
-  //     } catch (error) {}
-  //   }
-  // };
+  const getFirestoreProjects = async () => {
+    const firebaseProjects = await Firestore.getDocs(projectsCollection);
+    for (const doc of firebaseProjects.docs) {
+      const data = doc.data();
+      const project: IProject = {
+        ...data,
+        projectFinishDate: (
+          data.projectFinishDate as unknown as Firestore.Timestamp
+        ).toDate(),
+      };
+      try {
+        props.projectsManager.newProject(project, doc.id);
+      } catch (error) {
+        //project already exists so update its properties
+      }
+    }
+  };
 
   React.useEffect(() => {
-    // getFirestoreProjects();
+    getFirestoreProjects();
   }, []);
 
   const projectCards = projects.map((project) => {
@@ -59,9 +60,7 @@ export function HomePage(props: Props) {
     );
   });
 
-  React.useEffect(() => {
-    console.log("Projects state updated", projects);
-  }, [projects]);
+  React.useEffect(() => {}, [projects]);
 
   const onNewProject = () => {
     toggleModal("new-project-modal");
@@ -81,12 +80,11 @@ export function HomePage(props: Props) {
     toggleModal("error-popup");
   };
 
-  const onSubmitNewProject = (e: React.FormEvent) => {
+  const onSubmitNewProject = async (e: React.FormEvent) => {
     e.preventDefault();
     const projectForm = document.getElementById(
       "new-project-form",
     ) as HTMLFormElement;
-
     const formData = new FormData(projectForm);
     const projectData: IProject = {
       projectName: formData.get("project-name") as string,
@@ -98,14 +96,11 @@ export function HomePage(props: Props) {
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
     };
-    const id = uuidv4();
     try {
-      // const projectsCollection = getCollection<IProject>("/projects");
-      // Firestore.addDoc(projectsCollection, projectData);
-
-      const project = props.projectsManager.newProject({ ...projectData, id });
-      navigate(`/project/${project.id}`);
-      // getFirestoreProjects();
+      const docRef = await Firestore.addDoc(projectsCollection, projectData);
+      const projectId = docRef.id;
+      props.projectsManager.newProject(projectData, projectId);
+      navigate(`/project/${projectId}`);
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {

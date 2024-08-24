@@ -4,18 +4,29 @@ import {
   Project,
   ProjectStatus,
   ProjectType,
+  toggleModal,
 } from "../class/projects";
-import { toggleModal } from "../class/projects";
 import { ProjectsManager } from "../class/projectsManager";
 import { useNavigate } from "react-router-dom";
+import { deleteDocument, getCollection, updateDocument } from "../firebase";
+import { ITeam } from "../class/teams";
 
 interface Props {
   project: Project;
   projectsManager: ProjectsManager;
 }
 
+const teamsCollection = getCollection<ITeam>("/teams");
+
 export function DetailsCard(props: Props) {
   const navigate = useNavigate();
+
+  props.projectsManager.onProjectDeleted = async (id) => {
+    await deleteDocument("/projects", id);
+    toggleModal(`delete-modal-${props.project.id}`);
+    toggleModal("edit-project-modal");
+    navigate("/");
+  };
 
   const onClickEditButton = () => {
     const projectForm = document.getElementById(
@@ -27,7 +38,7 @@ export function DetailsCard(props: Props) {
   const onCancelEdits = () => {
     toggleModal("edit-project-modal");
   };
-  const onSubmitEditedProject = (e) => {
+  const onSubmitEditedProject = async (e) => {
     e.preventDefault();
     const projectForm = document.getElementById(
       "edit-project-form",
@@ -43,21 +54,23 @@ export function DetailsCard(props: Props) {
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
       id: props.project.id,
-      fragRoute: props.project.fragRoute,
-      jsonRoute: props.project.jsonRoute,
     };
     try {
-      // const projectsCollection = getCollection<IProject>("/projects");
-      // Firestore.addDoc(projectsCollection, projectData);
-
       const updatedProject = props.projectsManager.editProject(
-        newProjectData,
+        {
+          ...newProjectData,
+          fragRoute: props.project.fragRoute,
+          jsonRoute: props.project.jsonRoute,
+        },
         props.project,
       );
-      console.log(updatedProject);
       navigate(`/project/${updatedProject.id}`);
-      // getFirestoreProjects();
       toggleModal("edit-project-modal");
+      await updateDocument<IProject>(
+        "/projects",
+        props.project.id,
+        newProjectData,
+      );
     } catch (err) {
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;
@@ -67,6 +80,14 @@ export function DetailsCard(props: Props) {
 
   const onCloseErrorPopup = () => {
     toggleModal("error-popup");
+  };
+
+  const onDeleteProject = () => {
+    toggleModal(`delete-modal-${props.project.id}`);
+  };
+
+  const onCloseDeletePopup = () => {
+    toggleModal(`delete-modal-${props.project.id}`);
   };
 
   const formatDate = (date: Date) => {
@@ -171,6 +192,45 @@ export function DetailsCard(props: Props) {
           </button>
         </div>
       </dialog>
+      <dialog id={`delete-modal-${props.project.id}`}>
+        <div className="error-modal">
+          <section style={{ marginBottom: "20px" }}>
+            <p style={{ fontSize: "16px", margin: "10px" }}>
+              Are you sure you want to delete the project: "
+              <strong>{props.project.projectName}</strong>"?
+            </p>
+          </section>
+          <footer
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
+            <button
+              onClick={onCloseDeletePopup}
+              type="button"
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#535353",
+                color: "#fff",
+              }}
+            >
+              Close
+            </button>
+            <button
+              onClick={() => {
+                props.projectsManager.deleteProject(props.project.id);
+              }}
+              type="button"
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#ff4d4d",
+                color: "#fff",
+              }}
+            >
+              Delete
+            </button>
+          </footer>
+        </div>
+      </dialog>
+
       <dialog id="edit-project-modal">
         <form className="project-form" id="edit-project-form">
           <h2>Edit Project</h2>
@@ -275,26 +335,49 @@ export function DetailsCard(props: Props) {
             <div
               style={{
                 display: "flex",
-                margin: "10px 0px 10px auto",
+                justifyContent: "space-between",
+                margin: "10px 0px 10px",
                 columnGap: 10,
               }}
             >
-              <button
-                onClick={onCancelEdits}
-                id="cancel-new-project-btn"
-                type="button"
-                style={{ backgroundColor: "transparent" }}
+              <div
+                style={{
+                  margin: "0px 0px 0px",
+                }}
               >
-                Cancel
-              </button>
-              <button
-                onClick={(e) => onSubmitEditedProject(e)}
-                id="submit-new-project-btn"
-                type="button"
-                style={{ backgroundColor: "rgb(18, 145, 18)" }}
+                <button
+                  onClick={(e) => onDeleteProject()}
+                  id="delete-project-btn"
+                  type="button"
+                  style={{ backgroundColor: "rgb(206,31,31)" }}
+                >
+                  Delete Project
+                </button>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  margin: "0px 0px 0px auto",
+                  columnGap: 10,
+                }}
               >
-                Accept
-              </button>
+                <button
+                  onClick={onCancelEdits}
+                  id="cancel-new-project-btn"
+                  type="button"
+                  style={{ backgroundColor: "transparent" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={(e) => onSubmitEditedProject(e)}
+                  id="submit-new-project-btn"
+                  type="button"
+                  style={{ backgroundColor: "rgb(18, 145, 18)" }}
+                >
+                  Accept
+                </button>
+              </div>
             </div>
           </div>
         </form>

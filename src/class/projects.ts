@@ -1,6 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-import * as OBC from "openbim-components";
-
 export type ProjectStatus = "Pending" | "Active" | "Finished";
 export type ProjectType =
   | "Residential"
@@ -59,12 +56,10 @@ export class Project implements IProject {
   fragRoute?: string;
   jsonRoute?: string;
 
-  constructor(data: IProject, id = uuidv4()) {
+  constructor(data: IProject, id: string) {
     // Initialize properties with data
     for (const key in data) {
-      if (key === "id") {
-        this.id = data[key] || id;
-      } else if (key === "fragRoute") {
+      if (key === "fragRoute") {
         this.fragRoute = data[key];
       } else if (key === "jsonRoute") {
         this.jsonRoute = data[key];
@@ -72,5 +67,6 @@ export class Project implements IProject {
         this[key] = data[key];
       }
     }
+    this.id = id;
   }
 }

@@ -23,12 +23,13 @@ export function DetailsPage(props: Props) {
   if (!routeParams.id) {
     return <p>Project ID is needed to see this page</p>;
   }
+
   const currentProject = props.projectsManager.getProject(routeParams.id);
+  React.useEffect(() => {}, [currentProject]);
+
   if (!currentProject) {
     return <p>The project with ID {routeParams.id} wasn't found.</p>;
   }
-
-  React.useEffect(() => {}, [currentProject]);
 
   return (
     <div className="page" id="project-details">

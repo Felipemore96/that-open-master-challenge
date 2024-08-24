@@ -50,11 +50,11 @@ export function IFCViewer(props: Props) {
     scene.background = null;
 
     const viewerContainer = document.getElementById(
-      "viewer-container"
+      "viewer-container",
     ) as HTMLDivElement;
     const rendererComponent = new OBC.PostproductionRenderer(
       viewer,
-      viewerContainer
+      viewerContainer,
     );
     viewer.renderer = rendererComponent;
 
@@ -117,8 +117,7 @@ export function IFCViewer(props: Props) {
       }
       culler.needsUpdate = true;
       try {
-        console.log(model);
-        classifier.byModel(model.name, model); //Classifier tool setup once model is loaded
+        classifier.byModel(model.name, model);
         classifier.byStorey(model);
         classifier.byEntity(model);
         console.log("Finished classification");
@@ -291,11 +290,12 @@ export function IFCViewer(props: Props) {
       simpleQTO.uiElement.get("activationBtn"),
       toDoCreator.uiElement.get("activationButton"),
       propsFinder.uiElement.get("main"),
-      fragmentManager.uiElement.get("main")
+      fragmentManager.uiElement.get("main"),
     );
     viewer.ui.addToolbar(toolbar);
   };
 
+  const updateAndDisposeViewer = () => {};
   // This useEffect hook runs whenever props.project changes
   React.useEffect(() => {
     createViewer(); // Create a new viewer instance with updated project

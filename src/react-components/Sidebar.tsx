@@ -1,57 +1,61 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
-import * as OBC from "openbim-components";
 import { useNavigate } from "react-router-dom";
+import * as OBC from "openbim-components";
 import {
   IProject,
+  Project,
   ProjectStatus,
   ProjectType,
   toggleModal,
-  Project,
 } from "../class/projects";
 import { ITeam } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
 import { SearchBox } from "./SearchBox";
-// import * as Firestore from "firebase/firestore";
-// import { getCollection } from "../firebase";
-import { v4 as uuidv4 } from "uuid";
+import { getCollection } from "../firebase";
+import * as Firestore from "firebase/firestore";
+import * as THREE from "three";
 
 interface Props {
   projectsManager: ProjectsManager;
 }
 
+const projectsCollection = getCollection<IProject>("/projects");
+
 export function Sidebar(props: Props) {
-  // const [projectsManager] = React.useState(new ProjectsManager())
   const [projects, setProjects] = React.useState<Project[]>(
     props.projectsManager.projectsList,
   );
+  const [loading, setLoading] = React.useState(true);
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
   };
   const navigate = useNavigate();
 
-  // const getFirestoreProjects = async () => {
-  // const projectsCollenction = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>
-  // const projectsCollenction = getCollection<IProject>("/projects");
-  // const firebaseProjects = await Firestore.getDocs(projectsCollenction);
-  //   for (const doc of firebaseProjects.docs) {
-  //     const data = doc.data();
-  //     const project: IProject = {
-  //       ...data,
-  //       projectFinishDate: (
-  //         data.projectFinishDate as unknown as Firestore.Timestamp
-  //       ).toDate(),
-  //     };
-  //     try {
-  //       props.projectsManager.newProject(project, doc.id);
-  //     } catch (error) {}
-  //   }
-  // };
+  const getFirestoreProjects = async () => {
+    const firebaseProjects = await Firestore.getDocs(projectsCollection);
+    for (const doc of firebaseProjects.docs) {
+      const data = doc.data();
+      const project: IProject = {
+        ...data,
+        projectFinishDate: (
+          data.projectFinishDate as unknown as Firestore.Timestamp
+        ).toDate(),
+      };
+      try {
+        props.projectsManager.newProject(project, doc.id);
+      } catch (error) {
+        const previousProject = props.projectsManager.getProject(doc.id);
+        props.projectsManager.editProject(project, previousProject);
+      }
+    }
+    setLoading(false);
+  };
 
-  // React.useEffect(() => {
-  //   getFirestoreProjects();
-  // }, []);
+  React.useEffect(() => {
+    getFirestoreProjects();
+  }, []);
 
   const projectsCards = projects.map((project) => {
     return (
@@ -61,11 +65,8 @@ export function Sidebar(props: Props) {
     );
   });
 
-  React.useEffect(() => {
-    console.log("Projects state updated", projects);
-  }, [projects]);
+  React.useEffect(() => {}, [projects]);
 
-  // React Event listener
   const onNewProject = () => {
     toggleModal("new-project-modal");
   };
@@ -88,12 +89,11 @@ export function Sidebar(props: Props) {
     toggleModal("error-popup");
   };
 
-  const onSubmitNewProject = (e: React.FormEvent) => {
+  const onSubmitNewProject = async (e: React.FormEvent) => {
     e.preventDefault();
     const projectForm = document.getElementById(
       "new-project-form",
     ) as HTMLFormElement;
-    // Gather form data and create a new project
     const formData = new FormData(projectForm);
     const projectData: IProject = {
       projectName: formData.get("project-name") as string,
@@ -105,14 +105,11 @@ export function Sidebar(props: Props) {
       projectFinishDate: new Date(formData.get("finishDate") as string),
       projectProgress: formData.get("project-progress") as string,
     };
-    const id = uuidv4();
     try {
-      // const projectsCollection = getCollection<IProject>("/projects");
-      // Firestore.addDoc(projectsCollection, projectData);
-
-      const project = props.projectsManager.newProject({ ...projectData, id });
-      navigate(`/project/${project.id}`);
-      // getFirestoreProjects();
+      const docRef = await Firestore.addDoc(projectsCollection, projectData);
+      const projectId = docRef.id;
+      props.projectsManager.newProject(projectData, projectId);
+      navigate(`/project/${projectId}`);
       projectForm.reset();
       toggleModal("new-project-modal");
     } catch (err) {
@@ -137,7 +134,7 @@ export function Sidebar(props: Props) {
     input.accept = "application/json";
 
     const reader = new FileReader();
-    reader.addEventListener("load", () => {
+    reader.addEventListener("load", async () => {
       const json = reader.result;
       if (!json) {
         return;
@@ -148,8 +145,10 @@ export function Sidebar(props: Props) {
         try {
           if (isProject(item)) {
             item.projectFinishDate = new Date(item.projectFinishDate);
-            props.projectsManager.newProject(item, item.id);
-            navigate(`/project/${item.id}`);
+            const docRef = await Firestore.addDoc(projectsCollection, item);
+            const projectId = docRef.id;
+            props.projectsManager.newProject(item, projectId);
+            navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
             const fragmentIdMap: OBC.FragmentIdMap = {};
             for (const key in item.fragmentMap) {
@@ -158,7 +157,43 @@ export function Sidebar(props: Props) {
               }
             }
             item.fragmentMap = fragmentIdMap;
-            props.projectsManager.newTeam(item);
+            const teamCamera:
+              | { position: THREE.Vector3; target: THREE.Vector3 }
+              | undefined = undefined;
+
+            const teamsCollection = getCollection<ITeam>("/teams");
+            const firebaseTeamData = {
+              ...item,
+              fragmentMap: fragmentIdMap
+                ? Object.fromEntries(
+                    Object.entries(fragmentIdMap).map(([key, value]) => [
+                      key,
+                      Array.from(value),
+                    ]),
+                  )
+                : undefined,
+              camera: teamCamera
+                ? {
+                    position: {
+                      x: teamCamera.position.x,
+                      y: teamCamera.position.y,
+                      z: teamCamera.position.z,
+                    },
+                    target: {
+                      x: teamCamera.target.x,
+                      y: teamCamera.target.y,
+                      z: teamCamera.target.z,
+                    },
+                  }
+                : undefined,
+            };
+            const docRef = await Firestore.addDoc(
+              teamsCollection,
+              firebaseTeamData,
+            );
+            const teamId = docRef.id;
+            props.projectsManager.newTeam(item, teamId);
+            console.log("Team created");
           }
         } catch (error) {
           console.error("Error processing item:", item, error);
@@ -379,9 +414,6 @@ export function Sidebar(props: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <p>Download Projects</p>
-          {/*<span style={{ width: "100%" }} className="material-icons-round">*/}
-          {/*  file_download*/}
-          {/*</span>*/}
         </button>
         <button
           onClick={onClickImportButton}
@@ -389,9 +421,6 @@ export function Sidebar(props: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <p>Upload Projects</p>
-          {/*<span style={{ width: "100%" }} className="material-icons-round">*/}
-          {/*  file_upload*/}
-          {/*</span>*/}
         </button>
       </div>
       <div style={{ display: "flex", alignItems: "center", columnGap: 10 }}>
@@ -406,10 +435,10 @@ export function Sidebar(props: Props) {
         </button>
         <SearchBox onChange={(value) => onProjectSearch(value)} />
       </div>
-      {projects.length > 0 ? (
-        <div id="projects-list" className="nav-buttons">
-          {projectsCards}
-        </div>
+      {loading ? (
+        <p>Loading projects...</p>
+      ) : projects.length > 0 ? (
+        <div className="nav-buttons">{projectsCards}</div>
       ) : (
         <p>There is no projects to display</p>
       )}
