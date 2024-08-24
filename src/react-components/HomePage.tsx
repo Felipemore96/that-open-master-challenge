@@ -61,9 +61,7 @@ export function HomePage(props: Props) {
     );
   });
 
-  React.useEffect(() => {
-    console.log("Projects state updated", projects);
-  }, [projects]);
+  React.useEffect(() => {}, [projects]);
 
   const onNewProject = () => {
     toggleModal("new-project-modal");

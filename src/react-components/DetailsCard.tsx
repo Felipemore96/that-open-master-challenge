@@ -64,10 +64,8 @@ export function DetailsCard(props: Props) {
         },
         props.project,
       );
-      console.log(updatedProject);
       navigate(`/project/${updatedProject.id}`);
       toggleModal("edit-project-modal");
-      const projectsCollection = getCollection<IProject>("/projects");
       await updateDocument<IProject>(
         "/projects",
         props.project.id,

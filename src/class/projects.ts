@@ -68,6 +68,5 @@ export class Project implements IProject {
       }
     }
     this.id = id;
-    console.log(id);
   }
 }

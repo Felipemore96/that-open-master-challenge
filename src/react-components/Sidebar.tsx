@@ -65,9 +65,7 @@ export function Sidebar(props: Props) {
     );
   });
 
-  React.useEffect(() => {
-    console.log("Projects state updated", projects);
-  }, [projects]);
+  React.useEffect(() => {}, [projects]);
 
   // React Event listener
   const onNewProject = () => {
