@@ -27,7 +27,6 @@ export function HomePage(props: Props) {
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
   };
-  // props.projectsManager.onProjectDeleted = () => { setProjects([...props.projectsManager.projectsList]) }
 
   const navigate = useNavigate();
 

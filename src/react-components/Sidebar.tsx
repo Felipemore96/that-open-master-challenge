@@ -1,21 +1,18 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
-import * as OBC from "openbim-components";
 import { useNavigate } from "react-router-dom";
+import * as OBC from "openbim-components";
 import {
   IProject,
+  Project,
   ProjectStatus,
   ProjectType,
   toggleModal,
-  Project,
 } from "../class/projects";
 import { ITeam } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { SidebarProject } from "./SidebarProject";
 import { SearchBox } from "./SearchBox";
-// import * as Firestore from "firebase/firestore";
-// import { getCollection } from "../firebase";
-import { v4 as uuidv4 } from "uuid";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
 
@@ -26,10 +23,10 @@ interface Props {
 const projectsCollection = getCollection<IProject>("/projects");
 
 export function Sidebar(props: Props) {
-  // const [projectsManager] = React.useState(new ProjectsManager())
   const [projects, setProjects] = React.useState<Project[]>(
     props.projectsManager.projectsList,
   );
+  const [loading, setLoading] = React.useState(true);
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
   };
@@ -51,6 +48,7 @@ export function Sidebar(props: Props) {
         //project already exists so update its properties
       }
     }
+    setLoading(false);
   };
 
   React.useEffect(() => {
@@ -67,7 +65,6 @@ export function Sidebar(props: Props) {
 
   React.useEffect(() => {}, [projects]);
 
-  // React Event listener
   const onNewProject = () => {
     toggleModal("new-project-modal");
   };
@@ -398,7 +395,9 @@ export function Sidebar(props: Props) {
         </button>
         <SearchBox onChange={(value) => onProjectSearch(value)} />
       </div>
-      {projects.length > 0 ? (
+      {loading ? (
+        <p>Loading projects...</p>
+      ) : projects.length > 0 ? (
         <div className="nav-buttons">{projectsCards}</div>
       ) : (
         <p>There is no projects to display</p>
