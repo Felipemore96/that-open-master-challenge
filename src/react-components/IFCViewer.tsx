@@ -295,7 +295,6 @@ export function IFCViewer(props: Props) {
     viewer.ui.addToolbar(toolbar);
   };
 
-  const updateAndDisposeViewer = () => {};
   // This useEffect hook runs whenever props.project changes
   React.useEffect(() => {
     createViewer(); // Create a new viewer instance with updated project
