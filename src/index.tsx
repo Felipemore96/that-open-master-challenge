@@ -1,12 +1,14 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import * as Router from "react-router-dom";
+import * as BUI from "@thatopen/ui";
 import { Sidebar } from "./react-components/Sidebar";
 import { ProjectsManager } from "./class/projectsManager";
 import { DetailsPage } from "./react-components/DetailsPage";
 import { HomePage } from "./react-components/HomePage";
 import { ViewerProvider } from "./react-components/IFCViewer";
 
+BUI.Manager.init();
 const projectsManager = new ProjectsManager();
 
 const rootElement = document.getElementById("app") as HTMLDivElement;
@@ -30,5 +32,5 @@ appRoot.render(
         ></Router.Route>
       </Router.Routes>
     </ViewerProvider>
-  </Router.BrowserRouter>
+  </Router.BrowserRouter>,
 );

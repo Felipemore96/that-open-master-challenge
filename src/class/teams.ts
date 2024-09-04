@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import { FragmentsGroup } from "@thatopen/fragments";
 
 export type TeamRole =
   | "BIM Manager"

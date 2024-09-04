@@ -1,6 +1,7 @@
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import { FragmentsGroup } from "@thatopen/fragments";
 import * as WEBIFC from "web-ifc";
-import { FragmentsGroup } from "bim-fragment";
 
 type QtoResult = { [setName: string]: { [qtoName: string]: number } };
 
@@ -26,7 +27,7 @@ export class SimpleQTO
 
   async setup() {
     const highlighter = await this._components.tools.get(
-      OBC.FragmentHighlighter
+      OBC.FragmentHighlighter,
     );
     highlighter.events.select.onHighlight.add((fragmentIdMap) => {
       this.sumQuantities(fragmentIdMap);
@@ -84,10 +85,10 @@ export class SimpleQTO
 
   async sumQuantities(fragmentIdMap: OBC.FragmentIdMap) {
     const fragmentManager = await this._components.tools.get(
-      OBC.FragmentManager
+      OBC.FragmentManager,
     );
     const propertiesProcessor = await this._components.tools.get(
-      OBC.IfcPropertiesProcessor
+      OBC.IfcPropertiesProcessor,
     );
     for (const fragmentID in fragmentIdMap) {
       const fragment = fragmentManager.list[fragmentID];
@@ -110,7 +111,7 @@ export class SimpleQTO
           const entity = properties[mapID];
           const { name: setName } = OBC.IfcPropertiesUtils.getEntityName(
             properties,
-            mapID
+            mapID,
           );
           if (!(entity.type === WEBIFC.IFCELEMENTQUANTITY && setName)) {
             continue;
@@ -124,11 +125,11 @@ export class SimpleQTO
             (qtoID) => {
               const { name: qtoName } = OBC.IfcPropertiesUtils.getEntityName(
                 properties,
-                qtoID
+                qtoID,
               );
               const { value } = OBC.IfcPropertiesUtils.getQuantityValue(
                 properties,
-                qtoID
+                qtoID,
               );
               if (!(qtoName && value)) {
                 return;
@@ -137,7 +138,7 @@ export class SimpleQTO
                 this._qtoResult[setName][qtoName] = 0;
               }
               this._qtoResult[setName][qtoName] += value;
-            }
+            },
           );
         }
       }
@@ -147,7 +148,7 @@ export class SimpleQTO
 
   async dispose() {
     const highlighter = await this._components.tools.get(
-      OBC.FragmentHighlighter
+      OBC.FragmentHighlighter,
     );
     // highlighter.events.select.onHighlight.remove(this.sumQuantities);
     this.uiElement.dispose();

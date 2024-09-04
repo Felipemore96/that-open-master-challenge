@@ -1,4 +1,6 @@
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import { FragmentsGroup } from "@thatopen/fragments";
 import * as THREE from "three";
 import { ToDoCard } from "./src/ToDoCard";
 
@@ -47,7 +49,7 @@ export class ToDoCreator
   //Setup method to also invoke as soon as tool is initialized, could have been added to the constructor
   async setup() {
     const highlighter = await this._components.tools.get(
-      OBC.FragmentHighlighter
+      OBC.FragmentHighlighter,
     );
     highlighter.add(`${ToDoCreator.uuid}-priority-Low`, [
       new THREE.MeshStandardMaterial({ color: 0x59bc59 }),
@@ -69,7 +71,7 @@ export class ToDoCreator
     const camera = this._components.camera;
     if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
       throw new Error(
-        "ToDoCreator needs the OrthoPerspectiveCamera in order to work"
+        "ToDoCreator needs the OrthoPerspectiveCamera in order to work",
       );
     }
     const position = new THREE.Vector3();
@@ -80,7 +82,7 @@ export class ToDoCreator
 
     //Take existing highlight tool that was already defined
     const highlighter = await this._components.tools.get(
-      OBC.FragmentHighlighter
+      OBC.FragmentHighlighter,
     );
 
     //Definition of To Do instance
@@ -107,7 +109,7 @@ export class ToDoCreator
         toDo.camera.target.x,
         toDo.camera.target.y,
         toDo.camera.target.z,
-        true
+        true,
       );
       //To highlight the elements from the To Do
       const fragmentMapLenght = Object.keys(toDo.fragmentMap).length;
@@ -169,7 +171,7 @@ export class ToDoCreator
     form.onAccept.add(() => {
       this.addToDo(
         descriptionInput.value,
-        priorityDropdown.value as ToDoPriority
+        priorityDropdown.value as ToDoPriority,
       );
       descriptionInput.value = "";
       form.visible = false;
@@ -192,7 +194,7 @@ export class ToDoCreator
 
     //Logic of clicking colorize button, for clicking and unclicking
     const highlighter = await this._components.tools.get(
-      OBC.FragmentHighlighter
+      OBC.FragmentHighlighter,
     );
     colorizeBtn.onClick.add(() => {
       colorizeBtn.active = !colorizeBtn.active;
@@ -204,7 +206,7 @@ export class ToDoCreator
           }
           highlighter.highlightByID(
             `${ToDoCreator.uuid}-priority-${toDo.priority}`,
-            toDo.fragmentMap
+            toDo.fragmentMap,
           );
         }
       } else {

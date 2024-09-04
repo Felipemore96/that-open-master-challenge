@@ -1,6 +1,9 @@
 import * as React from "react";
-import * as OBC from "openbim-components";
-import { FragmentsGroup } from "bim-fragment";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import * as BUI from "@thatopen/ui";
+import * as CUI from "@thatopen/ui-obc";
+import { FragmentsGroup } from "@thatopen/fragments";
 import { ToDoCreator } from "../bim-components/ToDoCreator";
 import { SimpleQTO } from "../bim-components/SimpleQTO";
 import { Project } from "../class/projects";
@@ -29,6 +32,7 @@ export function ViewerProvider(props: { children: React.ReactNode }) {
 }
 
 export function IFCViewer(props: Props) {
+  BUI.Manager.init();
   const { setViewer } = React.useContext(ViewerContext);
   let viewer: OBC.Components;
 
@@ -43,40 +47,49 @@ export function IFCViewer(props: Props) {
     setViewer(viewer);
 
     //Scene tool setup
-    const sceneComponent = new OBC.SimpleScene(viewer);
-    viewer.scene = sceneComponent;
-    const scene = sceneComponent.get();
+    const components = new OBC.Components();
+    const worlds = components.get(OBC.Worlds);
+
+    const world = worlds.create<
+      OBC.SimpleScene,
+      OBC.OrthoPerspectiveCamera,
+      OBF.PostproductionRenderer
+    >();
+
+    const sceneComponent = new OBC.SimpleScene(components);
+    world.scene = sceneComponent;
+    const scene = world.scene.three;
     sceneComponent.setup();
     scene.background = null;
 
     const viewerContainer = document.getElementById(
       "viewer-container",
     ) as HTMLDivElement;
-    const rendererComponent = new OBC.PostproductionRenderer(
+    const rendererComponent = new OBF.PostproductionRenderer(
       viewer,
       viewerContainer,
     );
-    viewer.renderer = rendererComponent;
+    world.renderer = rendererComponent;
 
     //Camera tool setup
-    const cameraComponent = new OBC.OrthoPerspectiveCamera(viewer);
-    viewer.camera = cameraComponent;
+    const cameraComponent = new OBC.OrthoPerspectiveCamera(components);
+    world.camera = cameraComponent;
 
-    //Raycaster tool setup
-    const raycasterComponent = new OBC.SimpleRaycaster(viewer);
-    viewer.raycaster = raycasterComponent;
-
-    //Renderer setup, viewer initialization after defining basic objects (scene, camera...)
-    viewer.init();
-    cameraComponent.updateAspect(); //Camera aspect fix
+    components.init();
     rendererComponent.postproduction.enabled = true; //Outlines
 
-    const fragmentManager = new OBC.FragmentManager(viewer);
-    const ifcLoader = new OBC.FragmentIfcLoader(viewer);
+    viewerContainer.addEventListener("resize", () => {
+      cameraComponent.updateAspect(); //Camera aspect fix
+      rendererComponent.resize();
+    });
+
+    // const fragmentManager = new OBC.FragmentManager(viewer);
+    const fragments = components.get(OBC.FragmentsManager);
+    const ifcLoader = components.get(OBC.IfcLoader);
 
     //Highlighter tool setup based on Raycaster
-    const highlighter = new OBC.FragmentHighlighter(viewer);
-    highlighter.setup();
+    const highlighter = components.get(OBF.Highlighter);
+    highlighter.setup({ world });
 
     //Culler tool setup to optimize the viewer performace
     const culler = new OBC.ScreenCuller(viewer);
@@ -93,15 +106,11 @@ export function IFCViewer(props: Props) {
       propertiesProcessor.cleanPropertiesList();
     });
 
-    ifcLoader.onIfcLoaded.add(async (model) => {
+    fragments.onFragmentsLoaded.add((model) => {
       onModelLoaded(model);
       // exportToFRAG(model);
       // exportToJSON(model);
-    });
-
-    fragmentManager.onFragmentsLoaded.add((model) => {
       // importJSONProperties(model); // Added for challenge class 3.10.
-      onModelLoaded(model);
     });
 
     let propsRoute: string | undefined;
@@ -111,35 +120,32 @@ export function IFCViewer(props: Props) {
         model.properties = await properties.json();
         propsRoute = undefined;
       }
-      highlighter.update();
+      // highlighter.update();
       for (const fragment of model.items) {
         culler.add(fragment.mesh);
       }
       culler.needsUpdate = true;
-      try {
-        classifier.byModel(model.name, model);
-        classifier.byStorey(model);
-        classifier.byEntity(model);
-        console.log("Finished classification");
-        const tree = await createModelTree();
-        await classificationWindow.slots.content.dispose(true);
-        classificationWindow.addChild(tree);
-        propertiesProcessor.process(model); //IFC properties processor setup
-        highlighter.events.select.onHighlight.add((fragmentMap) => {
-          //Callback event to find the express ID of the selected element
-          highlighter.update();
-          const expressID = [...Object.values(fragmentMap)[0]][0];
-          propertiesProcessor.renderProperties(model, Number(expressID)); //Method to show properties of selected elements
-        });
-      } catch (error) {
-        alert(error);
-      }
+      // try {
+      //   // classifier.byModel(model.name, model);
+      //   // classifier.byStorey(model);
+      //   // classifier.byEntity(model);
+      //   // console.log("Finished classification");
+      //   // const tree = await createModelTree();
+      //   await classificationWindow.slots.content.dispose(true);
+      //   // classificationWindow.addChild(tree);
+      //   propertiesProcessor.process(model); //IFC properties processor setup
+      //   highlighter.events.select.onHighlight.add((fragmentMap) => {
+      //     //Callback event to find the express ID of the selected element
+      //     highlighter.update();
+      //     const expressID = [...Object.values(fragmentMap)[0]][0];
+      //     propertiesProcessor.renderProperties(model, Number(expressID)); //Method to show properties of selected elements
+      //   });
+      // } catch (error) {
+      //   alert(error);
+      // }
     }
 
-    ifcLoader.settings.wasm = {
-      path: "https://unpkg.com/web-ifc@0.0.44/",
-      absolute: true,
-    };
+    await ifcLoader.setup();
 
     if (
       defaultProject === true &&
@@ -151,37 +157,7 @@ export function IFCViewer(props: Props) {
       const data = await file.arrayBuffer();
       const fragmentBinary = new Uint8Array(data);
       propsRoute = props.project.jsonRoute;
-      const model = await fragmentManager.load(fragmentBinary);
-    }
-
-    //Classifier doesn't have UI elements, so button and window must be defined
-    const classificationWindow = new OBC.FloatingWindow(viewer); //UI Component - floating window
-    viewer.ui.add(classificationWindow);
-    classificationWindow.title = "Model Groups";
-    classificationWindow.visible = false;
-    //UI Component and button
-    const classificationsBtn = new OBC.Button(viewer);
-    classificationsBtn.materialIcon = "account_tree";
-    classificationsBtn.tooltip = "Classification";
-    classificationsBtn.onClick.add(() => {
-      classificationWindow.visible = !classificationWindow.visible;
-      classificationWindow.active = classificationWindow.visible;
-    });
-
-    async function createModelTree() {
-      const fragmentTree = new OBC.FragmentTree(viewer); //Fragment tree tool setup, organizing information from classifier tool
-      await fragmentTree.init();
-      await fragmentTree.update(["model", "storeys", "entities"]);
-      const tree = fragmentTree.get().uiElement.get("tree");
-      fragmentTree.onHovered.add((fragmentMap) => {
-        //On hover method for the fragment map
-        highlighter.highlightByID("hover", fragmentMap);
-      });
-      fragmentTree.onSelected.add((fragmentMap) => {
-        //On selected method for fragment map
-        highlighter.highlightByID("select", fragmentMap);
-      });
-      return tree; //Final result is the Fragment Tree
+      const model = fragments.load(fragmentBinary);
     }
 
     // //Import fragment button setup
@@ -280,6 +256,15 @@ export function IFCViewer(props: Props) {
     });
 
     //Toolbar tool definition, addChild funciton adds buttons to it
+    const toolbar = BUI.Component.create<BUI.Toolbar>(() => {
+      const [loadIfc] = CUI.buttons.loadIfc({ components });
+      return BUI.html`
+        <bim-toolbar>
+        
+        </bim-toolbar>
+      `;
+    });
+
     const toolbar = new OBC.Toolbar(viewer);
     if (defaultProject === false) {
       toolbar.addChild(ifcLoader.uiElement.get("main"));
@@ -304,11 +289,13 @@ export function IFCViewer(props: Props) {
     };
   }, [props.project.id]); // Dependency on props.project
 
-  return (
-    <div
+  return BUI.html`
+    <bim-viewport
       id="viewer-container"
       className="dashboard-card"
       style={{ minWidth: 0, position: "relative" }}
-    />
-  );
+    >
+      <bim-grid id={""} floating></bim-grid>
+    </bim-viewport>
+  `;
 }

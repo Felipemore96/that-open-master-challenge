@@ -1,7 +1,9 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import { FragmentsGroup } from "@thatopen/fragments";
 import {
   IProject,
   Project,

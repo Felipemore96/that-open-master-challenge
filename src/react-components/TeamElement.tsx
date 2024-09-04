@@ -1,5 +1,7 @@
 import * as React from "react";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import { FragmentsGroup } from "@thatopen/fragments";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";

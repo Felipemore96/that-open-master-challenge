@@ -1,4 +1,6 @@
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBF from "@thatopen/components-front";
+import { FragmentsGroup } from "@thatopen/fragments";
 
 //Class for UI component for To Do cards
 export class ToDoCard extends OBC.SimpleUIComponent {
@@ -16,7 +18,7 @@ export class ToDoCard extends OBC.SimpleUIComponent {
   //Description and Date properties definition from dynamic data, through setters
   set description(value: string) {
     const descriptionElement = this.getInnerElement(
-      "description"
+      "description",
     ) as HTMLParagraphElement;
     descriptionElement.textContent = value;
   }
