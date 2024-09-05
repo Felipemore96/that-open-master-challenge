@@ -8,7 +8,7 @@ import { DetailsPage } from "./react-components/DetailsPage";
 import { HomePage } from "./react-components/HomePage";
 import { ViewerProvider } from "./react-components/IFCViewer";
 
-BUI.Manager.init();
+// BUI.Manager.init();
 const projectsManager = new ProjectsManager();
 
 const rootElement = document.getElementById("app") as HTMLDivElement;

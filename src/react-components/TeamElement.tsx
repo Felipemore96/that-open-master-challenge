@@ -80,14 +80,14 @@ export function TeamElement(props: Props) {
 
   const onTeamClicked = async (team: Team) => {
     if (!viewer) return;
-    const camera = viewer.camera;
+    const camera = viewer.get(OBC.OrthoPerspectiveCamera);
     if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
       throw new Error(
         "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
       );
     }
     modelLoaded = true;
-    const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+    const highlighter = viewer.get(OBF.Highlighter);
 
     if (team.camera) {
       camera.controls.setLookAt(

@@ -7,6 +7,8 @@ import { FragmentsGroup } from "@thatopen/fragments";
 import { ToDoCreator } from "../bim-components/ToDoCreator";
 import { SimpleQTO } from "../bim-components/SimpleQTO";
 import { Project } from "../class/projects";
+// BUI.Manager.init();
+// CUI.Manager.init();
 
 interface Props {
   project: Project;
@@ -91,23 +93,25 @@ export function IFCViewer(props: Props) {
     const highlighter = components.get(OBF.Highlighter);
     highlighter.setup({ world });
 
-    //Culler tool setup to optimize the viewer performace
-    const culler = new OBC.ScreenCuller(viewer);
-    cameraComponent.controls.addEventListener("sleep", () => {
-      culler.needsUpdate = true;
-    });
+    // //Culler tool setup to optimize the viewer performace
+    // const culler = new OBC.ScreenCuller(viewer);
+    // cameraComponent.controls.addEventListener("sleep", () => {
+    //   culler.needsUpdate = true;
+    // });
+    //
+    // //Classifier tool definition
+    // const classifier = new OBC.FragmentClassifier(viewer);
+    //
+    // //IFC Properies processor tool setup
+    const indexer = components.get(OBC.IfcRelationsIndexer);
+    // highlighter.events.select.onClear.add(() => {
+    //   propertiesProcessor.cleanPropertiesList();
+    // });
 
-    //Classifier tool definition
-    const classifier = new OBC.FragmentClassifier(viewer);
-
-    //IFC Properies processor tool setup
-    const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer);
-    highlighter.events.select.onClear.add(() => {
-      propertiesProcessor.cleanPropertiesList();
-    });
-
-    fragments.onFragmentsLoaded.add((model) => {
-      onModelLoaded(model);
+    fragments.onFragmentsLoaded.add(async (model) => {
+      world.scene.three.add(model);
+      if (model.hasProperties) await indexer.process(model);
+      await onModelLoaded(model);
       // exportToFRAG(model);
       // exportToJSON(model);
       // importJSONProperties(model); // Added for challenge class 3.10.
@@ -117,18 +121,18 @@ export function IFCViewer(props: Props) {
     async function onModelLoaded(model: FragmentsGroup) {
       if (propsRoute) {
         const properties = await fetch(propsRoute);
-        model.properties = await properties.json();
+        // model.properties = await properties.json();
         propsRoute = undefined;
       }
       // highlighter.update();
-      for (const fragment of model.items) {
-        culler.add(fragment.mesh);
-      }
-      culler.needsUpdate = true;
+      // for (const fragment of model.items) {
+      //   culler.add(fragment.mesh);
+      // }
+      // culler.needsUpdate = true;
       // try {
-      //   // classifier.byModel(model.name, model);
-      //   // classifier.byStorey(model);
-      //   // classifier.byEntity(model);
+      // classifier.byModel(model.name, model);
+      // classifier.byStorey(model);
+      // classifier.byEntity(model);
       //   // console.log("Finished classification");
       //   // const tree = await createModelTree();
       //   await classificationWindow.slots.content.dispose(true);
@@ -160,32 +164,32 @@ export function IFCViewer(props: Props) {
       const model = fragments.load(fragmentBinary);
     }
 
-    // //Import fragment button setup
-    // const importFragmentBtn = new OBC.Button(viewer);
-    // importFragmentBtn.materialIcon = "upload";
-    // importFragmentBtn.tooltip = "Load FRAG";
-    // importFragmentBtn.onClick.add(() => {
-    //   const input = document.createElement("input");
-    //   input.type = "file";
-    //   input.accept = ".frag";
-    //   const reader = new FileReader();
-    //   reader.addEventListener("load", async () => {
-    //     const binary = reader.result;
-    //     if (!(binary instanceof ArrayBuffer)) {
-    //       return;
-    //     }
-    //     const fragmentBinary = new Uint8Array(binary);
-    //     await fragmentManager.load(fragmentBinary);
-    //   });
-    //   input.addEventListener("change", () => {
-    //     const filesList = input.files;
-    //     if (!filesList) {
-    //       return;
-    //     }
-    //     reader.readAsArrayBuffer(filesList[0]);
-    //   });
-    //   input.click();
-    // });
+    //Import fragment button setup
+    const importFragmentBtn = new BUI.Button();
+    importFragmentBtn.icon = "upload";
+    importFragmentBtn.tooltipTitle = "Load FRAG";
+    importFragmentBtn.onclick.call(() => {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".frag";
+      const reader = new FileReader();
+      reader.addEventListener("load", async () => {
+        const binary = reader.result;
+        if (!(binary instanceof ArrayBuffer)) {
+          return;
+        }
+        const fragmentBinary = new Uint8Array(binary);
+        fragments.load(fragmentBinary);
+      });
+      input.addEventListener("change", () => {
+        const filesList = input.files;
+        if (!filesList) {
+          return;
+        }
+        reader.readAsArrayBuffer(filesList[0]);
+      });
+      input.click();
+    });
 
     // //Function to import json file with properties
     // function importJSONProperties(model: FragmentsGroup) {
@@ -236,23 +240,43 @@ export function IFCViewer(props: Props) {
     //   URL.revokeObjectURL(url);
     // }
 
-    //Instance of ToDoCreator and setup method
-    const toDoCreator = new ToDoCreator(viewer);
-    await toDoCreator.setup();
-    toDoCreator.onProjectCreated.add((toDo) => {
-      console.log(toDo);
-    });
+    // //Instance of ToDoCreator and setup method
+    // const toDoCreator = new ToDoCreator(viewer);
+    // await toDoCreator.setup();
+    // toDoCreator.onProjectCreated.add((toDo) => {
+    //   console.log(toDo);
+    // });
+    //
+    // // Instance of Quentity takeoff tool and setup method
+    //
+    // const simpleQTO = new SimpleQTO(viewer);
+    // await simpleQTO.setup();
+    //
+    // //Instance properties finder tool
+    // const propsFinder = new OBC.IfcPropertiesFinder(viewer);
+    // await propsFinder.init();
+    // propsFinder.onFound.add((fragmentIdMap) => {
+    //   highlighter.highlightByID("select", fragmentIdMap);
+    // });
 
-    // Instance of Quentity takeoff tool and setup method
-
-    const simpleQTO = new SimpleQTO(viewer);
-    await simpleQTO.setup();
-
-    //Instance properties finder tool
-    const propsFinder = new OBC.IfcPropertiesFinder(viewer);
-    await propsFinder.init();
-    propsFinder.onFound.add((fragmentIdMap) => {
-      highlighter.highlightByID("select", fragmentIdMap);
+    const panel = BUI.Component.create<BUI.Panel>(() => {
+      const [modelList] = CUI.tables.modelsList({ components });
+      const [properties, updateProperties] = CUI.tables.elementProperties({
+        components,
+        fragmentIdMap: {},
+      });
+      highlighter.events.select.onHighlight.add((fragmentIdMap) =>
+        updateProperties({ fragmentIdMap: {} }),
+      );
+      highlighter.events.select.onClear.add(() => updateProperties());
+      return BUI.html`
+        <bim-panel>
+            <bim-panel-section label="Models Lists">${modelList}</bim-panel-section>
+            <bim-panel-section label="Properties">${properties}</bim-panel-section>
+            <bim-panel-section label="Groupings"></bim-panel-section>
+            <bim-panel-section label="Spatial Structure"></bim-panel-section>
+        </bim-panel>
+      `;
     });
 
     //Toolbar tool definition, addChild funciton adds buttons to it
@@ -260,28 +284,48 @@ export function IFCViewer(props: Props) {
       const [loadIfc] = CUI.buttons.loadIfc({ components });
       return BUI.html`
         <bim-toolbar>
-        
+            <bim-toolbar-section>
+                ${loadIfc}
+            </bim-toolbar-section>
         </bim-toolbar>
       `;
     });
 
-    const toolbar = new OBC.Toolbar(viewer);
-    if (defaultProject === false) {
-      toolbar.addChild(ifcLoader.uiElement.get("main"));
-    }
-    toolbar.addChild(
-      classificationsBtn,
-      propertiesProcessor.uiElement.get("main"),
-      simpleQTO.uiElement.get("activationBtn"),
-      toDoCreator.uiElement.get("activationButton"),
-      propsFinder.uiElement.get("main"),
-      fragmentManager.uiElement.get("main"),
-    );
-    viewer.ui.addToolbar(toolbar);
+    const viewportGrid = document.getElementById("viewport-grid") as BUI.Grid;
+    viewportGrid.layouts = {
+      main: {
+        template: `
+          "empty panel" 1fr
+          "toolbar panel" auto
+        `,
+        elements: {
+          toolbar,
+          panel,
+        },
+      },
+    };
+
+    viewportGrid.layout = "main";
   };
+
+  //   const toolbar = new OBC.Toolbar(viewer);
+  //   if (defaultProject === false) {
+  //     toolbar.addChild(ifcLoader.uiElement.get("main"));
+  //   }
+  //   toolbar.addChild(
+  //     classificationsBtn,
+  //     propertiesProcessor.uiElement.get("main"),
+  //     simpleQTO.uiElement.get("activationBtn"),
+  //     toDoCreator.uiElement.get("activationButton"),
+  //     propsFinder.uiElement.get("main"),
+  //     fragmentManager.uiElement.get("main"),
+  //   );
+  //   viewer.ui.addToolbar(toolbar);
+  // };
 
   // This useEffect hook runs whenever props.project changes
   React.useEffect(() => {
+    console.log("use effect in IFC Viewer");
     createViewer(); // Create a new viewer instance with updated project
     return () => {
       viewer.dispose(); // Dispose the previous viewer instance
@@ -289,13 +333,128 @@ export function IFCViewer(props: Props) {
     };
   }, [props.project.id]); // Dependency on props.project
 
-  return BUI.html`
+  return (
+    // <BUI.Viewport id="viewer-container">
+    //   <BUI.Grid id="viewport-grid" floating></BUI.Grid>
+    // </BUI.Viewport>
+
     <bim-viewport
       id="viewer-container"
-      className="dashboard-card"
-      style={{ minWidth: 0, position: "relative" }}
+      // className="dashboard-card"
+      // style={{ minWidth: 0, position: "relative" }}
     >
-      <bim-grid id={""} floating></bim-grid>
+      <bim-grid id="viewport-grid" floating></bim-grid>
     </bim-viewport>
-  `;
+  );
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "bim-button": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-checkbox": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-color-input": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-context-menu": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-dropdown": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-grid": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-icon": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-input": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-label": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-number-input": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-option": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-panel": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-panel-section": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-selector": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-table": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-tabs": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-tab": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-table-cell": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-table-children": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-table-group": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-table-row": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-text-input": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-toolbar": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-toolbar-group": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-toolbar-section": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      "bim-viewport": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
-import { FragmentsGroup } from "@thatopen/fragments";
+import { FragmentIdMap, FragmentsGroup } from "@thatopen/fragments";
 import * as THREE from "three";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
@@ -10,6 +10,7 @@ import { TeamElement } from "./TeamElement";
 import { ViewerContext } from "./IFCViewer";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
+import { cameraPosition } from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
 
 interface Props {
   project: Project;
@@ -29,7 +30,7 @@ export function TeamsCard(props: Props) {
     const firebaseTeams = await Firestore.getDocs(teamsCollection);
     for (const doc of firebaseTeams.docs) {
       const data = doc.data();
-      const fragmentIdMap: OBC.FragmentIdMap = {};
+      const fragmentIdMap: FragmentIdMap = {};
       for (const key in data.fragmentMap) {
         if (Object.prototype.hasOwnProperty.call(data.fragmentMap, key)) {
           const value = data.fragmentMap[key];
@@ -108,20 +109,20 @@ export function TeamsCard(props: Props) {
     const formData = new FormData(teamForm);
     const currentProjectId = props.project.id;
 
-    let fragmentMap: OBC.FragmentIdMap | undefined = undefined;
+    let fragmentMap: FragmentIdMap | undefined = undefined;
     let teamCamera:
       | { position: THREE.Vector3; target: THREE.Vector3 }
       | undefined = undefined;
 
     if (viewer) {
-      const camera = viewer.camera;
+      const camera = viewer.get(OBC.OrthoPerspectiveCamera);
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(
           "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
         );
       }
       modelLoaded = true;
-      const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+      const highlighter = viewer.get(OBF.Highlighter);
 
       fragmentMap = highlighter.selection.select;
 

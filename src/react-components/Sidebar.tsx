@@ -3,7 +3,7 @@ import * as Router from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
-import { FragmentsGroup } from "@thatopen/fragments";
+import { FragmentIdMap, FragmentsGroup } from "@thatopen/fragments";
 import {
   IProject,
   Project,
@@ -152,7 +152,7 @@ export function Sidebar(props: Props) {
             props.projectsManager.newProject(item, projectId);
             navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
-            const fragmentIdMap: OBC.FragmentIdMap = {};
+            const fragmentIdMap: FragmentIdMap = {};
             for (const key in item.fragmentMap) {
               if (Array.isArray(item.fragmentMap[key])) {
                 fragmentIdMap[key] = new Set(item.fragmentMap[key]);
