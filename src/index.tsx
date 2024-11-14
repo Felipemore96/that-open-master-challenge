@@ -9,9 +9,15 @@ import { ViewerProvider } from "./react-components/IFCViewer";
 import * as BUI from "@thatopen/ui";
 
 BUI.Manager.init();
+
 declare global {
   namespace JSX {
-    interface IntrinsicElements {}
+    interface IntrinsicElements {
+      "bim-viewport": any;
+      "bim-grid": any;
+      "bim-toolbar": any;
+      "bim-toolbar-section": any;
+    }
   }
 }
 
