@@ -6,6 +6,14 @@ import { ProjectsManager } from "./class/projectsManager";
 import { DetailsPage } from "./react-components/DetailsPage";
 import { HomePage } from "./react-components/HomePage";
 import { ViewerProvider } from "./react-components/IFCViewer";
+import * as BUI from "@thatopen/ui";
+
+BUI.Manager.init();
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {}
+  }
+}
 
 const projectsManager = new ProjectsManager();
 
@@ -30,5 +38,5 @@ appRoot.render(
         ></Router.Route>
       </Router.Routes>
     </ViewerProvider>
-  </Router.BrowserRouter>
+  </Router.BrowserRouter>,
 );
