@@ -31,9 +31,9 @@ export function ViewerProvider(props: { children: React.ReactNode }) {
 }
 
 export function IFCViewer(props: Props) {
+  const components = new OBC.Components();
   const setViewer = () => {
-    const viewer = new OBC.Components();
-    const worlds = viewer.get(OBC.Worlds);
+    const worlds = components.get(OBC.Worlds);
 
     const world = worlds.create<
       OBC.SimpleScene,
@@ -41,7 +41,7 @@ export function IFCViewer(props: Props) {
       OBC.SimpleRenderer
     >();
 
-    const sceneComponent = new OBC.SimpleScene(viewer);
+    const sceneComponent = new OBC.SimpleScene(components);
     world.scene = sceneComponent;
     world.scene.setup();
     world.scene.three.background = null;
@@ -49,13 +49,16 @@ export function IFCViewer(props: Props) {
     const viewerContainer = document.getElementById(
       "viewer-container",
     ) as HTMLElement;
-    const rendererComponent = new OBC.SimpleRenderer(viewer, viewerContainer);
+    const rendererComponent = new OBC.SimpleRenderer(
+      components,
+      viewerContainer,
+    );
     world.renderer = rendererComponent;
 
-    const cameraComponent = new OBC.OrthoPerspectiveCamera(viewer);
+    const cameraComponent = new OBC.OrthoPerspectiveCamera(components);
     world.camera = cameraComponent;
 
-    viewer.init();
+    components.init();
 
     world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
     world.camera.updateAspect();
@@ -63,7 +66,9 @@ export function IFCViewer(props: Props) {
 
   React.useEffect(() => {
     setViewer();
-    return () => {};
+    return () => {
+      components.dispose();
+    };
   }, []);
 
   return (
