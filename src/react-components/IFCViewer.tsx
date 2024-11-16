@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as OBC from "@thatopen/components";
+import * as OBCF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 
@@ -31,7 +32,7 @@ export function IFCViewer() {
     const world = worlds.create<
       OBC.SimpleScene,
       OBC.OrthoPerspectiveCamera,
-      OBC.SimpleRenderer
+      OBCF.PostproductionRenderer
     >();
 
     const sceneComponent = new OBC.SimpleScene(components);
@@ -42,7 +43,7 @@ export function IFCViewer() {
     const viewerContainer = document.getElementById(
       "viewer-container",
     ) as HTMLElement;
-    const rendererComponent = new OBC.SimpleRenderer(
+    const rendererComponent = new OBCF.PostproductionRenderer(
       components,
       viewerContainer,
     );
@@ -63,6 +64,10 @@ export function IFCViewer() {
     fragmentsManager.onFragmentsLoaded.add((model) => {
       world.scene.three.add(model);
     });
+
+    const highlighter = components.get(OBCF.Highlighter);
+    highlighter.setup({ world });
+    highlighter.zoomToSelection = true;
 
     viewerContainer.addEventListener("resize", () => {
       rendererComponent.resize();
