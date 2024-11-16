@@ -17,6 +17,7 @@ declare global {
       "bim-grid": any;
       "bim-toolbar": any;
       "bim-toolbar-section": any;
+      "bim-button": any;
     }
   }
 }

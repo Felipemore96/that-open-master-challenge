@@ -3,6 +3,11 @@ import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
+import { Project } from "../class/projects";
+
+interface Props {
+  project: Project;
+}
 
 interface IViewerContext {
   viewer: OBC.Components | null;
@@ -23,7 +28,11 @@ export function ViewerProvider(props: { children: React.ReactNode }) {
   );
 }
 
-export function IFCViewer() {
+export function IFCViewer(props: Props) {
+  let defaultProject: boolean = false;
+  if (props.project.fragRoute) {
+    defaultProject = true;
+  }
   const components = new OBC.Components();
 
   const setViewer = () => {
@@ -75,6 +84,38 @@ export function IFCViewer() {
     });
   };
 
+  const onToggleVisibility = () => {
+    const highlighter = components.get(OBCF.Highlighter);
+    const fragments = components.get(OBC.FragmentsManager);
+    const selection = highlighter.selection.select;
+    if (Object.keys(selection).length === 0) return;
+    for (const fragmentID in selection) {
+      const fragment = fragments.list.get(fragmentID);
+      const expressIDs = selection[fragmentID];
+      for (const id of Array.from(expressIDs)) {
+        if (!fragment) continue;
+        const isHidden = fragment.hiddenItems.has(id);
+        if (isHidden) {
+          fragment.setVisibility(true, [id]);
+        } else {
+          fragment.setVisibility(false, [id]);
+        }
+      }
+    }
+  };
+
+  const onIsolate = () => {
+    const highlighter = components.get(OBCF.Highlighter);
+    const hider = components.get(OBC.Hider);
+    const selection = highlighter.selection.select;
+    hider.isolate(selection);
+  };
+
+  const onShow = () => {
+    const hider = components.get(OBC.Hider);
+    hider.set(true);
+  };
+
   const setupUI = () => {
     const viewerContainer = document.getElementById(
       "viewer-container",
@@ -92,8 +133,26 @@ export function IFCViewer() {
 
       return BUI.html`
         <bim-toolbar style="justify-self: center">
-            <bim-toolbar-section>
+            <bim-toolbar-section label="Import">
                 ${loadIfcBtn}
+            </bim-toolbar-section>
+            
+            <bim-toolbar-section label="Selection">
+                <bim-button 
+                    label="Visibility" 
+                    icon="material-symbols:visibility-outline"
+                    @click="${onToggleVisibility}"
+                ></bim-button>
+                <bim-button 
+                    label="Show all" 
+                    icon="tabler:eye-filled"
+                    @click="${onShow}"
+                ></bim-button>
+                <bim-button 
+                    label="Isolate" 
+                    icon="mdi:filter"
+                    @click="${onIsolate}"
+                ></bim-button>
             </bim-toolbar-section>
         </bim-toolbar>
       `;
