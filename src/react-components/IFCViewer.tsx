@@ -4,6 +4,7 @@ import * as OBCF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
+import { FragmentsGroup } from "@thatopen/fragments";
 
 interface Props {
   project: Project;
@@ -34,6 +35,7 @@ export function IFCViewer(props: Props) {
     defaultProject = true;
   }
   const components = new OBC.Components();
+  let fragmentModel: FragmentsGroup | undefined;
 
   const setViewer = () => {
     const worlds = components.get(OBC.Worlds);
@@ -70,8 +72,13 @@ export function IFCViewer(props: Props) {
     ifcLoader.setup();
 
     const fragmentsManager = components.get(OBC.FragmentsManager);
-    fragmentsManager.onFragmentsLoaded.add((model) => {
+    fragmentsManager.onFragmentsLoaded.add(async (model) => {
       world.scene.three.add(model);
+
+      const indexer = components.get(OBC.IfcRelationsIndexer);
+      await indexer.process(model);
+
+      fragmentModel = model;
     });
 
     const highlighter = components.get(OBCF.Highlighter);
@@ -116,6 +123,24 @@ export function IFCViewer(props: Props) {
     hider.set(true);
   };
 
+  const onShowProperty = () => {
+    if (!fragmentModel) return;
+    const highlighter = components.get(OBCF.Highlighter);
+    const selection = highlighter.selection.select;
+    const indexer = components.get(OBC.IfcRelationsIndexer);
+    for (const fragmentID in selection) {
+      const expressIDs = selection[fragmentID];
+      for (const id of Array.from(expressIDs)) {
+        const psets = indexer.getEntityRelations(
+          fragmentModel,
+          id,
+          "IsDefinedBy",
+        );
+        console.log(psets);
+      }
+    }
+  };
+
   const setupUI = () => {
     const viewerContainer = document.getElementById(
       "viewer-container",
@@ -136,7 +161,6 @@ export function IFCViewer(props: Props) {
             <bim-toolbar-section label="Import">
                 ${loadIfcBtn}
             </bim-toolbar-section>
-            
             <bim-toolbar-section label="Selection">
                 <bim-button 
                     label="Visibility" 
@@ -152,6 +176,13 @@ export function IFCViewer(props: Props) {
                     label="Isolate" 
                     icon="mdi:filter"
                     @click="${onIsolate}"
+                ></bim-button>
+            </bim-toolbar-section>
+            <bim-toolbar-section label="Property">
+                <bim-button 
+                    label="Show" 
+                    icon="clarity:list-line"
+                    @click="${onShowProperty}"
                 ></bim-button>
             </bim-toolbar-section>
         </bim-toolbar>
@@ -180,7 +211,14 @@ export function IFCViewer(props: Props) {
     setViewer();
     setupUI();
     return () => {
-      components.dispose();
+      if (components) {
+        components.dispose();
+      }
+
+      if (fragmentModel) {
+        fragmentModel.dispose();
+        fragmentModel = undefined;
+      }
     };
   }, []);
 
