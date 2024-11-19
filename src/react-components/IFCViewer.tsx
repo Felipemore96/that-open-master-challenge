@@ -229,6 +229,8 @@ export function IFCViewer(props: Props) {
         minWidth: 0,
         position: "relative",
         maxHeight: "calc(100vh - 100px)",
+        background: "var(--background-200)",
+        borderRadius: "8px",
       }}
     />
   );
