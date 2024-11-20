@@ -13,11 +13,32 @@ BUI.Manager.init();
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "bim-viewport": any;
-      "bim-grid": any;
-      "bim-toolbar": any;
-      "bim-toolbar-section": any;
       "bim-button": any;
+      "bim-checkbox": any;
+      "bim-color-input": any;
+      "bim-context-menu": any;
+      "bim-dropdown": any;
+      "bim-grid": any;
+      "bim-icon": any;
+      "bim-input": any;
+      "bim-label": any;
+      "bim-number-input": any;
+      "bim-option": any;
+      "bim-panel": any;
+      "bim-panel-section": any;
+      "bim-selector": any;
+      "bim-table": any;
+      "bim-tabs": any;
+      "bim-tab": any;
+      "bim-table-cell": any;
+      "bim-table-children": any;
+      "bim-table-group": any;
+      "bim-table-row": any;
+      "bim-text-input": any;
+      "bim-toolbar": any;
+      "bim-toolbar-group": any;
+      "bim-toolbar-section": any;
+      "bim-viewport": any;
     }
   }
 }

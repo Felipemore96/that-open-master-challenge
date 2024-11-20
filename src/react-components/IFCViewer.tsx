@@ -123,7 +123,7 @@ export function IFCViewer(props: Props) {
     hider.set(true);
   };
 
-  const onShowProperty = () => {
+  const onShowProperty = async () => {
     if (!fragmentModel) return;
     const highlighter = components.get(OBCF.Highlighter);
     const selection = highlighter.selection.select;
@@ -134,9 +134,13 @@ export function IFCViewer(props: Props) {
         const psets = indexer.getEntityRelations(
           fragmentModel,
           id,
-          "IsDefinedBy",
+          "ContainedInStructure",
         );
-        console.log(psets);
+        if (psets) {
+          for (const expressId of psets) {
+            const prop = await fragmentModel.getProperties(expressId);
+          }
+        }
       }
     }
   };
@@ -150,6 +154,53 @@ export function IFCViewer(props: Props) {
     const floatingGrid = BUI.Component.create<BUI.Grid>(() => {
       return BUI.html`
         <bim-grid floating style="padding: 20px"></bim-grid>
+      `;
+    });
+
+    const elementPropertyPanel = BUI.Component.create<BUI.Panel>(() => {
+      const [propsTable, updatePropsTable] = CUI.tables.elementProperties({
+        components,
+        fragmentIdMap: {},
+      });
+      const highlighter = components.get(OBCF.Highlighter);
+
+      highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+        if (!floatingGrid) return;
+        floatingGrid.layout = "section";
+        updatePropsTable({ fragmentIdMap });
+        propsTable.expanded = false;
+      });
+
+      highlighter.events.select.onClear.add(() => {
+        updatePropsTable({ fragmentIdMap: {} });
+        if (!floatingGrid) return;
+        floatingGrid.layout = "main";
+      });
+
+      const search = (e: Event) => {
+        const input = e.target as BUI.TextInput;
+        propsTable.queryString = input.value;
+      };
+
+      return BUI.html`
+        <bim-panel
+            style={{
+             minWidth: 0,
+             position: "relative",
+             maxHeight: "calc(100vh - 100px)",
+             background: "var(--background-200)",
+             borderRadius: "8px"}}
+        >
+            <bim-panel-section
+              name="property"
+              label="Property Information"
+              icon="solar:document-bold"
+              fixed
+             >
+              <bim-text-input @input=${search} placeholder="Search..."></bim-text-input>
+              ${propsTable}
+            </bim-panel-section>
+        </bim-panel>>
       `;
     });
 
@@ -198,6 +249,17 @@ export function IFCViewer(props: Props) {
         `,
         elements: {
           toolbar,
+        },
+      },
+      second: {
+        template: `
+        "empty elementPropertyPanel" 1fr
+        "toolbar toolbar" auto
+        /1fr 20rem
+        `,
+        elements: {
+          toolbar,
+          elementPropertyPanel,
         },
       },
     };
