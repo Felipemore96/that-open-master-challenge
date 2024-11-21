@@ -1,5 +1,7 @@
 import * as React from "react";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBCF from "@thatopen/components-front";
+import { FragmentIdMap } from "@thatopen/fragments";
 import * as THREE from "three";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
@@ -27,12 +29,12 @@ export function TeamsCard(props: Props) {
     const firebaseTeams = await Firestore.getDocs(teamsCollection);
     for (const doc of firebaseTeams.docs) {
       const data = doc.data();
-      const fragmentIdMap: OBC.FragmentIdMap = {};
+      const fragmentIdMap: FragmentIdMap = {};
       for (const key in data.fragmentMap) {
         if (Object.prototype.hasOwnProperty.call(data.fragmentMap, key)) {
           const value = data.fragmentMap[key];
           if (Array.isArray(value)) {
-            fragmentIdMap[key] = new Set(value);
+            // fragmentIdMap[key] = new Set(value);
           }
         }
       }
@@ -106,7 +108,7 @@ export function TeamsCard(props: Props) {
     const formData = new FormData(teamForm);
     const currentProjectId = props.project.id;
 
-    let fragmentMap: OBC.FragmentIdMap | undefined = undefined;
+    let fragmentMap: FragmentIdMap | undefined = undefined;
     let teamCamera:
       | { position: THREE.Vector3; target: THREE.Vector3 }
       | undefined = undefined;
@@ -120,6 +122,7 @@ export function TeamsCard(props: Props) {
       }
       modelLoaded = true;
       const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+      // const highlighter = components.get(OBCF.Highlighter);
 
       fragmentMap = highlighter.selection.select;
 

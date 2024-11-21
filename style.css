@@ -16,6 +16,8 @@
   --font-xl: 16px;
   --font-2xl: 18px;
   --font-3xl: 20px;
+  --bim-ui_bg-base: var(--background);
+  --bim-ui_main-base: var(--primary-100);
 }
 
 * {

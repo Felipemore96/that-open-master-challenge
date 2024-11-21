@@ -1,5 +1,6 @@
 import * as React from "react";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import { FragmentIdMap } from "@thatopen/fragments";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
@@ -78,29 +79,29 @@ export function TeamElement(props: Props) {
 
   const onTeamClicked = async (team: Team) => {
     if (!viewer) return;
-    const camera = viewer.camera;
-    if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-      throw new Error(
-        "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
-      );
-    }
-    modelLoaded = true;
-    const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+    // const camera = viewer.camera;
+    // if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+    //   throw new Error(
+    //     "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
+    //   );
+    // }
+    // modelLoaded = true;
+    // const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
 
-    if (team.camera) {
-      camera.controls.setLookAt(
-        team.camera.position.x,
-        team.camera.position.y,
-        team.camera.position.z,
-        team.camera.target.x,
-        team.camera.target.y,
-        team.camera.target.z,
-        true,
-      );
-    }
-    if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
-      highlighter.highlightByID("select", team.fragmentMap);
-    }
+    // if (team.camera) {
+    //   camera.controls.setLookAt(
+    //     team.camera.position.x,
+    //     team.camera.position.y,
+    //     team.camera.position.z,
+    //     team.camera.target.x,
+    //     team.camera.target.y,
+    //     team.camera.target.z,
+    //     true,
+    //   );
+    // }
+    // if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
+    //   highlighter.highlightByID("select", team.fragmentMap);
+    // }
   };
 
   const onSubmitEditedTeam = async (e) => {

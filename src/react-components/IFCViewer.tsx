@@ -124,21 +124,25 @@ export function IFCViewer(props: Props) {
   };
 
   const onShowProperty = async () => {
-    if (!fragmentModel) return;
-    const highlighter = components.get(OBCF.Highlighter);
-    const selection = highlighter.selection.select;
-    const indexer = components.get(OBC.IfcRelationsIndexer);
-    for (const fragmentID in selection) {
-      const expressIDs = selection[fragmentID];
-      for (const id of Array.from(expressIDs)) {
-        const psets = indexer.getEntityRelations(
-          fragmentModel,
-          id,
-          "ContainedInStructure",
-        );
-        if (psets) {
-          for (const expressId of psets) {
-            const prop = await fragmentModel.getProperties(expressId);
+    if (!fragmentModel) {
+      console.log("No Fragment Model");
+    } else {
+      const highlighter = components.get(OBCF.Highlighter);
+      const selection = highlighter.selection.select;
+      const indexer = components.get(OBC.IfcRelationsIndexer);
+      for (const fragmentID in selection) {
+        const expressIDs = selection[fragmentID];
+        for (const id of Array.from(expressIDs)) {
+          const psets = indexer.getEntityRelations(
+            fragmentModel,
+            id,
+            "ContainedInStructure",
+          );
+          if (psets) {
+            for (const expressId of psets) {
+              const prop = await fragmentModel.getProperties(expressId);
+              console.log(prop);
+            }
           }
         }
       }
@@ -183,26 +187,16 @@ export function IFCViewer(props: Props) {
       };
 
       return BUI.html`
-        <bim-panel
-            style={{
-             minWidth: 0,
-             position: "relative",
-             maxHeight: "calc(100vh - 100px)",
-             background: "var(--background-200)",
-             borderRadius: "8px"}}
-        >
+        <bim-panel>
             <bim-panel-section
               name="property"
               label="Property Information"
               icon="solar:document-bold"
-              fixed
-             >
-              <bim-text-input @input=${search} placeholder="Search..."></bim-text-input>
-              ${propsTable}
-            </bim-panel-section>
+             >${propsTable}</bim-panel-section>
         </bim-panel>>
       `;
     });
+    // <bim-text-input @input="${search}" placeholder="Search..."></bim-text-input>
 
     const toolbar = BUI.Component.create<BUI.Toolbar>(() => {
       const [loadIfcBtn] = CUI.buttons.loadIfc({ components: components });

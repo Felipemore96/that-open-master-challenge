@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import * as OBC from "openbim-components";
+import { FragmentIdMap } from "@thatopen/fragments";
+import * as OBC from "@thatopen/components";
 
 export type TeamRole =
   | "BIM Manager"
@@ -17,7 +18,7 @@ export interface ITeam {
   contactPhone: string;
   teamProjectId: string;
   id?: string;
-  fragmentMap?: OBC.FragmentIdMap | { [k: string]: string[] };
+  fragmentMap?: FragmentIdMap | { [k: string]: string[] };
   camera?:
     | { position: THREE.Vector3; target: THREE.Vector3 }
     | {
@@ -37,7 +38,7 @@ export class Team implements ITeam {
   teamProjectId: string;
 
   id: string;
-  fragmentMap?: OBC.FragmentIdMap;
+  fragmentMap?: FragmentIdMap;
   camera?: { position: THREE.Vector3; target: THREE.Vector3 };
 
   constructor(data: ITeam, id = uuidv4()) {
@@ -54,7 +55,7 @@ export class Team implements ITeam {
 
     let totalElements = 0;
     for (const set of Object.values(this.fragmentMap)) {
-      totalElements += set.size;
+      // totalElements += set.size;
     }
     return totalElements;
   }
