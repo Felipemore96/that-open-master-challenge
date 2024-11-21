@@ -65,6 +65,7 @@ export function IFCViewer(props: Props) {
 
     components.init();
 
+    world.renderer.postproduction.enabled = true;
     world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
     world.camera.updateAspect();
 
@@ -124,25 +125,21 @@ export function IFCViewer(props: Props) {
   };
 
   const onShowProperty = async () => {
-    if (!fragmentModel) {
-      console.log("No Fragment Model");
-    } else {
-      const highlighter = components.get(OBCF.Highlighter);
-      const selection = highlighter.selection.select;
-      const indexer = components.get(OBC.IfcRelationsIndexer);
-      for (const fragmentID in selection) {
-        const expressIDs = selection[fragmentID];
-        for (const id of Array.from(expressIDs)) {
-          const psets = indexer.getEntityRelations(
-            fragmentModel,
-            id,
-            "ContainedInStructure",
-          );
-          if (psets) {
-            for (const expressId of psets) {
-              const prop = await fragmentModel.getProperties(expressId);
-              console.log(prop);
-            }
+    if (!fragmentModel) return;
+    const highlighter = components.get(OBCF.Highlighter);
+    const selection = highlighter.selection.select;
+    const indexer = components.get(OBC.IfcRelationsIndexer);
+    for (const fragmentID in selection) {
+      const expressIDs = selection[fragmentID];
+      for (const id of Array.from(expressIDs)) {
+        const psets = indexer.getEntityRelations(
+          fragmentModel,
+          id,
+          "ContainedInStructure",
+        );
+        if (psets) {
+          for (const expressId of psets) {
+            const prop = await fragmentModel.getProperties(expressId);
           }
         }
       }
@@ -185,7 +182,7 @@ export function IFCViewer(props: Props) {
       };
 
       return BUI.html`
-        <bim-label>
+        <bim-panel>
             <bim-panel-section
              name="property"
              label="Property Information"
@@ -195,17 +192,50 @@ export function IFCViewer(props: Props) {
                 <bim-text-input @input="${search}" placeholder="Search..."></bim-text-input>
                 ${propsTable}
             </bim-panel-section>
-        </bim-label>
+        </bim-panel>
       `;
     });
 
-    //
+    const worldPanel = BUI.Component.create<BUI.Panel>(() => {
+      const [worldTable] = CUI.tables.worldsConfiguration({ components });
+
+      const search = (e: Event) => {
+        const input = e.target as BUI.TextInput;
+        worldTable.queryString = input.value;
+      };
+
+      return BUI.html`
+        <bim-panel>
+            <bim-panel-section
+             name="world"
+             label="World Information"
+             icon="solar:document-bold"
+             fixed
+            >
+                <bim-text-input @input="${search}" placeholder="Search..."></bim-text-input>
+                ${worldTable}
+            </bim-panel-section>
+        </bim-panel>
+      `;
+    });
+
+    const onWorldsUpdate = () => {
+      if (!floatingGrid) return;
+      floatingGrid.layout = "world";
+    };
 
     const toolbar = BUI.Component.create<BUI.Toolbar>(() => {
       const [loadIfcBtn] = CUI.buttons.loadIfc({ components: components });
 
       return BUI.html`
         <bim-toolbar style="justify-self: center">
+            <bim-toolbar-section label="App">
+                <bim-button 
+                    label="World" 
+                    icon="tabler:brush"
+                    @click="${onWorldsUpdate}"
+                ></bim-button>
+            </bim-toolbar-section>
             <bim-toolbar-section label="Import">
                 ${loadIfcBtn}
             </bim-toolbar-section>
@@ -257,6 +287,17 @@ export function IFCViewer(props: Props) {
         elements: {
           toolbar,
           elementPropertyPanel,
+        },
+      },
+      world: {
+        template: `
+        "empty worldPanel" 1fr
+        "toolbar toolbar" auto
+        /1fr 20rem
+        `,
+        elements: {
+          toolbar,
+          worldPanel,
         },
       },
     };
