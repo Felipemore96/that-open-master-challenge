@@ -150,9 +150,7 @@ export function IFCViewer(props: Props) {
   };
 
   const setupUI = () => {
-    const viewerContainer = document.getElementById(
-      "viewer-container",
-    ) as HTMLElement;
+    const viewerContainer = document.getElementById("viewer-container");
     if (!viewerContainer) return;
 
     const floatingGrid = BUI.Component.create<BUI.Grid>(() => {
@@ -170,7 +168,7 @@ export function IFCViewer(props: Props) {
 
       highlighter.events.select.onHighlight.add((fragmentIdMap) => {
         if (!floatingGrid) return;
-        floatingGrid.layout = "section";
+        floatingGrid.layout = "second";
         updatePropsTable({ fragmentIdMap });
         propsTable.expanded = false;
       });
@@ -187,16 +185,21 @@ export function IFCViewer(props: Props) {
       };
 
       return BUI.html`
-        <bim-panel>
+        <bim-label>
             <bim-panel-section
-              name="property"
-              label="Property Information"
-              icon="solar:document-bold"
-             >${propsTable}</bim-panel-section>
-        </bim-panel>>
+             name="property"
+             label="Property Information"
+             icon="solar:document-bold"
+             fixed
+            >
+                <bim-text-input @input="${search}" placeholder="Search..."></bim-text-input>
+                ${propsTable}
+            </bim-panel-section>
+        </bim-label>
       `;
     });
-    // <bim-text-input @input="${search}" placeholder="Search..."></bim-text-input>
+
+    //
 
     const toolbar = BUI.Component.create<BUI.Toolbar>(() => {
       const [loadIfcBtn] = CUI.buttons.loadIfc({ components: components });
