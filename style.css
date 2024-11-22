@@ -90,15 +90,6 @@ button:hover {
   height: 120px;
 }
 
-#new-project-btn {
-  border-radius: 10px;
-}
-
-#new-project-btn:hover {
-  background-color: var(--primary);
-  outline: none;
-}
-
 .nav-buttons {
   display: flex;
   flex-direction: column;
@@ -113,21 +104,34 @@ button:hover {
   align-items: center;
   justify-content: space-between;
   border-radius: 10px;
-  font-size: 12px;
   cursor: pointer;
   background-color: var(--primary);
-  font-size: var(--font-base);
+  font-size: var(--font-lg);
 }
 
 .nav-buttons li:hover {
   background-color: var(--primary-100);
 }
 
+.nav-buttons a {
+  text-decoration: none; /* Removes underline */
+  color: inherit; /* Inherits color from parent */
+}
+
+.nav-buttons-secondary {
+  background-color: transparent;
+  outline: 2px solid #969696;
+  width: 60px;
+  height: 30px;
+  text-align: center;
+}
+
+.nav-buttons-secondary:hover {
+  background-color: var(--primary);
+  outline: none;
+}
+
 /* Content Style */
-
-/* #content{
-
-} */
 
 header {
   padding: 0px 20px;
@@ -141,7 +145,7 @@ header {
 .card-content {
   display: flex;
   flex-direction: column;
-  row-gap: 5px;
+  row-gap: 8px;
   align-items: start;
   font-size: var(--font-base);
 }
@@ -252,20 +256,33 @@ flex-direction: column;
 
 /* Project details page*/
 
+#project-details {
+  display: grid;
+}
+
 .dashboard-card {
   background-color: var(--background-200);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 100px);
+  height: 100%;
 }
 
 #project-details > .main-page-content {
   display: grid;
-  padding: 10px 15px;
+  padding: 0 10px;
   gap: 15px;
   grid-template-columns: 300px 1fr;
   height: 100%;
+}
+
+.project-column {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 15px;
+  height: 100%;
+  margin-bottom: 20px;
+  max-height: calc(100vh - 100px)
 }
 
 .btn-secondary {
@@ -289,14 +306,9 @@ flex-direction: column;
 }
 
 #teams-list {
-  /*padding: 15px;*/
-  padding-top: 0;
   display: flex;
   flex-direction: column;
   row-gap: 15px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  max-height: inherit;
 }
 
 .team-card {

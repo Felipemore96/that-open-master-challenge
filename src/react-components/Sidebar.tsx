@@ -1,7 +1,9 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import { FragmentIdMap, FragmentsGroup } from "@thatopen/fragments";
+
 import {
   IProject,
   Project,
@@ -150,7 +152,7 @@ export function Sidebar(props: Props) {
             props.projectsManager.newProject(item, projectId);
             navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
-            const fragmentIdMap: OBC.FragmentIdMap = {};
+            const fragmentIdMap: FragmentIdMap = {};
             for (const key in item.fragmentMap) {
               if (Array.isArray(item.fragmentMap[key])) {
                 fragmentIdMap[key] = new Set(item.fragmentMap[key]);
@@ -410,14 +412,14 @@ export function Sidebar(props: Props) {
       >
         <button
           onClick={onClickExportButton}
-          className="btn-secondary"
+          className="nav-buttons-secondary"
           style={{ width: "100%", height: "100%" }}
         >
           <p>Download Projects</p>
         </button>
         <button
           onClick={onClickImportButton}
-          className="btn-secondary"
+          className="nav-buttons-secondary"
           style={{ width: "100%", height: "100%" }}
         >
           <p>Upload Projects</p>
@@ -427,7 +429,7 @@ export function Sidebar(props: Props) {
         <button
           onClick={onNewProject}
           id="new-project-btn"
-          className="btn-secondary"
+          className="nav-buttons-secondary"
         >
           <span style={{ width: "100%" }} className="material-icons-round">
             add

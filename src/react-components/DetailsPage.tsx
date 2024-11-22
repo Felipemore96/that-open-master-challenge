@@ -35,7 +35,7 @@ export function DetailsPage(props: Props) {
     <div className="page" id="project-details">
       <DetailsPageHeader project={currentProject} />
       <div className="main-page-content">
-        <div style={{ display: "flex", flexDirection: "column", rowGap: 20 }}>
+        <div className="project-column">
           <DetailsCard
             project={currentProject}
             projectsManager={props.projectsManager}

@@ -184,7 +184,42 @@ export function TeamsCard(props: Props) {
   };
 
   return (
-    <div>
+    <div className="dashboard-card">
+      <div style={{ padding: "15px", height: "100%" }}>
+        <div id="teams-header">
+          <h4>Teams</h4>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              columnGap: 15,
+            }}
+          >
+            <button
+              onClick={onNewTeam}
+              id="new-team-btn"
+              className="btn-secondary"
+            >
+              <span style={{ width: "100%" }} className="material-icons-round">
+                add
+              </span>
+            </button>
+          </div>
+        </div>
+        {teams.length > 0 ? (
+          <div id="teams-list">{teamsCards}</div>
+        ) : (
+          <h4
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            There is no teams to display
+          </h4>
+        )}
+      </div>
       <dialog id="new-team-modal">
         <form id="new-team-form">
           <h2>New Team</h2>
@@ -273,44 +308,6 @@ export function TeamsCard(props: Props) {
           </button>
         </div>
       </dialog>
-      <div
-        className="dashboard-card"
-        style={{ padding: "15px", height: "calc(100vh - 330px)" }}
-      >
-        <div id="teams-header">
-          <h4>Teams</h4>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "end",
-              columnGap: 15,
-            }}
-          >
-            <button
-              onClick={onNewTeam}
-              id="new-team-btn"
-              className="btn-secondary"
-            >
-              <span style={{ width: "100%" }} className="material-icons-round">
-                add
-              </span>
-            </button>
-          </div>
-        </div>
-        {teams.length > 0 ? (
-          <div id="teams-list">{teamsCards}</div>
-        ) : (
-          <h4
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            There is no teams to display
-          </h4>
-        )}
-      </div>
     </div>
   );
 }
