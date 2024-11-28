@@ -85,8 +85,9 @@ export function IFCViewer(props: Props) {
       await indexer.process(model);
 
       const classifier = components.get(OBC.Classifier);
-      await classifier.bySpatialStructure(model);
       classifier.byEntity(model);
+      await classifier.bySpatialStructure(model);
+      await classifier.byPredefinedType(model);
 
       const classifications = [
         {
