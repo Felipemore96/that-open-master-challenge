@@ -81,13 +81,20 @@ export function IFCViewer(props: Props) {
     fragmentsManager.onFragmentsLoaded.add(async (model) => {
       world.scene.three.add(model);
 
+      if (model.hasProperties) {
+        await processModel(model);
+      }
+      fragmentModel = model;
+    });
+
+    const processModel = async (model: FragmentsGroup) => {
       const indexer = components.get(OBC.IfcRelationsIndexer);
       await indexer.process(model);
 
       const classifier = components.get(OBC.Classifier);
-      classifier.byEntity(model);
       await classifier.bySpatialStructure(model);
       await classifier.byPredefinedType(model);
+      classifier.byEntity(model);
 
       const classifications = [
         {
@@ -106,19 +113,6 @@ export function IFCViewer(props: Props) {
       if (updateClassificationsTree) {
         updateClassificationsTree({ classifications });
       }
-      fragmentModel = model;
-      exportFragments(model);
-    });
-
-    const exportFragments = (model: FragmentsGroup) => {
-      const fragmentBinary = fragmentsManager.export(model);
-      const blob = new Blob([fragmentBinary]);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${model.name}.frag`;
-      a.click();
-      URL.revokeObjectURL(url);
     };
 
     const highlighter = components.get(OBCF.Highlighter);
@@ -129,6 +123,82 @@ export function IFCViewer(props: Props) {
       rendererComponent.resize();
       cameraComponent.updateAspect();
     });
+  };
+
+  const onFragmentExport = () => {
+    const fragmentsManager = components.get(OBC.FragmentsManager);
+
+    if (!fragmentModel) return;
+    const fragmentBinary = fragmentsManager.export(fragmentModel);
+    const blob = new Blob([fragmentBinary]);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fragmentModel.name}.frag`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const onFragmentImport = async () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".frag";
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      const binary = reader.result;
+      if (!(binary instanceof ArrayBuffer)) return;
+      const fragmentBinary = new Uint8Array(binary);
+      const fragmentsManager = components.get(OBC.FragmentsManager);
+      fragmentsManager.load(fragmentBinary);
+    });
+    input.addEventListener("change", () => {
+      const filesList = input.files;
+      if (!filesList) return;
+      reader.readAsArrayBuffer(filesList[0]);
+    });
+    input.click();
+  };
+
+  const onPropertyExport = () => {
+    if (!fragmentModel) return;
+    const properties = fragmentModel.getLocalProperties();
+    const json = JSON.stringify(properties, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fragmentModel.name.replace(".ifc", "")}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const onPropertyImport = () => {
+    console.log("Fragment Model:", fragmentModel);
+    if (!fragmentModel) return;
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json";
+    const reader = new FileReader();
+
+    // TODO: FIX PROPERTIES
+
+    reader.addEventListener("load", () => {
+      const json = reader.result;
+      if (!(typeof json === "string")) return;
+      const properties = JSON.parse(json);
+
+      fragmentModel.setLocalProperties(properties);
+    });
+
+    input.addEventListener("change", () => {
+      const filesList = input.files;
+      if (!filesList) return;
+      reader.readAsText(filesList[0]);
+      console.log(fragmentModel);
+    });
+
+    input.click();
   };
 
   const onToggleVisibility = () => {
@@ -297,41 +367,63 @@ export function IFCViewer(props: Props) {
                 <bim-button 
                     label="World" 
                     icon="tabler:brush"
-                    @click="${onWorldsUpdate}"
+                    @click=${onWorldsUpdate}
                 ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Import">
                 ${loadIfcBtn}
             </bim-toolbar-section>
+            <bim-toolbar-section label="Fragments">
+                <bim-button 
+                    label="Import" 
+                    icon="mdi:cube"
+                    @click=${onFragmentImport}
+                ></bim-button>
+                <bim-button 
+                    label="Export" 
+                    icon="tabler:package-export"
+                    @click=${onFragmentExport}
+                ></bim-button>
+                <bim-button 
+                    label="Import" 
+                    icon="clarity:import-line"
+                    @click=${onPropertyImport}
+                ></bim-button>
+                <bim-button 
+                    label="Export" 
+                    icon="clarity:export-line"
+                    @click=${onPropertyExport}
+                ></bim-button>
+            </bim-toolbar-section>
             <bim-toolbar-section label="Selection">
                 <bim-button 
                     label="Visibility" 
                     icon="material-symbols:visibility-outline"
-                    @click="${onToggleVisibility}"
+                    @click=${onToggleVisibility}
                 ></bim-button>
                 <bim-button 
                     label="Show all" 
                     icon="tabler:eye-filled"
-                    @click="${onShow}"
+                    @click=${onShow}
                 ></bim-button>
                 <bim-button 
                     label="Isolate" 
                     icon="mdi:filter"
-                    @click="${onIsolate}"
+                    @click=${onIsolate}
                 ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Property">
                 <bim-button 
                     label="Show" 
                     icon="clarity:list-line"
-                    @click="${onShowProperty}"
+                    @click=${onShowProperty}
                 ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Groups">
                 <bim-button 
                     label="Classifier" 
                     icon="tabler:eye-filled"
-                    @click="${onClassifier}"
+                    @click=${onClassifier}
                 ></bim-button>
             </bim-toolbar-section>
         </bim-toolbar>
