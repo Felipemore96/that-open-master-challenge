@@ -57,11 +57,11 @@ export function IFCViewer(props: Props) {
     world.scene.three.background = null;
 
     const viewerContainer = document.getElementById(
-      "viewer-container",
+      "viewer-container"
     ) as HTMLElement;
     const rendererComponent = new OBCF.PostproductionRenderer(
       components,
-      viewerContainer,
+      viewerContainer
     );
     world.renderer = rendererComponent;
 
@@ -181,9 +181,8 @@ export function IFCViewer(props: Props) {
     input.accept = "application/json";
     const reader = new FileReader();
 
-    // TODO: FIX PROPERTIES
-
     reader.addEventListener("load", () => {
+      if (!fragmentModel) return;
       const json = reader.result;
       if (!(typeof json === "string")) return;
       const properties = JSON.parse(json);
@@ -244,7 +243,7 @@ export function IFCViewer(props: Props) {
         const psets = indexer.getEntityRelations(
           fragmentModel,
           id,
-          "ContainedInStructure",
+          "ContainedInStructure"
         );
         if (psets) {
           for (const expressId of psets) {
