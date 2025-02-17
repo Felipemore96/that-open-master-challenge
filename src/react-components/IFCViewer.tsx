@@ -4,7 +4,7 @@ import * as OBCF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
-import { FragmentsGroup } from "@thatopen/fragments";
+import { FragmentsGroup, IfcProperties } from "@thatopen/fragments";
 
 interface Props {
   project: Project;
@@ -77,6 +77,9 @@ export function IFCViewer(props: Props) {
     const ifcLoader = components.get(OBC.IfcLoader);
     ifcLoader.setup();
 
+    const cullers = components.get(OBC.Cullers);
+    const culler = cullers.create(world);
+
     const fragmentsManager = components.get(OBC.FragmentsManager);
     fragmentsManager.onFragmentsLoaded.add(async (model) => {
       world.scene.three.add(model);
@@ -84,6 +87,12 @@ export function IFCViewer(props: Props) {
       if (model.hasProperties) {
         await processModel(model);
       }
+
+      // for (const fragment of model.items) {
+      //   culler.add(fragment.mesh);
+      // }
+      // culler.needsUpdate = true;
+
       fragmentModel = model;
     });
 
@@ -122,6 +131,10 @@ export function IFCViewer(props: Props) {
     viewerContainer.addEventListener("resize", () => {
       rendererComponent.resize();
       cameraComponent.updateAspect();
+    });
+
+    world.camera.controls.addEventListener("controlend", () => {
+      culler.needsUpdate = true;
     });
   };
 
@@ -173,8 +186,10 @@ export function IFCViewer(props: Props) {
   };
 
   const onPropertyImport = () => {
-    console.log("Fragment Model:", fragmentModel);
-    if (!fragmentModel) return;
+    if (!fragmentModel) {
+      console.error("fragmentModel is not defined.");
+      return;
+    }
 
     const input = document.createElement("input");
     input.type = "file";
@@ -182,19 +197,37 @@ export function IFCViewer(props: Props) {
     const reader = new FileReader();
 
     reader.addEventListener("load", () => {
-      if (!fragmentModel) return;
-      const json = reader.result;
-      if (!(typeof json === "string")) return;
-      const properties = JSON.parse(json);
+      if (!fragmentModel) {
+        console.error("fragmentModel is not defined.");
+        return;
+      }
 
-      fragmentModel.setLocalProperties(properties);
+      const json = reader.result;
+      if (typeof json !== "string") {
+        console.error("File read result is not a string.");
+        return;
+      }
+
+      try {
+        const properties = JSON.parse(json);
+        fragmentModel.setLocalProperties(properties);
+      } catch (error) {
+        console.error("Failed to parse JSON:", error);
+      }
+
+      reader.addEventListener("error", () => {
+        console.error("Error reading file:", reader.error);
+      });
     });
 
     input.addEventListener("change", () => {
       const filesList = input.files;
-      if (!filesList) return;
+      if (!filesList || filesList.length === 0) {
+        console.error("No file selected.");
+        return;
+      }
+
       reader.readAsText(filesList[0]);
-      console.log(fragmentModel);
     });
 
     input.click();
@@ -359,12 +392,14 @@ export function IFCViewer(props: Props) {
 
     const toolbar = BUI.Component.create<BUI.Toolbar>(() => {
       const [loadIfcBtn] = CUI.buttons.loadIfc({ components: components });
+      loadIfcBtn.tooltipTitle = "Load IFC";
+      loadIfcBtn.label = "";
 
       return BUI.html`
         <bim-toolbar style="justify-self: center">
             <bim-toolbar-section label="App">
                 <bim-button 
-                    label="World" 
+                    tooltip-title="World" 
                     icon="tabler:brush"
                     @click=${onWorldsUpdate}
                 ></bim-button>
@@ -374,53 +409,53 @@ export function IFCViewer(props: Props) {
             </bim-toolbar-section>
             <bim-toolbar-section label="Fragments">
                 <bim-button 
-                    label="Import" 
+                    tooltip-title="Import" 
                     icon="mdi:cube"
                     @click=${onFragmentImport}
                 ></bim-button>
                 <bim-button 
-                    label="Export" 
+                    tooltip-title="Export" 
                     icon="tabler:package-export"
                     @click=${onFragmentExport}
                 ></bim-button>
                 <bim-button 
-                    label="Import" 
+                    tooltip-title="Import" 
                     icon="clarity:import-line"
                     @click=${onPropertyImport}
                 ></bim-button>
                 <bim-button 
-                    label="Export" 
+                    tooltip-title="Export" 
                     icon="clarity:export-line"
                     @click=${onPropertyExport}
                 ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Selection">
                 <bim-button 
-                    label="Visibility" 
+                    tooltip-title="Visibility" 
                     icon="material-symbols:visibility-outline"
                     @click=${onToggleVisibility}
                 ></bim-button>
                 <bim-button 
-                    label="Show all" 
+                    tooltip-title="Show all" 
                     icon="tabler:eye-filled"
                     @click=${onShow}
                 ></bim-button>
                 <bim-button 
-                    label="Isolate" 
+                    tooltip-title="Isolate" 
                     icon="mdi:filter"
                     @click=${onIsolate}
                 ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Property">
                 <bim-button 
-                    label="Show" 
+                    tooltip-title="Show" 
                     icon="clarity:list-line"
                     @click=${onShowProperty}
                 ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Groups">
                 <bim-button 
-                    label="Classifier" 
+                    tooltip-title="Classifier" 
                     icon="tabler:eye-filled"
                     @click=${onClassifier}
                 ></bim-button>
@@ -481,8 +516,10 @@ export function IFCViewer(props: Props) {
   };
 
   React.useEffect(() => {
-    setViewer();
-    setupUI();
+    setTimeout(() => {
+      setViewer();
+      setupUI();
+    });
     return () => {
       if (components) {
         components.dispose();
