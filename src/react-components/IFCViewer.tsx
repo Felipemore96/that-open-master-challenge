@@ -4,9 +4,10 @@ import * as OBCF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
-import { FragmentsGroup, IfcProperties } from "@thatopen/fragments";
+import { FragmentsGroup } from "@thatopen/fragments";
 
 interface Props {
+  components: OBC.Components;
   project: Project;
 }
 
@@ -30,12 +31,12 @@ export function ViewerProvider(props: { children: React.ReactNode }) {
 }
 
 export function IFCViewer(props: Props) {
+  const components: OBC.Components = props.components;
   let defaultProject: boolean = false;
   if (props.project.fragRoute) {
     defaultProject = true;
   }
   let fragmentModel: FragmentsGroup | undefined;
-  const components = new OBC.Components();
   const [classificationsTree, updateClassificationsTree] =
     CUI.tables.classificationTree({
       components,
@@ -96,34 +97,6 @@ export function IFCViewer(props: Props) {
       fragmentModel = model;
     });
 
-    const processModel = async (model: FragmentsGroup) => {
-      const indexer = components.get(OBC.IfcRelationsIndexer);
-      await indexer.process(model);
-
-      const classifier = components.get(OBC.Classifier);
-      await classifier.bySpatialStructure(model);
-      await classifier.byPredefinedType(model);
-      classifier.byEntity(model);
-
-      const classifications = [
-        {
-          system: "entities",
-          label: "Entities",
-        },
-        {
-          system: "spatialStructures",
-          label: "Spatial Containers",
-        },
-        {
-          system: "predefinedTypes",
-          label: "Predefined Types",
-        },
-      ];
-      if (updateClassificationsTree) {
-        updateClassificationsTree({ classifications });
-      }
-    };
-
     const highlighter = components.get(OBCF.Highlighter);
     highlighter.setup({ world });
     highlighter.zoomToSelection = true;
@@ -136,6 +109,34 @@ export function IFCViewer(props: Props) {
     world.camera.controls.addEventListener("controlend", () => {
       culler.needsUpdate = true;
     });
+  };
+
+  const processModel = async (model: FragmentsGroup) => {
+    const indexer = components.get(OBC.IfcRelationsIndexer);
+    await indexer.process(model);
+
+    const classifier = components.get(OBC.Classifier);
+    await classifier.bySpatialStructure(model);
+    await classifier.byPredefinedType(model);
+    classifier.byEntity(model);
+
+    const classifications = [
+      {
+        system: "entities",
+        label: "Entities",
+      },
+      {
+        system: "spatialStructures",
+        label: "Spatial Containers",
+      },
+      {
+        system: "predefinedTypes",
+        label: "Predefined Types",
+      },
+    ];
+    if (updateClassificationsTree) {
+      updateClassificationsTree({ classifications });
+    }
   };
 
   const onFragmentExport = () => {
@@ -196,7 +197,7 @@ export function IFCViewer(props: Props) {
     input.accept = "application/json";
     const reader = new FileReader();
 
-    reader.addEventListener("load", () => {
+    reader.addEventListener("load", async () => {
       if (!fragmentModel) {
         console.error("fragmentModel is not defined.");
         return;
@@ -211,6 +212,7 @@ export function IFCViewer(props: Props) {
       try {
         const properties = JSON.parse(json);
         fragmentModel.setLocalProperties(properties);
+        await processModel(fragmentModel);
       } catch (error) {
         console.error("Failed to parse JSON:", error);
       }

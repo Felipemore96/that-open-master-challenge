@@ -6,6 +6,7 @@ import { DetailsPageHeader } from "./DetailsPageHeader";
 import { DetailsCard } from "./DetailsCard";
 import { IFCViewer } from "./IFCViewer";
 import { TeamsCard } from "./TeamsCard";
+import * as OBC from "@thatopen/components";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -13,11 +14,13 @@ interface Props {
 
 export function DetailsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.projectsList,
+    props.projectsManager.projectsList
   );
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
   };
+
+  const components = new OBC.Components();
 
   const routeParams = Router.useParams<{ id: string }>();
   if (!routeParams.id) {
@@ -45,7 +48,7 @@ export function DetailsPage(props: Props) {
             projectsManager={props.projectsManager}
           />
         </div>
-        <IFCViewer project={currentProject} />
+        <IFCViewer project={currentProject} components={components} />
       </div>
     </div>
   );

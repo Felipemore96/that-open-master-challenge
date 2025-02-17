@@ -30,7 +30,7 @@ export function TeamElement(props: Props) {
 
   const onTeamInfoButton = () => {
     const teamForm = document.getElementById(
-      "team-info-form",
+      "team-info-form"
     ) as HTMLFormElement;
     teamForm.reset();
     toggleModal(`info-modal-${props.team.id}`);
@@ -46,7 +46,7 @@ export function TeamElement(props: Props) {
 
   const onEditTeamInfo = () => {
     const editTeamForm = document.getElementById(
-      `edit-team-form-${props.team.id}`,
+      `edit-team-form-${props.team.id}`
     ) as HTMLFormElement;
     editTeamForm.reset();
     toggleModal(`info-modal-${props.team.id}`);
@@ -107,7 +107,7 @@ export function TeamElement(props: Props) {
   const onSubmitEditedTeam = async (e) => {
     e.preventDefault();
     const editTeamForm = document.getElementById(
-      `edit-team-form-${props.team.id}`,
+      `edit-team-form-${props.team.id}`
     ) as HTMLFormElement;
     const formData = new FormData(editTeamForm);
     const newTeamData: ITeam = {
@@ -126,7 +126,7 @@ export function TeamElement(props: Props) {
           fragmentMap: props.team.fragmentMap,
           camera: props.team.camera,
         },
-        props.team,
+        props.team
       );
       console.log(updatedTeam);
       editTeamForm.reset();
