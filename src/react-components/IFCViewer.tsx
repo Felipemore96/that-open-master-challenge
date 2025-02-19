@@ -43,6 +43,27 @@ export function IFCViewer(props: Props) {
       classifications: [],
     });
 
+  async function loadModelCheck() {
+    let propsRoute: string | undefined;
+    if (
+      defaultProject === true &&
+      props.project &&
+      props.project.fragRoute &&
+      props.project.jsonRoute
+    ) {
+      const file = await fetch(props.project.fragRoute);
+      const data = await file.arrayBuffer();
+      const fragmentBinary = new Uint8Array(data);
+      const fragmentsManager = components.get(OBC.FragmentsManager);
+      const model = await fragmentsManager.load(fragmentBinary);
+
+      propsRoute = props.project.jsonRoute;
+      const jsonProperties = await fetch(propsRoute);
+      const properties = await jsonProperties.json();
+      model.setLocalProperties(properties);
+    }
+  }
+
   const setViewer = () => {
     const worlds = components.get(OBC.Worlds);
 
@@ -77,6 +98,7 @@ export function IFCViewer(props: Props) {
 
     const ifcLoader = components.get(OBC.IfcLoader);
     ifcLoader.setup();
+    loadModelCheck();
 
     const cullers = components.get(OBC.Cullers);
     const culler = cullers.create(world);
@@ -518,11 +540,26 @@ export function IFCViewer(props: Props) {
   };
 
   React.useEffect(() => {
-    setTimeout(() => {
+    const loadAndSetup = async () => {
+      // Clean up previous state
+      if (fragmentModel) {
+        fragmentModel.dispose();
+        fragmentModel = undefined;
+      }
+
+      if (components) {
+        components.dispose();
+      }
+
+      // Set up the viewer and load the new model
       setViewer();
       setupUI();
-    });
+      await loadModelCheck();
+    };
+
+    loadAndSetup();
     return () => {
+      // Clean up on unmount
       if (components) {
         components.dispose();
       }
@@ -532,7 +569,7 @@ export function IFCViewer(props: Props) {
         fragmentModel = undefined;
       }
     };
-  }, []);
+  }, [props.project]); // Re-run when props.project changes
 
   return (
     <bim-viewport
