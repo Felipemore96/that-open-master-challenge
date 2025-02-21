@@ -51,16 +51,24 @@ export function IFCViewer(props: Props) {
       props.project.fragRoute &&
       props.project.jsonRoute
     ) {
-      const file = await fetch(props.project.fragRoute);
-      const data = await file.arrayBuffer();
-      const fragmentBinary = new Uint8Array(data);
-      const fragmentsManager = components.get(OBC.FragmentsManager);
-      const model = await fragmentsManager.load(fragmentBinary);
+      try {
+        const file = await fetch(props.project.fragRoute);
+        const data = await file.arrayBuffer();
+        const fragmentBinary = new Uint8Array(data);
+        const fragmentsManager = components.get(OBC.FragmentsManager);
+        const model = await fragmentsManager.load(fragmentBinary);
 
-      propsRoute = props.project.jsonRoute;
-      const jsonProperties = await fetch(propsRoute);
-      const properties = await jsonProperties.json();
-      model.setLocalProperties(properties);
+        // Fetch and apply properties from the JSON file
+        propsRoute = props.project.jsonRoute;
+        const jsonProperties = await fetch(propsRoute);
+        const properties = await jsonProperties.json();
+
+        // Apply properties to the model
+        model.setLocalProperties(properties);
+        await processModel(model);
+      } catch (error) {
+        console.error("Error loading model or properties:", error);
+      }
     }
   }
 
@@ -428,9 +436,13 @@ export function IFCViewer(props: Props) {
                     @click=${onWorldsUpdate}
                 ></bim-button>
             </bim-toolbar-section>
-            <bim-toolbar-section label="Import">
-                ${loadIfcBtn}
-            </bim-toolbar-section>
+      ${
+        defaultProject === false
+          ? BUI.html`<bim-toolbar-section label="Import">
+            ${loadIfcBtn}
+        </bim-toolbar-section>`
+          : ""
+      }
             <bim-toolbar-section label="Fragments">
                 <bim-button 
                     tooltip-title="Import" 
