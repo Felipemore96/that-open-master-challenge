@@ -77,10 +77,10 @@ export function TeamElement(props: Props) {
     }
   };
 
-  const { world } = React.useContext(WorldContext);
   let modelLoaded: boolean = false;
+  const { world } = React.useContext(WorldContext);
 
-  const onTeamClicked = async (team: Team) => {
+  const onTeamClicked = (team: Team) => {
     if (world) {
       const camera = world.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {

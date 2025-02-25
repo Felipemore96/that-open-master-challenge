@@ -32,6 +32,7 @@ export function WorldProvider(props: { children: React.ReactNode }) {
 
 export function IFCViewer(props: Props) {
   const { setWorld } = React.useContext(WorldContext);
+  const worldRef = React.useRef<OBC.World | null>(null);
   const components: OBC.Components = props.components;
 
   let defaultProject: boolean = false;
@@ -82,7 +83,6 @@ export function IFCViewer(props: Props) {
       OBC.OrthoPerspectiveCamera,
       OBCF.PostproductionRenderer
     >();
-    setWorld(world);
 
     const sceneComponent = new OBC.SimpleScene(components);
     world.scene = sceneComponent;
@@ -114,22 +114,6 @@ export function IFCViewer(props: Props) {
     const cullers = components.get(OBC.Cullers);
     const culler = cullers.create(world);
 
-    const fragmentsManager = components.get(OBC.FragmentsManager);
-    fragmentsManager.onFragmentsLoaded.add(async (model) => {
-      world.scene.three.add(model);
-
-      if (model.hasProperties) {
-        await processModel(model);
-      }
-
-      // for (const fragment of model.items) {
-      //   culler.add(fragment.mesh);
-      // }
-      // culler.needsUpdate = true;
-
-      fragmentModel = model;
-    });
-
     const highlighter = components.get(OBCF.Highlighter);
     highlighter.setup({ world });
     highlighter.zoomToSelection = true;
@@ -142,6 +126,25 @@ export function IFCViewer(props: Props) {
     world.camera.controls.addEventListener("controlend", () => {
       culler.needsUpdate = true;
     });
+
+    const fragmentsManager = components.get(OBC.FragmentsManager);
+    fragmentsManager.onFragmentsLoaded.add(async (model) => {
+      world.scene.three.add(model);
+
+      if (model.hasProperties) {
+        await processModel(model);
+        // setWorld(world);
+      }
+
+      // for (const fragment of model.items) {
+      //   culler.add(fragment.mesh);
+      // }
+      // culler.needsUpdate = true;
+
+      fragmentModel = model;
+    });
+
+    setWorld(world);
   };
 
   const processModel = async (model: FragmentsGroup) => {
@@ -583,6 +586,8 @@ export function IFCViewer(props: Props) {
         fragmentModel.dispose();
         fragmentModel = undefined;
       }
+
+      worldRef.current = null;
     };
   }, [props.project]); // Re-run when props.project changes
 
