@@ -18,7 +18,7 @@ interface Props {
 
 export function TeamsCard(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
-    props.projectsManager.teamsList,
+    props.projectsManager.teamsList
   );
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamsList]);
@@ -44,7 +44,7 @@ export function TeamsCard(props: Props) {
       };
 
       try {
-        props.projectsManager.newTeam(team, doc.id);
+        props.projectsManager.createTeam(team, doc.id);
       } catch (error) {
         const previousTeam = props.projectsManager.getTeam(doc.id);
         props.projectsManager.editTeam(team, previousTeam);
@@ -59,7 +59,7 @@ export function TeamsCard(props: Props) {
 
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamsList.filter(
-      (team) => team.teamProjectId === props.project.id,
+      (team) => team.teamProjectId === props.project.id
     );
     setTeams(filteredTeams);
   };
@@ -93,7 +93,7 @@ export function TeamsCard(props: Props) {
 
   const onCancelNewTeam = () => {
     const teamForm = document.getElementById(
-      "new-team-form",
+      "new-team-form"
     ) as HTMLFormElement;
     teamForm.reset();
     toggleModal("new-team-modal");
@@ -102,7 +102,7 @@ export function TeamsCard(props: Props) {
   const onSubmitNewTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     const teamForm = document.getElementById(
-      "new-team-form",
+      "new-team-form"
     ) as HTMLFormElement;
 
     const formData = new FormData(teamForm);
@@ -117,7 +117,7 @@ export function TeamsCard(props: Props) {
       const camera = viewer.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(
-          "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
+          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
         );
       }
       modelLoaded = true;
@@ -152,7 +152,7 @@ export function TeamsCard(props: Props) {
               Object.entries(fragmentMap).map(([key, value]) => [
                 key,
                 Array.from(value),
-              ]),
+              ])
             )
           : undefined,
         camera: teamCamera
@@ -172,7 +172,7 @@ export function TeamsCard(props: Props) {
       };
       const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
       const teamId = docRef.id;
-      const team = props.projectsManager.newTeam(teamData, teamId);
+      const team = props.projectsManager.createTeam(teamData, teamId);
       teamForm.reset();
       toggleModal("new-team-modal");
       filterTeams();

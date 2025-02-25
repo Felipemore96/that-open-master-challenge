@@ -27,7 +27,7 @@ const projectsCollection = getCollection<IProject>("/projects");
 
 export function Sidebar(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.projectsList,
+    props.projectsManager.projectsList
   );
   const [loading, setLoading] = React.useState(true);
   props.projectsManager.onProjectCreated = () => {
@@ -46,7 +46,7 @@ export function Sidebar(props: Props) {
         ).toDate(),
       };
       try {
-        props.projectsManager.newProject(project, doc.id);
+        props.projectsManager.createProject(project, doc.id);
       } catch (error) {
         const previousProject = props.projectsManager.getProject(doc.id);
         props.projectsManager.editProject(project, previousProject);
@@ -79,7 +79,7 @@ export function Sidebar(props: Props) {
 
   const onCancelNewProject = () => {
     const projectForm = document.getElementById(
-      "new-project-modal",
+      "new-project-modal"
     ) as HTMLFormElement;
     if (!(projectForm && projectForm instanceof HTMLDialogElement)) {
       return;
@@ -94,7 +94,7 @@ export function Sidebar(props: Props) {
   const onSubmitNewProject = async (e: React.FormEvent) => {
     e.preventDefault();
     const projectForm = document.getElementById(
-      "new-project-form",
+      "new-project-form"
     ) as HTMLFormElement;
     const formData = new FormData(projectForm);
     const projectData: IProject = {
@@ -110,7 +110,7 @@ export function Sidebar(props: Props) {
     try {
       const docRef = await Firestore.addDoc(projectsCollection, projectData);
       const projectId = docRef.id;
-      props.projectsManager.newProject(projectData, projectId);
+      props.projectsManager.createProject(projectData, projectId);
       navigate(`/project/${projectId}`);
       projectForm.reset();
       toggleModal("new-project-modal");
@@ -125,7 +125,7 @@ export function Sidebar(props: Props) {
     const filteredProjects = props.projectsManager.projectsList.filter(
       (project) => {
         return project.projectName.includes(value);
-      },
+      }
     );
     setProjects(filteredProjects);
   };
@@ -149,7 +149,7 @@ export function Sidebar(props: Props) {
             item.projectFinishDate = new Date(item.projectFinishDate);
             const docRef = await Firestore.addDoc(projectsCollection, item);
             const projectId = docRef.id;
-            props.projectsManager.newProject(item, projectId);
+            props.projectsManager.createProject(item, projectId);
             navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
             const fragmentIdMap: FragmentIdMap = {};
@@ -171,7 +171,7 @@ export function Sidebar(props: Props) {
                     Object.entries(fragmentIdMap).map(([key, value]) => [
                       key,
                       Array.from(value),
-                    ]),
+                    ])
                   )
                 : undefined,
               camera: teamCamera
@@ -191,10 +191,10 @@ export function Sidebar(props: Props) {
             };
             const docRef = await Firestore.addDoc(
               teamsCollection,
-              firebaseTeamData,
+              firebaseTeamData
             );
             const teamId = docRef.id;
-            props.projectsManager.newTeam(item, teamId);
+            props.projectsManager.createTeam(item, teamId);
             console.log("Team created");
           }
         } catch (error) {
