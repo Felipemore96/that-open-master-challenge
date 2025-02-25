@@ -103,6 +103,10 @@ export class ProjectsManager {
   }
 
   editProject(newData: IProject, originalData: IProject) {
+    if (!originalData.id) {
+      throw new Error("Project ID is required.");
+    }
+
     const nameKept = newData.projectName === originalData.projectName;
     const nameInUse = this.projectsList.some(
       (project) => project.projectName === newData.projectName
@@ -120,10 +124,6 @@ export class ProjectsManager {
 
     if (originalProjectIndex === -1) {
       throw new Error(`Project with ID "${originalData.id}" not found.`);
-    }
-
-    if (!originalData.id) {
-      throw new Error("Project ID is required.");
     }
 
     const updatedProject = new Project(newData, originalData.id);

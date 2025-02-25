@@ -18,7 +18,7 @@ export interface ITeam {
   contactPhone: string;
   teamProjectId: string;
   id?: string;
-  fragmentMap?: FragmentIdMap | { [k: string]: string[] };
+  ifcGuids?: string[];
   camera?:
     | { position: THREE.Vector3; target: THREE.Vector3 }
     | {
@@ -38,7 +38,7 @@ export class Team implements ITeam {
   teamProjectId: string;
 
   id: string;
-  fragmentMap?: FragmentIdMap;
+  ifcGuids?: string[];
   camera?: { position: THREE.Vector3; target: THREE.Vector3 };
 
   constructor(data: ITeam, id = uuidv4()) {
@@ -51,12 +51,9 @@ export class Team implements ITeam {
   onCardClick = new OBC.Event();
 
   get numberOfElements(): number {
-    if (!this.fragmentMap) return 0;
+    if (!this.ifcGuids) return 0;
+    const totalElements = this.ifcGuids.length;
 
-    let totalElements = 0;
-    for (const set of Object.values(this.fragmentMap)) {
-      // totalElements += set.size;
-    }
     return totalElements;
   }
 }

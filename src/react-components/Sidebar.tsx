@@ -21,6 +21,7 @@ import * as THREE from "three";
 
 interface Props {
   projectsManager: ProjectsManager;
+  components: OBC.Components;
 }
 
 const projectsCollection = getCollection<IProject>("/projects");
@@ -34,6 +35,7 @@ export function Sidebar(props: Props) {
     setProjects([...props.projectsManager.projectsList]);
   };
   const navigate = useNavigate();
+  const components: OBC.Components = props.components;
 
   const getFirestoreProjects = async () => {
     const firebaseProjects = await Firestore.getDocs(projectsCollection);
@@ -49,7 +51,9 @@ export function Sidebar(props: Props) {
         props.projectsManager.createProject(project, doc.id);
       } catch (error) {
         const previousProject = props.projectsManager.getProject(doc.id);
-        props.projectsManager.editProject(project, previousProject);
+        if (previousProject) {
+          props.projectsManager.editProject(project, previousProject);
+        }
       }
     }
     setLoading(false);
@@ -152,28 +156,10 @@ export function Sidebar(props: Props) {
             props.projectsManager.createProject(item, projectId);
             navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
-            const fragmentIdMap: FragmentIdMap = {};
-            for (const key in item.fragmentMap) {
-              if (Array.isArray(item.fragmentMap[key])) {
-                fragmentIdMap[key] = new Set(item.fragmentMap[key]);
-              }
-            }
-            item.fragmentMap = fragmentIdMap;
-            const teamCamera:
-              | { position: THREE.Vector3; target: THREE.Vector3 }
-              | undefined = undefined;
-
-            const teamsCollection = getCollection<ITeam>("/teams");
+            const fragments = components.get(OBC.FragmentsManager);
+            const teamCamera = item.camera;
             const firebaseTeamData = {
               ...item,
-              fragmentMap: fragmentIdMap
-                ? Object.fromEntries(
-                    Object.entries(fragmentIdMap).map(([key, value]) => [
-                      key,
-                      Array.from(value),
-                    ])
-                  )
-                : undefined,
               camera: teamCamera
                 ? {
                     position: {
@@ -189,6 +175,8 @@ export function Sidebar(props: Props) {
                   }
                 : undefined,
             };
+
+            const teamsCollection = getCollection<ITeam>("/teams");
             const docRef = await Firestore.addDoc(
               teamsCollection,
               firebaseTeamData

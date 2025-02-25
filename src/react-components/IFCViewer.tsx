@@ -7,31 +7,33 @@ import { Project } from "../class/projects";
 import { FragmentsGroup } from "@thatopen/fragments";
 
 interface Props {
-  components: OBC.Components;
   project: Project;
+  components: OBC.Components;
 }
 
-interface IViewerContext {
-  viewer: OBC.Components | null;
-  setViewer: (viewer: OBC.Components | null) => void;
+interface IWorldContext {
+  world: OBC.World | null;
+  setWorld: (world: OBC.World | null) => void;
 }
 
-export const ViewerContext = React.createContext<IViewerContext>({
-  viewer: null,
-  setViewer: () => {},
+export const WorldContext = React.createContext<IWorldContext>({
+  world: null,
+  setWorld: () => {},
 });
 
-export function ViewerProvider(props: { children: React.ReactNode }) {
-  const [viewer, setViewer] = React.useState<OBC.Components | null>(null);
+export function WorldProvider(props: { children: React.ReactNode }) {
+  const [world, setWorld] = React.useState<OBC.World | null>(null);
   return (
-    <ViewerContext.Provider value={{ viewer, setViewer }}>
+    <WorldContext.Provider value={{ world, setWorld }}>
       {props.children}
-    </ViewerContext.Provider>
+    </WorldContext.Provider>
   );
 }
 
 export function IFCViewer(props: Props) {
+  const { setWorld } = React.useContext(WorldContext);
   const components: OBC.Components = props.components;
+
   let defaultProject: boolean = false;
   if (props.project.fragRoute) {
     defaultProject = true;
@@ -80,6 +82,7 @@ export function IFCViewer(props: Props) {
       OBC.OrthoPerspectiveCamera,
       OBCF.PostproductionRenderer
     >();
+    setWorld(world);
 
     const sceneComponent = new OBC.SimpleScene(components);
     world.scene = sceneComponent;

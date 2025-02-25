@@ -10,6 +10,7 @@ import * as OBC from "@thatopen/components";
 
 interface Props {
   projectsManager: ProjectsManager;
+  components: OBC.Components;
 }
 
 export function DetailsPage(props: Props) {
@@ -20,8 +21,6 @@ export function DetailsPage(props: Props) {
     setProjects([...props.projectsManager.projectsList]);
   };
 
-  const components = new OBC.Components();
-
   const routeParams = Router.useParams<{ id: string }>();
   if (!routeParams.id) {
     return <p>Project ID is needed to see this page</p>;
@@ -29,6 +28,7 @@ export function DetailsPage(props: Props) {
 
   const currentProject = props.projectsManager.getProject(routeParams.id);
   React.useEffect(() => {}, [currentProject]);
+  const components: OBC.Components = props.components;
 
   if (!currentProject) {
     return <p>The project with ID {routeParams.id} wasn't found.</p>;
@@ -46,8 +46,10 @@ export function DetailsPage(props: Props) {
           <TeamsCard
             project={currentProject}
             projectsManager={props.projectsManager}
+            components={components}
           />
         </div>
+
         <IFCViewer project={currentProject} components={components} />
       </div>
     </div>

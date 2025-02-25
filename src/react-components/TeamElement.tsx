@@ -4,19 +4,22 @@ import { FragmentIdMap } from "@thatopen/fragments";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-import { ViewerContext } from "./IFCViewer";
+import { WorldContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
 import { deleteDocument, getCollection, updateDocument } from "../firebase";
+import * as OBCF from "@thatopen/components-front";
 
 interface Props {
   team: Team;
   project: Project;
   projectsManager: ProjectsManager;
+  components: OBC.Components;
   filterTeams: () => void;
 }
 
 export function TeamElement(props: Props) {
   const navigate = useNavigate();
+  const components: OBC.Components = props.components;
 
   props.projectsManager.onTeamDeleted = async (id) => {
     await deleteDocument("/teams", id);
@@ -74,34 +77,40 @@ export function TeamElement(props: Props) {
     }
   };
 
-  const { viewer } = React.useContext(ViewerContext);
+  const { world } = React.useContext(WorldContext);
   let modelLoaded: boolean = false;
 
   const onTeamClicked = async (team: Team) => {
-    if (!viewer) return;
-    // const camera = viewer.camera;
-    // if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-    //   throw new Error(
-    //     "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
-    //   );
-    // }
-    // modelLoaded = true;
-    // const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
+    if (world) {
+      const camera = world.camera;
+      if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+        throw new Error(
+          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+        );
+      }
+      modelLoaded = true;
+      const fragments = components.get(OBC.FragmentsManager);
+      const highlighter = components.get(OBCF.Highlighter);
+      const guids = fragments.fragmentIdMapToGuids(
+        highlighter.selection.select
+      );
 
-    // if (team.camera) {
-    //   camera.controls.setLookAt(
-    //     team.camera.position.x,
-    //     team.camera.position.y,
-    //     team.camera.position.z,
-    //     team.camera.target.x,
-    //     team.camera.target.y,
-    //     team.camera.target.z,
-    //     true,
-    //   );
-    // }
-    // if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
-    //   highlighter.highlightByID("select", team.fragmentMap);
-    // }
+      if (team.camera) {
+        camera.controls.setLookAt(
+          team.camera.position.x,
+          team.camera.position.y,
+          team.camera.position.z,
+          team.camera.target.x,
+          team.camera.target.y,
+          team.camera.target.z,
+          true
+        );
+      }
+      if (team.ifcGuids && Object.keys(team.ifcGuids).length > 0) {
+        const fragmentIdMap = fragments.guidToFragmentIdMap(team.ifcGuids);
+        highlighter.highlightByID("select", fragmentIdMap, true, false);
+      }
+    }
   };
 
   const onSubmitEditedTeam = async (e) => {
@@ -123,7 +132,7 @@ export function TeamElement(props: Props) {
       const updatedTeam = props.projectsManager.editTeam(
         {
           ...newTeamData,
-          fragmentMap: props.team.fragmentMap,
+          ifcGuids: props.team.ifcGuids,
           camera: props.team.camera,
         },
         props.team

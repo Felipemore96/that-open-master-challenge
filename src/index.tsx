@@ -5,8 +5,9 @@ import { Sidebar } from "./react-components/Sidebar";
 import { ProjectsManager } from "./class/projectsManager";
 import { DetailsPage } from "./react-components/DetailsPage";
 import { HomePage } from "./react-components/HomePage";
-import { ViewerProvider } from "./react-components/IFCViewer";
+import { WorldProvider } from "./react-components/IFCViewer";
 import * as BUI from "@thatopen/ui";
+import * as OBC from "@thatopen/components";
 
 BUI.Manager.init();
 
@@ -44,12 +45,13 @@ declare global {
 }
 
 const projectsManager = new ProjectsManager();
+const components = new OBC.Components();
 
 const rootElement = document.getElementById("app") as HTMLDivElement;
 const appRoot = ReactDOM.createRoot(rootElement);
 appRoot.render(
   <Router.BrowserRouter>
-    <ViewerProvider>
+    <WorldProvider>
       <Router.Routes>
         <Router.Route
           path="/"
@@ -59,12 +61,18 @@ appRoot.render(
           path="/project/:id"
           element={
             <>
-              <Sidebar projectsManager={projectsManager} />
-              <DetailsPage projectsManager={projectsManager} />
+              <Sidebar
+                projectsManager={projectsManager}
+                components={components}
+              />
+              <DetailsPage
+                projectsManager={projectsManager}
+                components={components}
+              />
             </>
           }
         ></Router.Route>
       </Router.Routes>
-    </ViewerProvider>
-  </Router.BrowserRouter>,
+    </WorldProvider>
+  </Router.BrowserRouter>
 );
