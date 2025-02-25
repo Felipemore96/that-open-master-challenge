@@ -1,21 +1,25 @@
 import * as React from "react";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import { FragmentIdMap } from "@thatopen/fragments";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-import { ViewerContext } from "./IFCViewer";
+import { WorldContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
 import { deleteDocument, getCollection, updateDocument } from "../firebase";
+import * as OBCF from "@thatopen/components-front";
 
 interface Props {
   team: Team;
   project: Project;
   projectsManager: ProjectsManager;
+  components: OBC.Components;
   filterTeams: () => void;
 }
 
 export function TeamElement(props: Props) {
   const navigate = useNavigate();
+  const components: OBC.Components = props.components;
 
   props.projectsManager.onTeamDeleted = async (id) => {
     await deleteDocument("/teams", id);
@@ -29,7 +33,7 @@ export function TeamElement(props: Props) {
 
   const onTeamInfoButton = () => {
     const teamForm = document.getElementById(
-      "team-info-form",
+      "team-info-form"
     ) as HTMLFormElement;
     teamForm.reset();
     toggleModal(`info-modal-${props.team.id}`);
@@ -45,7 +49,7 @@ export function TeamElement(props: Props) {
 
   const onEditTeamInfo = () => {
     const editTeamForm = document.getElementById(
-      `edit-team-form-${props.team.id}`,
+      `edit-team-form-${props.team.id}`
     ) as HTMLFormElement;
     editTeamForm.reset();
     toggleModal(`info-modal-${props.team.id}`);
@@ -73,40 +77,46 @@ export function TeamElement(props: Props) {
     }
   };
 
-  const { viewer } = React.useContext(ViewerContext);
   let modelLoaded: boolean = false;
+  const { world } = React.useContext(WorldContext);
 
-  const onTeamClicked = async (team: Team) => {
-    if (!viewer) return;
-    const camera = viewer.camera;
-    if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-      throw new Error(
-        "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
+  const onTeamClicked = (team: Team) => {
+    if (world) {
+      const camera = world.camera;
+      if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+        throw new Error(
+          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+        );
+      }
+      modelLoaded = true;
+      const fragments = components.get(OBC.FragmentsManager);
+      const highlighter = components.get(OBCF.Highlighter);
+      const guids = fragments.fragmentIdMapToGuids(
+        highlighter.selection.select
       );
-    }
-    modelLoaded = true;
-    const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
 
-    if (team.camera) {
-      camera.controls.setLookAt(
-        team.camera.position.x,
-        team.camera.position.y,
-        team.camera.position.z,
-        team.camera.target.x,
-        team.camera.target.y,
-        team.camera.target.z,
-        true,
-      );
-    }
-    if (team.fragmentMap && Object.keys(team.fragmentMap).length > 0) {
-      highlighter.highlightByID("select", team.fragmentMap);
+      if (team.camera) {
+        camera.controls.setLookAt(
+          team.camera.position.x,
+          team.camera.position.y,
+          team.camera.position.z,
+          team.camera.target.x,
+          team.camera.target.y,
+          team.camera.target.z,
+          true
+        );
+      }
+      if (team.ifcGuids && Object.keys(team.ifcGuids).length > 0) {
+        const fragmentIdMap = fragments.guidToFragmentIdMap(team.ifcGuids);
+        highlighter.highlightByID("select", fragmentIdMap, true, false);
+      }
     }
   };
 
   const onSubmitEditedTeam = async (e) => {
     e.preventDefault();
     const editTeamForm = document.getElementById(
-      `edit-team-form-${props.team.id}`,
+      `edit-team-form-${props.team.id}`
     ) as HTMLFormElement;
     const formData = new FormData(editTeamForm);
     const newTeamData: ITeam = {
@@ -122,10 +132,10 @@ export function TeamElement(props: Props) {
       const updatedTeam = props.projectsManager.editTeam(
         {
           ...newTeamData,
-          fragmentMap: props.team.fragmentMap,
+          ifcGuids: props.team.ifcGuids,
           camera: props.team.camera,
         },
-        props.team,
+        props.team
       );
       console.log(updatedTeam);
       editTeamForm.reset();

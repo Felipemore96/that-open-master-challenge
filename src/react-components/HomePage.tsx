@@ -22,7 +22,7 @@ const projectsCollection = getCollection<IProject>("/projects");
 
 export function HomePage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.projectsList,
+    props.projectsManager.projectsList
   );
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
@@ -41,7 +41,7 @@ export function HomePage(props: Props) {
         ).toDate(),
       };
       try {
-        props.projectsManager.newProject(project, doc.id);
+        props.projectsManager.createProject(project, doc.id);
       } catch (error) {
         //project already exists so update its properties
       }
@@ -68,7 +68,7 @@ export function HomePage(props: Props) {
 
   const onCancelNewProject = () => {
     const projectForm = document.getElementById(
-      "new-project-modal",
+      "new-project-modal"
     ) as HTMLFormElement;
     if (!(projectForm && projectForm instanceof HTMLDialogElement)) {
       return;
@@ -83,7 +83,7 @@ export function HomePage(props: Props) {
   const onSubmitNewProject = async (e: React.FormEvent) => {
     e.preventDefault();
     const projectForm = document.getElementById(
-      "new-project-form",
+      "new-project-form"
     ) as HTMLFormElement;
     const formData = new FormData(projectForm);
     const projectData: IProject = {
@@ -99,7 +99,7 @@ export function HomePage(props: Props) {
     try {
       const docRef = await Firestore.addDoc(projectsCollection, projectData);
       const projectId = docRef.id;
-      props.projectsManager.newProject(projectData, projectId);
+      props.projectsManager.createProject(projectData, projectId);
       navigate(`/project/${projectId}`);
       projectForm.reset();
       toggleModal("new-project-modal");

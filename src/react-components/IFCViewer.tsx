@@ -1,314 +1,606 @@
 import * as React from "react";
-import * as OBC from "openbim-components";
-import { FragmentsGroup } from "bim-fragment";
-import { ToDoCreator } from "../bim-components/ToDoCreator";
-import { SimpleQTO } from "../bim-components/SimpleQTO";
+import * as OBC from "@thatopen/components";
+import * as OBCF from "@thatopen/components-front";
+import * as BUI from "@thatopen/ui";
+import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
+import { FragmentsGroup } from "@thatopen/fragments";
 
 interface Props {
   project: Project;
+  components: OBC.Components;
 }
 
-interface IViewerContext {
-  viewer: OBC.Components | null;
-  setViewer: (viewer: OBC.Components | null) => void;
+interface IWorldContext {
+  world: OBC.World | null;
+  setWorld: (world: OBC.World | null) => void;
 }
 
-export const ViewerContext = React.createContext<IViewerContext>({
-  viewer: null,
-  setViewer: () => {},
+export const WorldContext = React.createContext<IWorldContext>({
+  world: null,
+  setWorld: () => {},
 });
 
-export function ViewerProvider(props: { children: React.ReactNode }) {
-  const [viewer, setViewer] = React.useState<OBC.Components | null>(null);
+export function WorldProvider(props: { children: React.ReactNode }) {
+  const [world, setWorld] = React.useState<OBC.World | null>(null);
   return (
-    <ViewerContext.Provider value={{ viewer, setViewer }}>
+    <WorldContext.Provider value={{ world, setWorld }}>
       {props.children}
-    </ViewerContext.Provider>
+    </WorldContext.Provider>
   );
 }
 
 export function IFCViewer(props: Props) {
-  const { setViewer } = React.useContext(ViewerContext);
-  let viewer: OBC.Components;
+  const { setWorld } = React.useContext(WorldContext);
+  const worldRef = React.useRef<OBC.World | null>(null);
+  const components: OBC.Components = props.components;
 
-  // openBIM-components viewer
-  const createViewer = async () => {
-    let defaultProject: boolean = false;
-    if (props.project.fragRoute) {
-      defaultProject = true;
-    }
-
-    viewer = new OBC.Components();
-    setViewer(viewer);
-
-    //Scene tool setup
-    const sceneComponent = new OBC.SimpleScene(viewer);
-    viewer.scene = sceneComponent;
-    const scene = sceneComponent.get();
-    sceneComponent.setup();
-    scene.background = null;
-
-    const viewerContainer = document.getElementById(
-      "viewer-container",
-    ) as HTMLDivElement;
-    const rendererComponent = new OBC.PostproductionRenderer(
-      viewer,
-      viewerContainer,
-    );
-    viewer.renderer = rendererComponent;
-
-    //Camera tool setup
-    const cameraComponent = new OBC.OrthoPerspectiveCamera(viewer);
-    viewer.camera = cameraComponent;
-
-    //Raycaster tool setup
-    const raycasterComponent = new OBC.SimpleRaycaster(viewer);
-    viewer.raycaster = raycasterComponent;
-
-    //Renderer setup, viewer initialization after defining basic objects (scene, camera...)
-    viewer.init();
-    cameraComponent.updateAspect(); //Camera aspect fix
-    rendererComponent.postproduction.enabled = true; //Outlines
-
-    const fragmentManager = new OBC.FragmentManager(viewer);
-    const ifcLoader = new OBC.FragmentIfcLoader(viewer);
-
-    //Highlighter tool setup based on Raycaster
-    const highlighter = new OBC.FragmentHighlighter(viewer);
-    highlighter.setup();
-
-    //Culler tool setup to optimize the viewer performace
-    const culler = new OBC.ScreenCuller(viewer);
-    cameraComponent.controls.addEventListener("sleep", () => {
-      culler.needsUpdate = true;
+  let defaultProject: boolean = false;
+  if (props.project.fragRoute) {
+    defaultProject = true;
+  }
+  let fragmentModel: FragmentsGroup | undefined;
+  const [classificationsTree, updateClassificationsTree] =
+    CUI.tables.classificationTree({
+      components,
+      classifications: [],
     });
 
-    //Classifier tool definition
-    const classifier = new OBC.FragmentClassifier(viewer);
-
-    //IFC Properies processor tool setup
-    const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer);
-    highlighter.events.select.onClear.add(() => {
-      propertiesProcessor.cleanPropertiesList();
-    });
-
-    ifcLoader.onIfcLoaded.add(async (model) => {
-      onModelLoaded(model);
-      // exportToFRAG(model);
-      // exportToJSON(model);
-    });
-
-    fragmentManager.onFragmentsLoaded.add((model) => {
-      // importJSONProperties(model); // Added for challenge class 3.10.
-      onModelLoaded(model);
-    });
-
+  async function loadModelCheck() {
     let propsRoute: string | undefined;
-    async function onModelLoaded(model: FragmentsGroup) {
-      if (propsRoute) {
-        const properties = await fetch(propsRoute);
-        model.properties = await properties.json();
-        propsRoute = undefined;
-      }
-      highlighter.update();
-      for (const fragment of model.items) {
-        culler.add(fragment.mesh);
-      }
-      culler.needsUpdate = true;
-      try {
-        classifier.byModel(model.name, model);
-        classifier.byStorey(model);
-        classifier.byEntity(model);
-        console.log("Finished classification");
-        const tree = await createModelTree();
-        await classificationWindow.slots.content.dispose(true);
-        classificationWindow.addChild(tree);
-        propertiesProcessor.process(model); //IFC properties processor setup
-        highlighter.events.select.onHighlight.add((fragmentMap) => {
-          //Callback event to find the express ID of the selected element
-          highlighter.update();
-          const expressID = [...Object.values(fragmentMap)[0]][0];
-          propertiesProcessor.renderProperties(model, Number(expressID)); //Method to show properties of selected elements
-        });
-      } catch (error) {
-        alert(error);
-      }
-    }
-
-    ifcLoader.settings.wasm = {
-      path: "https://unpkg.com/web-ifc@0.0.44/",
-      absolute: true,
-    };
-
     if (
       defaultProject === true &&
       props.project &&
       props.project.fragRoute &&
       props.project.jsonRoute
     ) {
-      const file = await fetch(props.project.fragRoute);
-      const data = await file.arrayBuffer();
-      const fragmentBinary = new Uint8Array(data);
-      propsRoute = props.project.jsonRoute;
-      const model = await fragmentManager.load(fragmentBinary);
+      try {
+        const file = await fetch(props.project.fragRoute);
+        const data = await file.arrayBuffer();
+        const fragmentBinary = new Uint8Array(data);
+        const fragmentsManager = components.get(OBC.FragmentsManager);
+        const model = await fragmentsManager.load(fragmentBinary);
+
+        // Fetch and apply properties from the JSON file
+        propsRoute = props.project.jsonRoute;
+        const jsonProperties = await fetch(propsRoute);
+        const properties = await jsonProperties.json();
+
+        // Apply properties to the model
+        model.setLocalProperties(properties);
+        await processModel(model);
+      } catch (error) {
+        console.error("Error loading model or properties:", error);
+      }
     }
+  }
 
-    //Classifier doesn't have UI elements, so button and window must be defined
-    const classificationWindow = new OBC.FloatingWindow(viewer); //UI Component - floating window
-    viewer.ui.add(classificationWindow);
-    classificationWindow.title = "Model Groups";
-    classificationWindow.visible = false;
-    //UI Component and button
-    const classificationsBtn = new OBC.Button(viewer);
-    classificationsBtn.materialIcon = "account_tree";
-    classificationsBtn.tooltip = "Classification";
-    classificationsBtn.onClick.add(() => {
-      classificationWindow.visible = !classificationWindow.visible;
-      classificationWindow.active = classificationWindow.visible;
-    });
+  const setViewer = () => {
+    const worlds = components.get(OBC.Worlds);
 
-    async function createModelTree() {
-      const fragmentTree = new OBC.FragmentTree(viewer); //Fragment tree tool setup, organizing information from classifier tool
-      await fragmentTree.init();
-      await fragmentTree.update(["model", "storeys", "entities"]);
-      const tree = fragmentTree.get().uiElement.get("tree");
-      fragmentTree.onHovered.add((fragmentMap) => {
-        //On hover method for the fragment map
-        highlighter.highlightByID("hover", fragmentMap);
-      });
-      fragmentTree.onSelected.add((fragmentMap) => {
-        //On selected method for fragment map
-        highlighter.highlightByID("select", fragmentMap);
-      });
-      return tree; //Final result is the Fragment Tree
-    }
+    const world = worlds.create<
+      OBC.SimpleScene,
+      OBC.OrthoPerspectiveCamera,
+      OBCF.PostproductionRenderer
+    >();
 
-    // //Import fragment button setup
-    // const importFragmentBtn = new OBC.Button(viewer);
-    // importFragmentBtn.materialIcon = "upload";
-    // importFragmentBtn.tooltip = "Load FRAG";
-    // importFragmentBtn.onClick.add(() => {
-    //   const input = document.createElement("input");
-    //   input.type = "file";
-    //   input.accept = ".frag";
-    //   const reader = new FileReader();
-    //   reader.addEventListener("load", async () => {
-    //     const binary = reader.result;
-    //     if (!(binary instanceof ArrayBuffer)) {
-    //       return;
-    //     }
-    //     const fragmentBinary = new Uint8Array(binary);
-    //     await fragmentManager.load(fragmentBinary);
-    //   });
-    //   input.addEventListener("change", () => {
-    //     const filesList = input.files;
-    //     if (!filesList) {
-    //       return;
-    //     }
-    //     reader.readAsArrayBuffer(filesList[0]);
-    //   });
-    //   input.click();
-    // });
+    const sceneComponent = new OBC.SimpleScene(components);
+    world.scene = sceneComponent;
+    world.scene.setup();
+    world.scene.three.background = null;
 
-    // //Function to import json file with properties
-    // function importJSONProperties(model: FragmentsGroup) {
-    //   // Added for challenge class 3.10.
-    //   const input = document.createElement("input");
-    //   input.type = "file";
-    //   input.accept = "application/json";
-    //   const reader = new FileReader();
-    //   reader.addEventListener("load", async () => {
-    //     const json = reader.result;
-    //     if (!json) {
-    //       return;
-    //     }
-    //     const importedPropertiesFromJSON = JSON.parse(json as string);
-    //     model.properties = importedPropertiesFromJSON;
-    //   });
-    //   input.addEventListener("change", () => {
-    //     const filesList = input.files;
-    //     if (!filesList) {
-    //       return;
-    //     }
-    //     reader.readAsText(filesList[0]);
-    //   });
-    //   input.click();
-    // }
-
-    // // Export model into FRAG file
-    // function exportToJSON(model: FragmentsGroup) {
-    //   const json = JSON.stringify(model.properties, null, 2);
-    //   const blob = new Blob([json], { type: "application/json" });
-    //   const url = URL.createObjectURL(blob);
-    //   const a = document.createElement("a");
-    //   a.href = url;
-    //   a.download = `${model.name.replace(".ifc", "")}`;
-    //   a.click();
-    //   URL.revokeObjectURL(url);
-    // }
-
-    // // Export model into FRAG file
-    // function exportToFRAG(model: FragmentsGroup) {
-    //   const fragmentBinary = fragmentManager.export(model);
-    //   const blob = new Blob([fragmentBinary]);
-    //   const url = URL.createObjectURL(blob);
-    //   const a = document.createElement("a");
-    //   a.href = url;
-    //   a.download = `${model.name.replace(".ifc", "")}.frag`;
-    //   a.click();
-    //   URL.revokeObjectURL(url);
-    // }
-
-    //Instance of ToDoCreator and setup method
-    const toDoCreator = new ToDoCreator(viewer);
-    await toDoCreator.setup();
-    toDoCreator.onProjectCreated.add((toDo) => {
-      console.log(toDo);
-    });
-
-    // Instance of Quentity takeoff tool and setup method
-
-    const simpleQTO = new SimpleQTO(viewer);
-    await simpleQTO.setup();
-
-    //Instance properties finder tool
-    const propsFinder = new OBC.IfcPropertiesFinder(viewer);
-    await propsFinder.init();
-    propsFinder.onFound.add((fragmentIdMap) => {
-      highlighter.highlightByID("select", fragmentIdMap);
-    });
-
-    //Toolbar tool definition, addChild funciton adds buttons to it
-    const toolbar = new OBC.Toolbar(viewer);
-    if (defaultProject === false) {
-      toolbar.addChild(ifcLoader.uiElement.get("main"));
-    }
-    toolbar.addChild(
-      classificationsBtn,
-      propertiesProcessor.uiElement.get("main"),
-      simpleQTO.uiElement.get("activationBtn"),
-      toDoCreator.uiElement.get("activationButton"),
-      propsFinder.uiElement.get("main"),
-      fragmentManager.uiElement.get("main"),
+    const viewerContainer = document.getElementById(
+      "viewer-container"
+    ) as HTMLElement;
+    const rendererComponent = new OBCF.PostproductionRenderer(
+      components,
+      viewerContainer
     );
-    viewer.ui.addToolbar(toolbar);
+    world.renderer = rendererComponent;
+
+    const cameraComponent = new OBC.OrthoPerspectiveCamera(components);
+    world.camera = cameraComponent;
+
+    components.init();
+
+    world.renderer.postproduction.enabled = true;
+    world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
+    world.camera.updateAspect();
+
+    const ifcLoader = components.get(OBC.IfcLoader);
+    ifcLoader.setup();
+    loadModelCheck();
+
+    const cullers = components.get(OBC.Cullers);
+    const culler = cullers.create(world);
+
+    const highlighter = components.get(OBCF.Highlighter);
+    highlighter.setup({ world });
+    highlighter.zoomToSelection = true;
+
+    viewerContainer.addEventListener("resize", () => {
+      rendererComponent.resize();
+      cameraComponent.updateAspect();
+    });
+
+    world.camera.controls.addEventListener("controlend", () => {
+      culler.needsUpdate = true;
+    });
+
+    const fragmentsManager = components.get(OBC.FragmentsManager);
+    fragmentsManager.onFragmentsLoaded.add(async (model) => {
+      world.scene.three.add(model);
+
+      if (model.hasProperties) {
+        await processModel(model);
+        // setWorld(world);
+      }
+
+      // for (const fragment of model.items) {
+      //   culler.add(fragment.mesh);
+      // }
+      // culler.needsUpdate = true;
+
+      fragmentModel = model;
+    });
+
+    setWorld(world);
   };
 
-  // This useEffect hook runs whenever props.project changes
-  React.useEffect(() => {
-    createViewer(); // Create a new viewer instance with updated project
-    return () => {
-      viewer.dispose(); // Dispose the previous viewer instance
-      setViewer(null);
+  const processModel = async (model: FragmentsGroup) => {
+    const indexer = components.get(OBC.IfcRelationsIndexer);
+    await indexer.process(model);
+
+    const classifier = components.get(OBC.Classifier);
+    await classifier.bySpatialStructure(model);
+    await classifier.byPredefinedType(model);
+    classifier.byEntity(model);
+
+    const classifications = [
+      {
+        system: "entities",
+        label: "Entities",
+      },
+      {
+        system: "spatialStructures",
+        label: "Spatial Containers",
+      },
+      {
+        system: "predefinedTypes",
+        label: "Predefined Types",
+      },
+    ];
+    if (updateClassificationsTree) {
+      updateClassificationsTree({ classifications });
+    }
+  };
+
+  const onFragmentExport = () => {
+    const fragmentsManager = components.get(OBC.FragmentsManager);
+
+    if (!fragmentModel) return;
+    const fragmentBinary = fragmentsManager.export(fragmentModel);
+    const blob = new Blob([fragmentBinary]);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fragmentModel.name}.frag`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const onFragmentImport = async () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".frag";
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      const binary = reader.result;
+      if (!(binary instanceof ArrayBuffer)) return;
+      const fragmentBinary = new Uint8Array(binary);
+      const fragmentsManager = components.get(OBC.FragmentsManager);
+      fragmentsManager.load(fragmentBinary);
+    });
+    input.addEventListener("change", () => {
+      const filesList = input.files;
+      if (!filesList) return;
+      reader.readAsArrayBuffer(filesList[0]);
+    });
+    input.click();
+  };
+
+  const onPropertyExport = () => {
+    if (!fragmentModel) return;
+    const properties = fragmentModel.getLocalProperties();
+    const json = JSON.stringify(properties, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fragmentModel.name.replace(".ifc", "")}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const onPropertyImport = () => {
+    if (!fragmentModel) {
+      console.error("fragmentModel is not defined.");
+      return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json";
+    const reader = new FileReader();
+
+    reader.addEventListener("load", async () => {
+      if (!fragmentModel) {
+        console.error("fragmentModel is not defined.");
+        return;
+      }
+
+      const json = reader.result;
+      if (typeof json !== "string") {
+        console.error("File read result is not a string.");
+        return;
+      }
+
+      try {
+        const properties = JSON.parse(json);
+        fragmentModel.setLocalProperties(properties);
+        await processModel(fragmentModel);
+      } catch (error) {
+        console.error("Failed to parse JSON:", error);
+      }
+
+      reader.addEventListener("error", () => {
+        console.error("Error reading file:", reader.error);
+      });
+    });
+
+    input.addEventListener("change", () => {
+      const filesList = input.files;
+      if (!filesList || filesList.length === 0) {
+        console.error("No file selected.");
+        return;
+      }
+
+      reader.readAsText(filesList[0]);
+    });
+
+    input.click();
+  };
+
+  const onToggleVisibility = () => {
+    const highlighter = components.get(OBCF.Highlighter);
+    const fragments = components.get(OBC.FragmentsManager);
+    const selection = highlighter.selection.select;
+    if (Object.keys(selection).length === 0) return;
+    for (const fragmentID in selection) {
+      const fragment = fragments.list.get(fragmentID);
+      const expressIDs = selection[fragmentID];
+      for (const id of Array.from(expressIDs)) {
+        if (!fragment) continue;
+        const isHidden = fragment.hiddenItems.has(id);
+        if (isHidden) {
+          fragment.setVisibility(true, [id]);
+        } else {
+          fragment.setVisibility(false, [id]);
+        }
+      }
+    }
+  };
+
+  const onIsolate = () => {
+    const highlighter = components.get(OBCF.Highlighter);
+    const hider = components.get(OBC.Hider);
+    const selection = highlighter.selection.select;
+    hider.isolate(selection);
+  };
+
+  const onShow = () => {
+    const hider = components.get(OBC.Hider);
+    hider.set(true);
+  };
+
+  const onShowProperty = async () => {
+    if (!fragmentModel) return;
+    const highlighter = components.get(OBCF.Highlighter);
+    const selection = highlighter.selection.select;
+    const indexer = components.get(OBC.IfcRelationsIndexer);
+    for (const fragmentID in selection) {
+      const expressIDs = selection[fragmentID];
+      for (const id of Array.from(expressIDs)) {
+        const psets = indexer.getEntityRelations(
+          fragmentModel,
+          id,
+          "ContainedInStructure"
+        );
+        if (psets) {
+          for (const expressId of psets) {
+            const prop = await fragmentModel.getProperties(expressId);
+          }
+        }
+      }
+    }
+  };
+
+  const setupUI = () => {
+    const viewerContainer = document.getElementById("viewer-container");
+    if (!viewerContainer) return;
+
+    const floatingGrid = BUI.Component.create<BUI.Grid>(() => {
+      return BUI.html`
+        <bim-grid floating style="padding: 20px"></bim-grid>
+      `;
+    });
+
+    const elementPropertyPanel = BUI.Component.create<BUI.Panel>(() => {
+      const [propsTable, updatePropsTable] = CUI.tables.elementProperties({
+        components,
+        fragmentIdMap: {},
+      });
+      const highlighter = components.get(OBCF.Highlighter);
+
+      highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+        if (!floatingGrid) return;
+        floatingGrid.layout = "second";
+        updatePropsTable({ fragmentIdMap });
+        propsTable.expanded = false;
+      });
+
+      highlighter.events.select.onClear.add(() => {
+        updatePropsTable({ fragmentIdMap: {} });
+        if (!floatingGrid) return;
+        floatingGrid.layout = "main";
+      });
+
+      const search = (e: Event) => {
+        const input = e.target as BUI.TextInput;
+        propsTable.queryString = input.value;
+      };
+
+      return BUI.html`
+        <bim-panel>
+            <bim-panel-section
+             name="property"
+             label="Property Information"
+             icon="solar:document-bold"
+             fixed
+            >
+                <bim-text-input @input="${search}" placeholder="Search..."></bim-text-input>
+                ${propsTable}
+            </bim-panel-section>
+        </bim-panel>
+      `;
+    });
+
+    const worldPanel = BUI.Component.create<BUI.Panel>(() => {
+      const [worldTable] = CUI.tables.worldsConfiguration({ components });
+
+      const search = (e: Event) => {
+        const input = e.target as BUI.TextInput;
+        worldTable.queryString = input.value;
+      };
+
+      return BUI.html`
+        <bim-panel>
+            <bim-panel-section
+             name="world"
+             label="World Information"
+             icon="solar:document-bold"
+             fixed
+            >
+                <bim-text-input @input="${search}" placeholder="Search..."></bim-text-input>
+                ${worldTable}
+            </bim-panel-section>
+        </bim-panel>
+      `;
+    });
+
+    const onClassifier = () => {
+      if (!floatingGrid) return;
+      if (floatingGrid.layout !== "classifier") {
+        floatingGrid.layout = "classifier";
+      } else {
+        floatingGrid.layout = "main";
+      }
     };
-  }, [props.project.id]); // Dependency on props.project
+
+    const classifierPanel = BUI.Component.create<BUI.Panel>(() => {
+      return BUI.html`
+        <bim-panel>
+             <bim-panel-section
+             name="classifier"
+             label="Classifier"
+             icon="solar:document-bold"
+             fixed
+            >
+                <bim-label>Classifications</bim-label>
+                ${classificationsTree}
+            </bim-panel-section>
+        </bim-panel>
+      `;
+    });
+
+    const onWorldsUpdate = () => {
+      if (!floatingGrid) return;
+      floatingGrid.layout = "world";
+    };
+
+    const toolbar = BUI.Component.create<BUI.Toolbar>(() => {
+      const [loadIfcBtn] = CUI.buttons.loadIfc({ components: components });
+      loadIfcBtn.tooltipTitle = "Load IFC";
+      loadIfcBtn.label = "";
+
+      return BUI.html`
+        <bim-toolbar style="justify-self: center">
+            <bim-toolbar-section label="App">
+                <bim-button 
+                    tooltip-title="World" 
+                    icon="tabler:brush"
+                    @click=${onWorldsUpdate}
+                ></bim-button>
+            </bim-toolbar-section>
+      ${
+        defaultProject === false
+          ? BUI.html`<bim-toolbar-section label="Import">
+            ${loadIfcBtn}
+        </bim-toolbar-section>`
+          : ""
+      }
+            <bim-toolbar-section label="Fragments">
+                <bim-button 
+                    tooltip-title="Import" 
+                    icon="mdi:cube"
+                    @click=${onFragmentImport}
+                ></bim-button>
+                <bim-button 
+                    tooltip-title="Export" 
+                    icon="tabler:package-export"
+                    @click=${onFragmentExport}
+                ></bim-button>
+                <bim-button 
+                    tooltip-title="Import" 
+                    icon="clarity:import-line"
+                    @click=${onPropertyImport}
+                ></bim-button>
+                <bim-button 
+                    tooltip-title="Export" 
+                    icon="clarity:export-line"
+                    @click=${onPropertyExport}
+                ></bim-button>
+            </bim-toolbar-section>
+            <bim-toolbar-section label="Selection">
+                <bim-button 
+                    tooltip-title="Visibility" 
+                    icon="material-symbols:visibility-outline"
+                    @click=${onToggleVisibility}
+                ></bim-button>
+                <bim-button 
+                    tooltip-title="Show all" 
+                    icon="tabler:eye-filled"
+                    @click=${onShow}
+                ></bim-button>
+                <bim-button 
+                    tooltip-title="Isolate" 
+                    icon="mdi:filter"
+                    @click=${onIsolate}
+                ></bim-button>
+            </bim-toolbar-section>
+            <bim-toolbar-section label="Property">
+                <bim-button 
+                    tooltip-title="Show" 
+                    icon="clarity:list-line"
+                    @click=${onShowProperty}
+                ></bim-button>
+            </bim-toolbar-section>
+            <bim-toolbar-section label="Groups">
+                <bim-button 
+                    tooltip-title="Classifier" 
+                    icon="tabler:eye-filled"
+                    @click=${onClassifier}
+                ></bim-button>
+            </bim-toolbar-section>
+        </bim-toolbar>
+      `;
+    });
+
+    floatingGrid.layouts = {
+      main: {
+        template: `
+        "empty" 1fr
+        "toolbar" auto
+        /1fr
+        `,
+        elements: {
+          toolbar,
+        },
+      },
+      second: {
+        template: `
+        "empty elementPropertyPanel" 1fr
+        "toolbar toolbar" auto
+        /1fr 20rem
+        `,
+        elements: {
+          toolbar,
+          elementPropertyPanel,
+        },
+      },
+      world: {
+        template: `
+        "empty worldPanel" 1fr
+        "toolbar toolbar" auto
+        /1fr 20rem
+        `,
+        elements: {
+          toolbar,
+          worldPanel,
+        },
+      },
+      classifier: {
+        template: `
+        "empty classifierPanel" 1fr
+        "toolbar toolbar" auto
+        /1fr 20rem
+        `,
+        elements: {
+          toolbar,
+          classifierPanel,
+        },
+      },
+    };
+
+    floatingGrid.layout = "main";
+
+    viewerContainer.appendChild(floatingGrid);
+  };
+
+  React.useEffect(() => {
+    const loadAndSetup = async () => {
+      // Clean up previous state
+      if (fragmentModel) {
+        fragmentModel.dispose();
+        fragmentModel = undefined;
+      }
+
+      if (components) {
+        components.dispose();
+      }
+
+      // Set up the viewer and load the new model
+      setViewer();
+      setupUI();
+      await loadModelCheck();
+    };
+
+    loadAndSetup();
+    return () => {
+      // Clean up on unmount
+      if (components) {
+        components.dispose();
+      }
+
+      if (fragmentModel) {
+        fragmentModel.dispose();
+        fragmentModel = undefined;
+      }
+
+      worldRef.current = null;
+    };
+  }, [props.project]); // Re-run when props.project changes
 
   return (
-    <div
+    <bim-viewport
       id="viewer-container"
-      className="dashboard-card"
-      style={{ minWidth: 0, position: "relative" }}
+      style={{
+        minWidth: 0,
+        position: "relative",
+        maxHeight: "calc(100vh - 100px)",
+        background: "var(--background-200)",
+        borderRadius: "8px",
+      }}
     />
   );
 }

@@ -1,51 +1,48 @@
 import * as React from "react";
-import * as OBC from "openbim-components";
+import * as OBC from "@thatopen/components";
+import * as OBCF from "@thatopen/components-front";
+import { FragmentIdMap } from "@thatopen/fragments";
 import * as THREE from "three";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { TeamElement } from "./TeamElement";
-import { ViewerContext } from "./IFCViewer";
+import { WorldContext } from "./IFCViewer";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
 
 interface Props {
   project: Project;
   projectsManager: ProjectsManager;
+  components: OBC.Components;
 }
 
 export function TeamsCard(props: Props) {
   const [teams, setTeams] = React.useState<Team[]>(
-    props.projectsManager.teamsList,
+    props.projectsManager.teamsList
   );
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamsList]);
   };
+  const components: OBC.Components = props.components;
 
   const getFirestoreTeams = async () => {
     const teamsCollection = getCollection<ITeam>("/teams");
     const firebaseTeams = await Firestore.getDocs(teamsCollection);
     for (const doc of firebaseTeams.docs) {
       const data = doc.data();
-      const fragmentIdMap: OBC.FragmentIdMap = {};
-      for (const key in data.fragmentMap) {
-        if (Object.prototype.hasOwnProperty.call(data.fragmentMap, key)) {
-          const value = data.fragmentMap[key];
-          if (Array.isArray(value)) {
-            fragmentIdMap[key] = new Set(value);
-          }
-        }
-      }
       const team: ITeam = {
         ...data,
-        fragmentMap: fragmentIdMap,
+        // fragmentMap: fragmentIdMap,
       };
 
       try {
-        props.projectsManager.newTeam(team, doc.id);
+        props.projectsManager.createTeam(team, doc.id);
       } catch (error) {
         const previousTeam = props.projectsManager.getTeam(doc.id);
-        props.projectsManager.editTeam(team, previousTeam);
+        if (previousTeam) {
+          props.projectsManager.editTeam(team, previousTeam);
+        }
       }
     }
     filterTeams();
@@ -57,7 +54,7 @@ export function TeamsCard(props: Props) {
 
   const filterTeams = () => {
     const filteredTeams = props.projectsManager.teamsList.filter(
-      (team) => team.teamProjectId === props.project.id,
+      (team) => team.teamProjectId === props.project.id
     );
     setTeams(filteredTeams);
   };
@@ -74,11 +71,12 @@ export function TeamsCard(props: Props) {
         project={props.project}
         projectsManager={props.projectsManager}
         filterTeams={filterTeams}
+        components={components}
       />
     );
   });
 
-  const { viewer } = React.useContext(ViewerContext);
+  const { world } = React.useContext(WorldContext);
   let modelLoaded: boolean = false;
 
   const onNewTeam = () => {
@@ -91,7 +89,7 @@ export function TeamsCard(props: Props) {
 
   const onCancelNewTeam = () => {
     const teamForm = document.getElementById(
-      "new-team-form",
+      "new-team-form"
     ) as HTMLFormElement;
     teamForm.reset();
     toggleModal("new-team-modal");
@@ -100,28 +98,28 @@ export function TeamsCard(props: Props) {
   const onSubmitNewTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     const teamForm = document.getElementById(
-      "new-team-form",
+      "new-team-form"
     ) as HTMLFormElement;
 
     const formData = new FormData(teamForm);
     const currentProjectId = props.project.id;
 
-    let fragmentMap: OBC.FragmentIdMap | undefined = undefined;
+    let guids: string[] = [];
     let teamCamera:
       | { position: THREE.Vector3; target: THREE.Vector3 }
       | undefined = undefined;
 
-    if (viewer) {
-      const camera = viewer.camera;
+    if (world) {
+      const camera = world.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(
-          "TeamsCreator needs the OrthoPerspectiveCamera in order to work",
+          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
         );
       }
       modelLoaded = true;
-      const highlighter = await viewer.tools.get(OBC.FragmentHighlighter);
-
-      fragmentMap = highlighter.selection.select;
+      const fragments = components.get(OBC.FragmentsManager);
+      const highlighter = components.get(OBCF.Highlighter);
+      guids = fragments.fragmentIdMapToGuids(highlighter.selection.select);
 
       const position = new THREE.Vector3();
       camera.controls.getPosition(position);
@@ -136,7 +134,7 @@ export function TeamsCard(props: Props) {
       contactName: formData.get("contactName") as string,
       contactPhone: formData.get("contactPhone") as string,
       teamProjectId: currentProjectId,
-      fragmentMap: fragmentMap,
+      ifcGuids: guids,
       camera: teamCamera,
     };
 
@@ -144,14 +142,6 @@ export function TeamsCard(props: Props) {
       const teamsCollection = getCollection<ITeam>("/teams");
       const firebaseTeamData = {
         ...teamData,
-        fragmentMap: fragmentMap
-          ? Object.fromEntries(
-              Object.entries(fragmentMap).map(([key, value]) => [
-                key,
-                Array.from(value),
-              ]),
-            )
-          : undefined,
         camera: teamCamera
           ? {
               position: {
@@ -169,7 +159,7 @@ export function TeamsCard(props: Props) {
       };
       const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
       const teamId = docRef.id;
-      const team = props.projectsManager.newTeam(teamData, teamId);
+      const team = props.projectsManager.createTeam(teamData, teamId);
       teamForm.reset();
       toggleModal("new-team-modal");
       filterTeams();
@@ -181,7 +171,42 @@ export function TeamsCard(props: Props) {
   };
 
   return (
-    <div>
+    <div className="dashboard-card">
+      <div style={{ padding: "15px", height: "100%" }}>
+        <div id="teams-header">
+          <h4>Teams</h4>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              columnGap: 15,
+            }}
+          >
+            <button
+              onClick={onNewTeam}
+              id="new-team-btn"
+              className="btn-secondary"
+            >
+              <span style={{ width: "100%" }} className="material-icons-round">
+                add
+              </span>
+            </button>
+          </div>
+        </div>
+        {teams.length > 0 ? (
+          <div id="teams-list">{teamsCards}</div>
+        ) : (
+          <h4
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            There is no teams to display
+          </h4>
+        )}
+      </div>
       <dialog id="new-team-modal">
         <form id="new-team-form">
           <h2>New Team</h2>
@@ -270,44 +295,6 @@ export function TeamsCard(props: Props) {
           </button>
         </div>
       </dialog>
-      <div
-        className="dashboard-card"
-        style={{ padding: "15px", height: "calc(100vh - 330px)" }}
-      >
-        <div id="teams-header">
-          <h4>Teams</h4>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "end",
-              columnGap: 15,
-            }}
-          >
-            <button
-              onClick={onNewTeam}
-              id="new-team-btn"
-              className="btn-secondary"
-            >
-              <span style={{ width: "100%" }} className="material-icons-round">
-                add
-              </span>
-            </button>
-          </div>
-        </div>
-        {teams.length > 0 ? (
-          <div id="teams-list">{teamsCards}</div>
-        ) : (
-          <h4
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            There is no teams to display
-          </h4>
-        )}
-      </div>
     </div>
   );
 }

@@ -6,14 +6,16 @@ import { DetailsPageHeader } from "./DetailsPageHeader";
 import { DetailsCard } from "./DetailsCard";
 import { IFCViewer } from "./IFCViewer";
 import { TeamsCard } from "./TeamsCard";
+import * as OBC from "@thatopen/components";
 
 interface Props {
   projectsManager: ProjectsManager;
+  components: OBC.Components;
 }
 
 export function DetailsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.projectsList,
+    props.projectsManager.projectsList
   );
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
@@ -26,6 +28,7 @@ export function DetailsPage(props: Props) {
 
   const currentProject = props.projectsManager.getProject(routeParams.id);
   React.useEffect(() => {}, [currentProject]);
+  const components: OBC.Components = props.components;
 
   if (!currentProject) {
     return <p>The project with ID {routeParams.id} wasn't found.</p>;
@@ -35,7 +38,7 @@ export function DetailsPage(props: Props) {
     <div className="page" id="project-details">
       <DetailsPageHeader project={currentProject} />
       <div className="main-page-content">
-        <div style={{ display: "flex", flexDirection: "column", rowGap: 20 }}>
+        <div className="project-column">
           <DetailsCard
             project={currentProject}
             projectsManager={props.projectsManager}
@@ -43,9 +46,11 @@ export function DetailsPage(props: Props) {
           <TeamsCard
             project={currentProject}
             projectsManager={props.projectsManager}
+            components={components}
           />
         </div>
-        <IFCViewer project={currentProject} />
+
+        <IFCViewer project={currentProject} components={components} />
       </div>
     </div>
   );

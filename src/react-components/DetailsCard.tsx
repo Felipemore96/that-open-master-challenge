@@ -99,31 +99,22 @@ export function DetailsCard(props: Props) {
 
   return (
     <div>
-      <div
-        className="dashboard-card"
-        style={{ padding: "15px", height: "210px" }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <h4>Details</h4>
-          <button onClick={onClickEditButton} className="btn-secondary">
-            <p style={{ width: "100%" }}>Edit</p>
-          </button>
-        </div>
-        <div>
+      <div className="dashboard-card">
+        <div style={{ padding: "15px" }}>
           <div
             style={{
               display: "flex",
-              flexDirection: "column",
               justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
             }}
           >
+            <h4>Details</h4>
+            <button onClick={onClickEditButton} className="btn-secondary">
+              <p style={{ width: "100%" }}>Edit</p>
+            </button>
+          </div>
+          <div>
             <div className="card-content">
               <div className="card-property">
                 <p style={{ color: "#969696" }}>Status</p>
