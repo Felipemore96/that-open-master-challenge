@@ -1,7 +1,5 @@
 import * as React from "react";
-import { IProject, Project } from "../class/projects";
-import { ITeam } from "../class/teams";
-import { ProjectsManager } from "../class/projectsManager";
+import { Project } from "../class/projects";
 
 interface Props {
   project: Project;

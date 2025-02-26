@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
-import { FragmentIdMap } from "@thatopen/fragments";
 import * as THREE from "three";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";

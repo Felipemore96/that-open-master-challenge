@@ -12,7 +12,6 @@ import {
 import { HomePageProjectCard } from "./HomePageProjectCard";
 import * as Firestore from "firebase/firestore";
 import { getCollection } from "../firebase";
-import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   projectsManager: ProjectsManager;

@@ -7,7 +7,6 @@ import { DetailsPage } from "./react-components/DetailsPage";
 import { HomePage } from "./react-components/HomePage";
 import { WorldProvider } from "./react-components/IFCViewer";
 import * as BUI from "@thatopen/ui";
-import * as OBC from "@thatopen/components";
 
 BUI.Manager.init();
 

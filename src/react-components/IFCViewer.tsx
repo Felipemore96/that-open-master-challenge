@@ -31,26 +31,28 @@ export function WorldProvider(props: { children: React.ReactNode }) {
   );
 
   React.useEffect(() => {
-    // Initialize components
-    const newComponents = new OBC.Components();
-    setComponents(newComponents);
+    const components = new OBC.Components();
+    console.log("new components 1");
+    setComponents(components);
 
-    // Initialize world
-    const worlds = newComponents.get(OBC.Worlds);
+    const worlds = components.get(OBC.Worlds);
     const world = worlds.create<
       OBC.SimpleScene,
       OBC.OrthoPerspectiveCamera,
       OBCF.PostproductionRenderer
     >();
+    console.log("new world 1");
     setWorld(world);
 
     // Cleanup on unmount
     return () => {
       if (world) {
         world.dispose();
+        console.log("dispose world 1");
       }
-      if (newComponents) {
-        newComponents.dispose();
+      if (components) {
+        components.dispose();
+        console.log("dispose components 1");
       }
     };
   }, []);
@@ -65,7 +67,8 @@ export function WorldProvider(props: { children: React.ReactNode }) {
 }
 
 export function IFCViewer(props: Props) {
-  const { world, components } = React.useContext(WorldContext);
+  const { world, components, setWorld, setComponents } =
+    React.useContext(WorldContext);
 
   let defaultProject: boolean = false;
   if (props.project.fragRoute) {
@@ -109,6 +112,26 @@ export function IFCViewer(props: Props) {
   }
 
   const setViewer = () => {
+    console.log("set viewer");
+    console.log("components:", components, "world:", world);
+
+    if (!components) {
+      const components = new OBC.Components();
+      console.log("new components 3");
+      setComponents(components);
+    }
+    if (!world) {
+      if (!components) return;
+      const worlds = components.get(OBC.Worlds);
+      const world = worlds.create<
+        OBC.SimpleScene,
+        OBC.OrthoPerspectiveCamera,
+        OBCF.PostproductionRenderer
+      >();
+      console.log("new world 3");
+      setWorld(world);
+    }
+
     if (!components || !world) return;
 
     // OBC.SimpleScene,
@@ -613,16 +636,16 @@ export function IFCViewer(props: Props) {
   };
 
   React.useEffect(() => {
-    if (!world || !components) return;
-
     const loadAndSetup = async () => {
-      // Clean up previous state
+      if (!world || !components) return;
+      console.log("load and setup");
+
       if (fragmentModel) {
         fragmentModel.dispose();
+        console.log("fragment disposed");
         fragmentModel = undefined;
       }
 
-      // Set up the viewer and load the new model
       setViewer();
       setupUI();
       await loadModelCheck();
@@ -632,10 +655,19 @@ export function IFCViewer(props: Props) {
     return () => {
       if (fragmentModel) {
         fragmentModel.dispose();
+        console.log("fragment disposed 2");
         fragmentModel = undefined;
       }
+      if (world) {
+        world.dispose();
+        console.log("dispose world 2");
+      }
+      if (components) {
+        components.dispose();
+        console.log("dispose components 2");
+      }
     };
-  }, [props.project, world, components]); // Re-run when props.project changes
+  }, [props.project]); // Re-run when props.project changes
 
   return (
     <bim-viewport

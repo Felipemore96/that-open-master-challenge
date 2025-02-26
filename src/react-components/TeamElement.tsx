@@ -1,12 +1,11 @@
 import * as React from "react";
 import * as OBC from "@thatopen/components";
-import { FragmentIdMap } from "@thatopen/fragments";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { WorldContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
-import { deleteDocument, getCollection, updateDocument } from "../firebase";
+import { deleteDocument, updateDocument } from "../firebase";
 import * as OBCF from "@thatopen/components-front";
 
 interface Props {

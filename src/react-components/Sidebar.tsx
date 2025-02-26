@@ -1,9 +1,6 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import * as OBC from "@thatopen/components";
-import { FragmentIdMap, FragmentsGroup } from "@thatopen/fragments";
-
 import {
   IProject,
   Project,
@@ -17,7 +14,6 @@ import { SidebarProject } from "./SidebarProject";
 import { SearchBox } from "./SearchBox";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
-import * as THREE from "three";
 
 interface Props {
   projectsManager: ProjectsManager;

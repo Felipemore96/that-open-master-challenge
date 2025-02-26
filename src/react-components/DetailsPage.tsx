@@ -6,7 +6,6 @@ import { DetailsPageHeader } from "./DetailsPageHeader";
 import { DetailsCard } from "./DetailsCard";
 import { IFCViewer } from "./IFCViewer";
 import { TeamsCard } from "./TeamsCard";
-import * as OBC from "@thatopen/components";
 
 interface Props {
   projectsManager: ProjectsManager;
