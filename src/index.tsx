@@ -45,7 +45,6 @@ declare global {
 }
 
 const projectsManager = new ProjectsManager();
-const components = new OBC.Components();
 
 const rootElement = document.getElementById("app") as HTMLDivElement;
 const appRoot = ReactDOM.createRoot(rootElement);
@@ -61,14 +60,8 @@ appRoot.render(
           path="/project/:id"
           element={
             <>
-              <Sidebar
-                projectsManager={projectsManager}
-                components={components}
-              />
-              <DetailsPage
-                projectsManager={projectsManager}
-                components={components}
-              />
+              <Sidebar projectsManager={projectsManager} />
+              <DetailsPage projectsManager={projectsManager} />
             </>
           }
         ></Router.Route>

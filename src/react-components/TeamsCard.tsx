@@ -14,7 +14,6 @@ import * as Firestore from "firebase/firestore";
 interface Props {
   project: Project;
   projectsManager: ProjectsManager;
-  components: OBC.Components;
 }
 
 export function TeamsCard(props: Props) {
@@ -24,7 +23,6 @@ export function TeamsCard(props: Props) {
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamsList]);
   };
-  const components: OBC.Components = props.components;
 
   const getFirestoreTeams = async () => {
     const teamsCollection = getCollection<ITeam>("/teams");
@@ -33,7 +31,6 @@ export function TeamsCard(props: Props) {
       const data = doc.data();
       const team: ITeam = {
         ...data,
-        // fragmentMap: fragmentIdMap,
       };
 
       try {
@@ -71,12 +68,11 @@ export function TeamsCard(props: Props) {
         project={props.project}
         projectsManager={props.projectsManager}
         filterTeams={filterTeams}
-        components={components}
       />
     );
   });
 
-  const { world } = React.useContext(WorldContext);
+  const { world, components } = React.useContext(WorldContext);
   let modelLoaded: boolean = false;
 
   const onNewTeam = () => {
@@ -109,7 +105,7 @@ export function TeamsCard(props: Props) {
       | { position: THREE.Vector3; target: THREE.Vector3 }
       | undefined = undefined;
 
-    if (world) {
+    if (world && components) {
       const camera = world.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(

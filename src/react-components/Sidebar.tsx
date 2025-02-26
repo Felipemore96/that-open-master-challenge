@@ -21,7 +21,6 @@ import * as THREE from "three";
 
 interface Props {
   projectsManager: ProjectsManager;
-  components: OBC.Components;
 }
 
 const projectsCollection = getCollection<IProject>("/projects");
@@ -35,7 +34,6 @@ export function Sidebar(props: Props) {
     setProjects([...props.projectsManager.projectsList]);
   };
   const navigate = useNavigate();
-  const components: OBC.Components = props.components;
 
   const getFirestoreProjects = async () => {
     const firebaseProjects = await Firestore.getDocs(projectsCollection);
@@ -156,7 +154,6 @@ export function Sidebar(props: Props) {
             props.projectsManager.createProject(item, projectId);
             navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
-            const fragments = components.get(OBC.FragmentsManager);
             const teamCamera = item.camera;
             const firebaseTeamData = {
               ...item,

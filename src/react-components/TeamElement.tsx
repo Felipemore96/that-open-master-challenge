@@ -13,13 +13,11 @@ interface Props {
   team: Team;
   project: Project;
   projectsManager: ProjectsManager;
-  components: OBC.Components;
   filterTeams: () => void;
 }
 
 export function TeamElement(props: Props) {
   const navigate = useNavigate();
-  const components: OBC.Components = props.components;
 
   props.projectsManager.onTeamDeleted = async (id) => {
     await deleteDocument("/teams", id);
@@ -78,10 +76,10 @@ export function TeamElement(props: Props) {
   };
 
   let modelLoaded: boolean = false;
-  const { world } = React.useContext(WorldContext);
+  const { world, components } = React.useContext(WorldContext);
 
   const onTeamClicked = (team: Team) => {
-    if (world) {
+    if (world && components) {
       const camera = world.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(
