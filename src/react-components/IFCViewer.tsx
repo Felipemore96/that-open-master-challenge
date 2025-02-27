@@ -8,32 +8,67 @@ import { FragmentsGroup } from "@thatopen/fragments";
 
 interface Props {
   project: Project;
-  components: OBC.Components;
 }
 
 interface IWorldContext {
   world: OBC.World | null;
   setWorld: (world: OBC.World | null) => void;
+  components: OBC.Components | null;
+  setComponents: (viewer: OBC.Components | null) => void;
 }
 
 export const WorldContext = React.createContext<IWorldContext>({
   world: null,
   setWorld: () => {},
+  components: null,
+  setComponents: () => {},
 });
 
 export function WorldProvider(props: { children: React.ReactNode }) {
   const [world, setWorld] = React.useState<OBC.World | null>(null);
+  const [components, setComponents] = React.useState<OBC.Components | null>(
+    null
+  );
+
+  React.useEffect(() => {
+    const components = new OBC.Components();
+    console.log("new components 1");
+    setComponents(components);
+
+    const worlds = components.get(OBC.Worlds);
+    const world = worlds.create<
+      OBC.SimpleScene,
+      OBC.OrthoPerspectiveCamera,
+      OBCF.PostproductionRenderer
+    >();
+    console.log("new world 1");
+    setWorld(world);
+
+    // Cleanup on unmount
+    return () => {
+      if (world) {
+        world.dispose();
+        console.log("dispose world 1");
+      }
+      if (components) {
+        components.dispose();
+        console.log("dispose components 1");
+      }
+    };
+  }, []);
+
   return (
-    <WorldContext.Provider value={{ world, setWorld }}>
+    <WorldContext.Provider
+      value={{ world, setWorld, components, setComponents }}
+    >
       {props.children}
     </WorldContext.Provider>
   );
 }
 
 export function IFCViewer(props: Props) {
-  const { setWorld } = React.useContext(WorldContext);
-  const worldRef = React.useRef<OBC.World | null>(null);
-  const components: OBC.Components = props.components;
+  const { world, components, setWorld, setComponents } =
+    React.useContext(WorldContext);
 
   let defaultProject: boolean = false;
   if (props.project.fragRoute) {
@@ -42,13 +77,14 @@ export function IFCViewer(props: Props) {
   let fragmentModel: FragmentsGroup | undefined;
   const [classificationsTree, updateClassificationsTree] =
     CUI.tables.classificationTree({
-      components,
+      components: components!,
       classifications: [],
     });
 
   async function loadModelCheck() {
     let propsRoute: string | undefined;
     if (
+      components &&
       defaultProject === true &&
       props.project &&
       props.project.fragRoute &&
@@ -76,18 +112,37 @@ export function IFCViewer(props: Props) {
   }
 
   const setViewer = () => {
-    const worlds = components.get(OBC.Worlds);
+    console.log("set viewer");
+    console.log("components:", components, "world:", world);
 
-    const world = worlds.create<
-      OBC.SimpleScene,
-      OBC.OrthoPerspectiveCamera,
-      OBCF.PostproductionRenderer
-    >();
+    if (!components) {
+      const components = new OBC.Components();
+      console.log("new components 3");
+      setComponents(components);
+    }
+    if (!world) {
+      if (!components) return;
+      const worlds = components.get(OBC.Worlds);
+      const world = worlds.create<
+        OBC.SimpleScene,
+        OBC.OrthoPerspectiveCamera,
+        OBCF.PostproductionRenderer
+      >();
+      console.log("new world 3");
+      setWorld(world);
+    }
+
+    if (!components || !world) return;
+
+    // OBC.SimpleScene,
+    // OBC.OrthoPerspectiveCamera,
+    // OBCF.PostproductionRenderer
 
     const sceneComponent = new OBC.SimpleScene(components);
+
     world.scene = sceneComponent;
-    world.scene.setup();
-    world.scene.three.background = null;
+    (world.scene as OBC.SimpleScene).setup();
+    (world.scene as OBC.SimpleScene).three.background = null;
 
     const viewerContainer = document.getElementById(
       "viewer-container"
@@ -103,9 +158,17 @@ export function IFCViewer(props: Props) {
 
     components.init();
 
-    world.renderer.postproduction.enabled = true;
-    world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
-    world.camera.updateAspect();
+    (world.renderer as OBCF.PostproductionRenderer).postproduction.enabled =
+      true;
+    (world.camera as OBC.OrthoPerspectiveCamera).controls.setLookAt(
+      3,
+      3,
+      3,
+      0,
+      0,
+      0
+    );
+    (world.camera as OBC.OrthoPerspectiveCamera).updateAspect();
 
     const ifcLoader = components.get(OBC.IfcLoader);
     ifcLoader.setup();
@@ -123,9 +186,12 @@ export function IFCViewer(props: Props) {
       cameraComponent.updateAspect();
     });
 
-    world.camera.controls.addEventListener("controlend", () => {
-      culler.needsUpdate = true;
-    });
+    (world.camera as OBC.OrthoPerspectiveCamera).controls.addEventListener(
+      "controlend",
+      () => {
+        culler.needsUpdate = true;
+      }
+    );
 
     const fragmentsManager = components.get(OBC.FragmentsManager);
     fragmentsManager.onFragmentsLoaded.add(async (model) => {
@@ -143,11 +209,10 @@ export function IFCViewer(props: Props) {
 
       fragmentModel = model;
     });
-
-    setWorld(world);
   };
 
   const processModel = async (model: FragmentsGroup) => {
+    if (!components) return;
     const indexer = components.get(OBC.IfcRelationsIndexer);
     await indexer.process(model);
 
@@ -176,6 +241,8 @@ export function IFCViewer(props: Props) {
   };
 
   const onFragmentExport = () => {
+    if (!components) return;
+
     const fragmentsManager = components.get(OBC.FragmentsManager);
 
     if (!fragmentModel) return;
@@ -190,6 +257,8 @@ export function IFCViewer(props: Props) {
   };
 
   const onFragmentImport = async () => {
+    if (!components) return;
+
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".frag";
@@ -272,6 +341,8 @@ export function IFCViewer(props: Props) {
   };
 
   const onToggleVisibility = () => {
+    if (!components) return;
+
     const highlighter = components.get(OBCF.Highlighter);
     const fragments = components.get(OBC.FragmentsManager);
     const selection = highlighter.selection.select;
@@ -292,6 +363,8 @@ export function IFCViewer(props: Props) {
   };
 
   const onIsolate = () => {
+    if (!components) return;
+
     const highlighter = components.get(OBCF.Highlighter);
     const hider = components.get(OBC.Hider);
     const selection = highlighter.selection.select;
@@ -299,12 +372,16 @@ export function IFCViewer(props: Props) {
   };
 
   const onShow = () => {
+    if (!components) return;
+
     const hider = components.get(OBC.Hider);
     hider.set(true);
   };
 
   const onShowProperty = async () => {
+    if (!components) return;
     if (!fragmentModel) return;
+
     const highlighter = components.get(OBCF.Highlighter);
     const selection = highlighter.selection.select;
     const indexer = components.get(OBC.IfcRelationsIndexer);
@@ -328,6 +405,7 @@ export function IFCViewer(props: Props) {
   const setupUI = () => {
     const viewerContainer = document.getElementById("viewer-container");
     if (!viewerContainer) return;
+    if (!components) return;
 
     const floatingGrid = BUI.Component.create<BUI.Grid>(() => {
       return BUI.html`
@@ -559,17 +637,15 @@ export function IFCViewer(props: Props) {
 
   React.useEffect(() => {
     const loadAndSetup = async () => {
-      // Clean up previous state
+      if (!world || !components) return;
+      console.log("load and setup");
+
       if (fragmentModel) {
         fragmentModel.dispose();
+        console.log("fragment disposed");
         fragmentModel = undefined;
       }
 
-      if (components) {
-        components.dispose();
-      }
-
-      // Set up the viewer and load the new model
       setViewer();
       setupUI();
       await loadModelCheck();
@@ -577,17 +653,19 @@ export function IFCViewer(props: Props) {
 
     loadAndSetup();
     return () => {
-      // Clean up on unmount
-      if (components) {
-        components.dispose();
-      }
-
       if (fragmentModel) {
         fragmentModel.dispose();
+        console.log("fragment disposed 2");
         fragmentModel = undefined;
       }
-
-      worldRef.current = null;
+      if (world) {
+        world.dispose();
+        console.log("dispose world 2");
+      }
+      if (components) {
+        components.dispose();
+        console.log("dispose components 2");
+      }
     };
   }, [props.project]); // Re-run when props.project changes
 

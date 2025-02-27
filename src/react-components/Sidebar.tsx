@@ -1,9 +1,6 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import * as OBC from "@thatopen/components";
-import { FragmentIdMap, FragmentsGroup } from "@thatopen/fragments";
-
 import {
   IProject,
   Project,
@@ -17,11 +14,9 @@ import { SidebarProject } from "./SidebarProject";
 import { SearchBox } from "./SearchBox";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
-import * as THREE from "three";
 
 interface Props {
   projectsManager: ProjectsManager;
-  components: OBC.Components;
 }
 
 const projectsCollection = getCollection<IProject>("/projects");
@@ -35,7 +30,6 @@ export function Sidebar(props: Props) {
     setProjects([...props.projectsManager.projectsList]);
   };
   const navigate = useNavigate();
-  const components: OBC.Components = props.components;
 
   const getFirestoreProjects = async () => {
     const firebaseProjects = await Firestore.getDocs(projectsCollection);
@@ -156,7 +150,6 @@ export function Sidebar(props: Props) {
             props.projectsManager.createProject(item, projectId);
             navigate(`/project/${projectId}`);
           } else if (isTeam(item)) {
-            const fragments = components.get(OBC.FragmentsManager);
             const teamCamera = item.camera;
             const firebaseTeamData = {
               ...item,

@@ -1,25 +1,22 @@
 import * as React from "react";
 import * as OBC from "@thatopen/components";
-import { FragmentIdMap } from "@thatopen/fragments";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { WorldContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
-import { deleteDocument, getCollection, updateDocument } from "../firebase";
+import { deleteDocument, updateDocument } from "../firebase";
 import * as OBCF from "@thatopen/components-front";
 
 interface Props {
   team: Team;
   project: Project;
   projectsManager: ProjectsManager;
-  components: OBC.Components;
   filterTeams: () => void;
 }
 
 export function TeamElement(props: Props) {
   const navigate = useNavigate();
-  const components: OBC.Components = props.components;
 
   props.projectsManager.onTeamDeleted = async (id) => {
     await deleteDocument("/teams", id);
@@ -78,10 +75,10 @@ export function TeamElement(props: Props) {
   };
 
   let modelLoaded: boolean = false;
-  const { world } = React.useContext(WorldContext);
+  const { world, components } = React.useContext(WorldContext);
 
   const onTeamClicked = (team: Team) => {
-    if (world) {
+    if (world && components) {
       const camera = world.camera;
       if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
         throw new Error(
