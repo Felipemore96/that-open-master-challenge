@@ -3,7 +3,6 @@ import * as OBC from "@thatopen/components";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-import { WorldContext } from "./IFCViewer";
 import { useNavigate } from "react-router-dom";
 import { deleteDocument, updateDocument } from "../firebase";
 import * as OBCF from "@thatopen/components-front";
@@ -75,39 +74,38 @@ export function TeamElement(props: Props) {
   };
 
   let modelLoaded: boolean = false;
-  const { world, components } = React.useContext(WorldContext);
+  // const { world, components } = React.useContext(WorldContext);
 
   const onTeamClicked = (team: Team) => {
-    if (world && components) {
-      const camera = world.camera;
-      if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-        throw new Error(
-          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
-        );
-      }
-      modelLoaded = true;
-      const fragments = components.get(OBC.FragmentsManager);
-      const highlighter = components.get(OBCF.Highlighter);
-      const guids = fragments.fragmentIdMapToGuids(
-        highlighter.selection.select
-      );
-
-      if (team.camera) {
-        camera.controls.setLookAt(
-          team.camera.position.x,
-          team.camera.position.y,
-          team.camera.position.z,
-          team.camera.target.x,
-          team.camera.target.y,
-          team.camera.target.z,
-          true
-        );
-      }
-      if (team.ifcGuids && Object.keys(team.ifcGuids).length > 0) {
-        const fragmentIdMap = fragments.guidToFragmentIdMap(team.ifcGuids);
-        highlighter.highlightByID("select", fragmentIdMap, true, false);
-      }
-    }
+    // if (world && components) {
+    //   const camera = world.camera;
+    //   if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
+    //     throw new Error(
+    //       "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
+    //     );
+    //   }
+    //   modelLoaded = true;
+    //   const fragments = components.get(OBC.FragmentsManager);
+    //   const highlighter = components.get(OBCF.Highlighter);
+    //   const guids = fragments.fragmentIdMapToGuids(
+    //     highlighter.selection.select
+    //   );
+    //   if (team.camera) {
+    //     camera.controls.setLookAt(
+    //       team.camera.position.x,
+    //       team.camera.position.y,
+    //       team.camera.position.z,
+    //       team.camera.target.x,
+    //       team.camera.target.y,
+    //       team.camera.target.z,
+    //       true
+    //     );
+    //   }
+    //   if (team.ifcGuids && Object.keys(team.ifcGuids).length > 0) {
+    //     const fragmentIdMap = fragments.guidToFragmentIdMap(team.ifcGuids);
+    //     highlighter.highlightByID("select", fragmentIdMap, true, false);
+    //   }
+    // }
   };
 
   const onSubmitEditedTeam = async (e) => {
