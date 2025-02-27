@@ -8,4 +8,8 @@ export class TeamsCreator extends OBC.Component {
     super(components);
     this.components.add(TeamsCreator.uuid, this);
   }
+
+  addTeam() {
+    console.log("Adding a new team!");
+  }
 }
