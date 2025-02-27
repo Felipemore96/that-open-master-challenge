@@ -5,6 +5,7 @@ import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
 import { FragmentsGroup } from "@thatopen/fragments";
+import { SimpleQTO } from "../bim-components/SimpleQTO";
 
 interface Props {
   project: Project;
@@ -420,17 +421,23 @@ export function IFCViewer(props: Props) {
       });
       const highlighter = components.get(OBCF.Highlighter);
 
-      highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+      highlighter.events.select.onHighlight.add(async (fragmentIdMap) => {
         if (!floatingGrid) return;
         floatingGrid.layout = "second";
         updatePropsTable({ fragmentIdMap });
         propsTable.expanded = false;
+
+        const simpleQto = components.get(SimpleQTO);
+        await simpleQto.sumQuantities(fragmentIdMap);
       });
 
       highlighter.events.select.onClear.add(() => {
         updatePropsTable({ fragmentIdMap: {} });
         if (!floatingGrid) return;
         floatingGrid.layout = "main";
+
+        const simpleQto = components.get(SimpleQTO);
+        simpleQto.resetQuantities();
       });
 
       const search = (e: Event) => {
