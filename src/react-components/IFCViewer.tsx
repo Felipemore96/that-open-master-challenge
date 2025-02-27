@@ -435,6 +435,9 @@ export function IFCViewer(props: Props) {
         updatePropsTable({ fragmentIdMap: {} });
         if (!floatingGrid) return;
         floatingGrid.layout = "main";
+
+        const simpleQto = components.get(SimpleQTO);
+        simpleQto.resetQuantities();
       });
 
       const search = (e: Event) => {
