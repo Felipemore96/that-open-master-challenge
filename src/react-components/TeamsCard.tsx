@@ -9,6 +9,10 @@ import { TeamElement } from "./TeamElement";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
 import { teamTool } from "../bim-components/TeamsCreator/src/Template";
+import {
+  TeamModalData,
+  TeamsCreator,
+} from "../bim-components/TeamsCreator/src/TeamsCreator";
 
 interface Props {
   project: Project;
@@ -25,6 +29,8 @@ export function TeamsCard(props: Props) {
   };
   const components = props.components;
   const teamsContainer = React.useRef<HTMLDivElement>(null);
+  const teamsCreator = components.get(TeamsCreator);
+  teamsCreator.onTeamCreated.add((data) => submitNewTeam(data));
 
   const getFirestoreTeams = async () => {
     const teamsCollection = getCollection<ITeam>("/teams");
@@ -77,21 +83,11 @@ export function TeamsCard(props: Props) {
   // const world = [];
   let modelLoaded: boolean = false;
 
-  const onNewTeam = () => {
-    toggleModal("new-team-modal");
-  };
-
   const onCloseErrorPopup = () => {
     toggleModal("error-popup");
   };
 
-  const onCancelNewTeam = () => {
-    const teamForm = document.getElementById(
-      "new-team-form"
-    ) as HTMLFormElement;
-    teamForm.reset();
-    toggleModal("new-team-modal");
-  };
+  const submitNewTeam = (data: TeamModalData) => {};
 
   const onSubmitNewTeam = async (e: React.FormEvent) => {
     // e.preventDefault();
