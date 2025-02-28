@@ -170,7 +170,6 @@ export function TeamsCard(props: Props) {
 
   return (
     <div className="dashboard-card">
-      <div ref={teamsContainer}></div>
       <div style={{ padding: "15px", height: "100%" }}>
         <div id="teams-header">
           <h4>Teams</h4>
@@ -182,15 +181,16 @@ export function TeamsCard(props: Props) {
               columnGap: 15,
             }}
           >
-            <button
-              onClick={onNewTeam}
+            <div
+              // onClick={onNewTeam}
               id="new-team-btn"
               className="btn-secondary"
+              ref={teamsContainer}
             >
               <span style={{ width: "100%" }} className="material-icons-round">
                 add
               </span>
-            </button>
+            </div>
           </div>
         </div>
         {teams.length > 0 ? (
@@ -206,82 +206,7 @@ export function TeamsCard(props: Props) {
           </h4>
         )}
       </div>
-      <dialog id="new-team-modal">
-        <form id="new-team-form">
-          <h2>New Team</h2>
-          <div className="input-list">
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">apartment</span>Name
-              </label>
-              <input
-                name="teamName"
-                type="text"
-                placeholder="Name of the Company"
-              />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">assignment_ind</span>Role
-              </label>
-              <select name="teamRole">
-                <option>BIM Manager</option>
-                <option>Structural</option>
-                <option>MEP</option>
-                <option>Architect</option>
-                <option>Contractor</option>
-              </select>
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">subject</span>Description
-              </label>
-              <textarea
-                name="teamDescription"
-                cols={30}
-                rows={5}
-                placeholder="General description or the role"
-                defaultValue={""}
-              />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">person</span>Contact
-              </label>
-              <div
-                style={{ display: "flex", flexDirection: "column", rowGap: 2 }}
-              >
-                <input name="contactName" placeholder="Contact Name" />
-                <input name="contactPhone" placeholder="Phone Number" />
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                margin: "10px 0px 10px auto",
-                columnGap: 10,
-              }}
-            >
-              <button
-                onClick={onCancelNewTeam}
-                id="cancel-new-team-btn"
-                type="button"
-                style={{ backgroundColor: "transparent" }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={(e) => onSubmitNewTeam(e)}
-                id="submit-new-team-btn"
-                type="button"
-                style={{ backgroundColor: "rgb(18, 145, 18)" }}
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        </form>
-      </dialog>
+
       <dialog id="error-popup">
         <div id="error-message">
           <p id="err" />
