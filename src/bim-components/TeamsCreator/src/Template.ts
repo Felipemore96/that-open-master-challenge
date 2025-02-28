@@ -1,5 +1,6 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
+import * as OBCF from "@thatopen/components-front";
 import { TeamsCreator } from "./TeamsCreator";
 import { TeamRole } from "../../../class/teams";
 
@@ -46,12 +47,18 @@ export const teamTool = (state: TeamUIState) => {
             <bim-button
               label="Accept"
               @click=${() => {
+                const fragments = components.get(OBC.FragmentsManager);
+                const highlighter = components.get(OBCF.Highlighter);
+                const guids = fragments.fragmentIdMapToGuids(
+                  highlighter.selection.select
+                );
                 const teamValue = {
                   teamName: nameInput.value,
                   teamRole: roleDropdown.value,
                   teamDescription: descriptionInput.value,
                   contactName: contactInput.value,
                   contactPhone: phoneInput.value,
+                  ifcGuids: guids,
                 };
                 teamsCreator.addTeam(teamValue);
                 nameInput.value = "";
