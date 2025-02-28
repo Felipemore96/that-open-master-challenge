@@ -6,6 +6,7 @@ import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
 import { FragmentsGroup } from "@thatopen/fragments";
 import { SimpleQTO } from "../bim-components/SimpleQTO";
+import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
 
 interface Props {
   project: Project;
@@ -135,6 +136,9 @@ export function IFCViewer(props: Props) {
 
       fragmentModel = model;
     });
+
+    const teamsCreator = components.get(TeamsCreator);
+    teamsCreator.world = world;
   };
 
   const processModel = async (model: FragmentsGroup) => {
