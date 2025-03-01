@@ -1,7 +1,7 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 import { TeamsCreator } from "./TeamsCreator";
-import { Team } from "../../../class/teams";
+import { Team, TeamRole } from "../../../class/teams";
 
 export interface TeamUIState {
   components: OBC.Components;
@@ -48,7 +48,7 @@ export const teamTool = (state: TeamUIState) => {
               @click=${() => {
                 const teamValue = {
                   teamName: nameInput.value,
-                  teamRole: roleDropdown.value,
+                  teamRole: roleDropdown.value as unknown as TeamRole,
                   teamDescription: descriptionInput.value,
                   contactName: contactInput.value,
                   contactPhone: phoneInput.value,

@@ -10,7 +10,7 @@ import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
 import { teamTool } from "../bim-components/TeamsCreator/src/Template";
 import {
-  TeamModalData,
+  TeamCreatorData,
   TeamsCreator,
 } from "../bim-components/TeamsCreator/src/TeamsCreator";
 
@@ -87,7 +87,48 @@ export function TeamsCard(props: Props) {
     toggleModal("error-popup");
   };
 
-  const submitNewTeam = (data: TeamModalData) => {};
+  const submitNewTeam = async (data: TeamCreatorData) => {
+    const currentProjectId = props.project.id;
+    modelLoaded = true;
+
+    const teamData: ITeam = {
+      teamName: data.teamName as string,
+      teamRole: data.teamRole as unknown as TeamRole,
+      teamDescription: data.teamDescription as string,
+      contactName: data.contactName as string,
+      contactPhone: data.contactName as string,
+      teamProjectId: currentProjectId,
+      ifcGuids: data.ifcGuids,
+      camera: data.camera,
+    };
+    try {
+      const teamsCollection = getCollection<ITeam>("/teams");
+      const firebaseTeamData = {
+        ...teamData,
+        camera: data.camera
+          ? {
+              position: {
+                x: data.camera.position.x,
+                y: data.camera.position.y,
+                z: data.camera.position.z,
+              },
+              target: {
+                x: data.camera.target.x,
+                y: data.camera.target.y,
+                z: data.camera.target.z,
+              },
+            }
+          : undefined,
+      };
+      const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
+      const teamId = docRef.id;
+      const team = props.projectsManager.createTeam(teamData, teamId);
+      filterTeams();
+    } catch (err) {
+      const errorMessage = document.getElementById("err") as HTMLElement;
+      errorMessage.textContent = err;
+    }
+  };
 
   const onSubmitNewTeam = async (e: React.FormEvent) => {
     // e.preventDefault();
@@ -97,7 +138,7 @@ export function TeamsCard(props: Props) {
     // const formData = new FormData(teamForm);
     // const currentProjectId = props.project.id;
     // let guids: string[] = [];
-    // let teamCamera:
+    // let data.camera:
     //   | { position: THREE.Vector3; target: THREE.Vector3 }
     //   | undefined = undefined;
     // if (world && components) {
@@ -115,7 +156,7 @@ export function TeamsCard(props: Props) {
     //   camera.controls.getPosition(position);
     //   const target = new THREE.Vector3();
     //   camera.controls.getTarget(target);
-    //   teamCamera = { position, target };
+    //   data.camera = { position, target };
     // }
     // const teamData: ITeam = {
     //   teamName: formData.get("teamName") as string,
@@ -125,23 +166,23 @@ export function TeamsCard(props: Props) {
     //   contactPhone: formData.get("contactPhone") as string,
     //   teamProjectId: currentProjectId,
     //   ifcGuids: guids,
-    //   camera: teamCamera,
+    //   camera: data.camera,
     // };
     // try {
     //   const teamsCollection = getCollection<ITeam>("/teams");
     //   const firebaseTeamData = {
     //     ...teamData,
-    //     camera: teamCamera
+    //     camera: data.camera
     //       ? {
     //           position: {
-    //             x: teamCamera.position.x,
-    //             y: teamCamera.position.y,
-    //             z: teamCamera.position.z,
+    //             x: data.camera.position.x,
+    //             y: data.camera.position.y,
+    //             z: data.camera.position.z,
     //           },
     //           target: {
-    //             x: teamCamera.target.x,
-    //             y: teamCamera.target.y,
-    //             z: teamCamera.target.z,
+    //             x: data.camera.target.x,
+    //             y: data.camera.target.y,
+    //             z: data.camera.target.z,
     //           },
     //         }
     //       : undefined,

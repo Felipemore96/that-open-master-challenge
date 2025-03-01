@@ -1,22 +1,37 @@
 import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
 import * as THREE from "three";
-import { Team } from "../../../class/teams";
+import { ITeam, TeamRole } from "../../../class/teams";
 
-const roles = ["BIM Manager", "Structural", "MEP", "Architect", "Contractor"];
+// const roles = ["BIM Manager", "Structural", "MEP", "Architect", "Contractor"];
 
 export interface TeamModalData {
   teamName: string;
-  teamRole: typeof roles;
+  teamRole: TeamRole;
   teamDescription: string;
   contactName: string;
   contactPhone: string;
 }
 
+export interface TeamCreatorData {
+  teamName: string;
+  teamRole: TeamRole;
+  teamDescription: string;
+  contactName: string;
+  contactPhone: string;
+  ifcGuids: string[];
+  camera:
+    | { position: THREE.Vector3; target: THREE.Vector3 }
+    | {
+        position: { x: number; y: number; z: number };
+        target: { x: number; y: number; z: number };
+      };
+}
+
 export class TeamsCreator extends OBC.Component {
   static uuid = "9c51ff2a-2a8a-4b1d-8253-43854876c041";
   enabled = true;
-  onTeamCreated = new OBC.Event<Team>();
+  onTeamCreated = new OBC.Event<TeamCreatorData>();
 
   private _world: OBC.World;
 
