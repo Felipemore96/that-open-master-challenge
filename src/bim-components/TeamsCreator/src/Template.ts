@@ -70,6 +70,11 @@ export const teamTool = (state: TeamUIState) => {
     `;
   });
 
+  const editTeamModal = BUI.Component.create<HTMLDialogElement>(() => {
+    return BUI.html`
+    `;
+  });
+
   document.body.appendChild(newTeamModal);
 
   const newTeamButton = BUI.Component.create<BUI.Button>(() => {

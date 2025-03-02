@@ -80,39 +80,33 @@ export function TeamElement(props: Props) {
   let modelLoaded: boolean = false;
 
   const onSubmitEditedTeam = async (e) => {
-    // e.preventDefault();
-    // const editTeamForm = document.getElementById(
-    //   `edit-team-form-${props.team.id}`
-    // ) as HTMLFormElement;
-    // const formData = new FormData(editTeamForm);
-    // const newTeamData: ITeam = {
-    //   teamName: formData.get("team-name") as string,
-    //   teamRole: formData.get("team-role") as TeamRole,
-    //   teamDescription: formData.get("team-description") as string,
-    //   contactName: formData.get("contact-name") as string,
-    //   contactPhone: formData.get("contact-phone") as string,
-    //   teamProjectId: props.team.teamProjectId,
-    //   id: props.team.id,
-    // };
-    // try {
-    //   const updatedTeam = props.projectsManager.editTeam(
-    //     {
-    //       ...newTeamData,
-    //       ifcGuids: props.team.ifcGuids,
-    //       camera: props.team.camera,
-    //     },
-    //     props.team
-    //   );
-    //   console.log(updatedTeam);
-    //   editTeamForm.reset();
-    //   props.filterTeams();
-    //   toggleModal(`edit-info-modal-${props.team.id}`);
-    //   await updateDocument<ITeam>("/teams", props.team.id, newTeamData);
-    // } catch (err) {
-    //   const errorMessage = document.getElementById("err") as HTMLElement;
-    //   errorMessage.textContent = err;
-    //   toggleModal("error-popup");
-    // }
+    e.preventDefault();
+    const editTeamForm = document.getElementById(
+      `edit-team-form-${props.team.id}`
+    ) as HTMLFormElement;
+    const formData = new FormData(editTeamForm);
+    const newTeamData: ITeam = {
+      teamName: formData.get("team-name") as string,
+      teamRole: formData.get("team-role") as TeamRole,
+      teamDescription: formData.get("team-description") as string,
+      contactName: formData.get("contact-name") as string,
+      contactPhone: formData.get("contact-phone") as string,
+      teamProjectId: props.team.teamProjectId,
+      id: props.team.id,
+      ifcGuids: props.team.ifcGuids,
+      camera: props.team.camera,
+    };
+    try {
+      props.projectsManager.editTeam(newTeamData, props.team);
+      editTeamForm.reset();
+      props.filterTeams();
+      toggleModal(`edit-info-modal-${props.team.id}`);
+      await updateDocument<ITeam>("/teams", props.team.id, newTeamData);
+    } catch (err) {
+      const errorMessage = document.getElementById("err") as HTMLElement;
+      errorMessage.textContent = err;
+      toggleModal("error-popup");
+    }
   };
 
   return (
