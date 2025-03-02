@@ -6,16 +6,20 @@ import { ProjectsManager } from "../class/projectsManager";
 import { useNavigate } from "react-router-dom";
 import { deleteDocument, updateDocument } from "../firebase";
 import * as OBCF from "@thatopen/components-front";
+import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
 
 interface Props {
   team: Team;
   project: Project;
   projectsManager: ProjectsManager;
   filterTeams: () => void;
+  components: OBC.Components;
 }
 
 export function TeamElement(props: Props) {
   const navigate = useNavigate();
+  const components = props.components;
+  const teamsCreator = components.get(TeamsCreator);
 
   props.projectsManager.onTeamDeleted = async (id) => {
     await deleteDocument("/teams", id);
@@ -75,77 +79,48 @@ export function TeamElement(props: Props) {
 
   let modelLoaded: boolean = false;
 
-  const onTeamClicked = (team: Team) => {
-    // if (world && components) {
-    //   const camera = world.camera;
-    //   if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-    //     throw new Error(
-    //       "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
-    //     );
-    //   }
-    //   modelLoaded = true;
-    //   const fragments = components.get(OBC.FragmentsManager);
-    //   const highlighter = components.get(OBCF.Highlighter);
-    //   const guids = fragments.fragmentIdMapToGuids(
-    //     highlighter.selection.select
-    //   );
-    //   if (team.camera) {
-    //     camera.controls.setLookAt(
-    //       team.camera.position.x,
-    //       team.camera.position.y,
-    //       team.camera.position.z,
-    //       team.camera.target.x,
-    //       team.camera.target.y,
-    //       team.camera.target.z,
-    //       true
-    //     );
-    //   }
-    //   if (team.ifcGuids && Object.keys(team.ifcGuids).length > 0) {
-    //     const fragmentIdMap = fragments.guidToFragmentIdMap(team.ifcGuids);
-    //     highlighter.highlightByID("select", fragmentIdMap, true, false);
-    //   }
-    // }
-  };
-
   const onSubmitEditedTeam = async (e) => {
-    e.preventDefault();
-    const editTeamForm = document.getElementById(
-      `edit-team-form-${props.team.id}`
-    ) as HTMLFormElement;
-    const formData = new FormData(editTeamForm);
-    const newTeamData: ITeam = {
-      teamName: formData.get("team-name") as string,
-      teamRole: formData.get("team-role") as TeamRole,
-      teamDescription: formData.get("team-description") as string,
-      contactName: formData.get("contact-name") as string,
-      contactPhone: formData.get("contact-phone") as string,
-      teamProjectId: props.team.teamProjectId,
-      id: props.team.id,
-    };
-    try {
-      const updatedTeam = props.projectsManager.editTeam(
-        {
-          ...newTeamData,
-          ifcGuids: props.team.ifcGuids,
-          camera: props.team.camera,
-        },
-        props.team
-      );
-      console.log(updatedTeam);
-      editTeamForm.reset();
-      props.filterTeams();
-      toggleModal(`edit-info-modal-${props.team.id}`);
-      await updateDocument<ITeam>("/teams", props.team.id, newTeamData);
-    } catch (err) {
-      const errorMessage = document.getElementById("err") as HTMLElement;
-      errorMessage.textContent = err;
-      toggleModal("error-popup");
-    }
+    // e.preventDefault();
+    // const editTeamForm = document.getElementById(
+    //   `edit-team-form-${props.team.id}`
+    // ) as HTMLFormElement;
+    // const formData = new FormData(editTeamForm);
+    // const newTeamData: ITeam = {
+    //   teamName: formData.get("team-name") as string,
+    //   teamRole: formData.get("team-role") as TeamRole,
+    //   teamDescription: formData.get("team-description") as string,
+    //   contactName: formData.get("contact-name") as string,
+    //   contactPhone: formData.get("contact-phone") as string,
+    //   teamProjectId: props.team.teamProjectId,
+    //   id: props.team.id,
+    // };
+    // try {
+    //   const updatedTeam = props.projectsManager.editTeam(
+    //     {
+    //       ...newTeamData,
+    //       ifcGuids: props.team.ifcGuids,
+    //       camera: props.team.camera,
+    //     },
+    //     props.team
+    //   );
+    //   console.log(updatedTeam);
+    //   editTeamForm.reset();
+    //   props.filterTeams();
+    //   toggleModal(`edit-info-modal-${props.team.id}`);
+    //   await updateDocument<ITeam>("/teams", props.team.id, newTeamData);
+    // } catch (err) {
+    //   const errorMessage = document.getElementById("err") as HTMLElement;
+    //   errorMessage.textContent = err;
+    //   toggleModal("error-popup");
+    // }
   };
 
   return (
     <div>
-      <div className="team-card" onClick={() => onTeamClicked(props.team)}>
+      <div
+        className="team-card"
+        onClick={() => teamsCreator.highlightTeam(props.team)}
+      >
         <div>
           <div
             style={{

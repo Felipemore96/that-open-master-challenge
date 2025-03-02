@@ -9,10 +9,7 @@ import { TeamElement } from "./TeamElement";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
 import { teamTool } from "../bim-components/TeamsCreator/src/Template";
-import {
-  TeamCreatorData,
-  TeamsCreator,
-} from "../bim-components/TeamsCreator/src/TeamsCreator";
+import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
 
 interface Props {
   project: Project;
@@ -30,9 +27,10 @@ export function TeamsCard(props: Props) {
   const components = props.components;
   const teamsContainer = React.useRef<HTMLDivElement>(null);
   const teamsCreator = components.get(TeamsCreator);
+  const currentProjectId = props.project.id;
 
   React.useEffect(() => {
-    const handleTeamCreated = (data: TeamCreatorData) => submitNewTeam(data);
+    const handleTeamCreated = (data: ITeam) => submitNewTeam(data);
     teamsCreator.onTeamCreated.add(handleTeamCreated);
 
     return () => {
@@ -65,6 +63,10 @@ export function TeamsCard(props: Props) {
     getFirestoreTeams();
     const teamsButton = teamTool({ components });
     teamsContainer.current?.appendChild(teamsButton);
+
+    teamsCreator.onDisposed.add(() => {
+      teamsButton.remove();
+    });
   }, []);
 
   const filterTeams = () => {
@@ -86,6 +88,7 @@ export function TeamsCard(props: Props) {
         project={props.project}
         projectsManager={props.projectsManager}
         filterTeams={filterTeams}
+        components={components}
       />
     );
   });
@@ -94,9 +97,7 @@ export function TeamsCard(props: Props) {
     toggleModal("error-popup");
   };
 
-  const submitNewTeam = async (data: TeamCreatorData) => {
-    const currentProjectId = props.project.id;
-
+  const submitNewTeam = async (data: ITeam) => {
     const teamData: ITeam = {
       teamName: data.teamName as string,
       teamRole: data.teamRole as unknown as TeamRole,
@@ -104,8 +105,8 @@ export function TeamsCard(props: Props) {
       contactName: data.contactName as string,
       contactPhone: data.contactName as string,
       teamProjectId: currentProjectId as string,
-      camera: data.camera ? JSON.stringify(data.camera) : undefined,
-      ifcGuids: data.ifcGuids ? JSON.stringify(data.ifcGuids) : undefined,
+      camera: data.camera as string,
+      ifcGuids: data.ifcGuids as string,
     };
     try {
       const teamsCollection = getCollection<ITeam>("/teams");

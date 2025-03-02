@@ -1,7 +1,7 @@
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 import { TeamsCreator } from "./TeamsCreator";
-import { Team, TeamRole } from "../../../class/teams";
+import { TeamRole } from "../../../class/teams";
 
 export interface TeamUIState {
   components: OBC.Components;
@@ -13,13 +13,16 @@ export const teamTool = (state: TeamUIState) => {
 
   const nameInput = document.createElement("bim-text-input");
   nameInput.label = "Name of the Company";
-  const roleDropdown = document.createElement("bim-dropdown");
-  roleDropdown.label = "Role";
-  const roles = ["BIM Manager", "Structural", "MEP", "Architect", "Contractor"];
-  roles.forEach((role) => {
-    const option = document.createElement("bim-option");
-    option.label = role;
-    roleDropdown.appendChild(option);
+  const roleDropdown = BUI.Component.create<BUI.Dropdown>(() => {
+    return BUI.html`
+      <bim-dropdown label="Role">
+        <bim-option label="BIM Manager"></bim-option>
+        <bim-option label="Structural"></bim-option>
+        <bim-option label="MEP"></bim-option>
+        <bim-option label="Architect"></bim-option>
+        <bim-option label="Contractor"></bim-option>
+      </bim-dropdown>
+    `;
   });
   const descriptionInput = document.createElement("bim-text-input");
   descriptionInput.label = "General description or the role";
@@ -31,7 +34,7 @@ export const teamTool = (state: TeamUIState) => {
   const newTeamModal = BUI.Component.create<HTMLDialogElement>(() => {
     return BUI.html`
       <dialog id="new-team-modal">
-        <bim-panel>
+        <bim-panel
           <bim-panel-section label="New Team" fixed>
             ${nameInput}
             ${roleDropdown}
@@ -48,7 +51,7 @@ export const teamTool = (state: TeamUIState) => {
               @click=${() => {
                 const teamValue = {
                   teamName: nameInput.value,
-                  teamRole: roleDropdown.value as unknown as TeamRole,
+                  teamRole: roleDropdown.value[0] as TeamRole,
                   teamDescription: descriptionInput.value,
                   contactName: contactInput.value,
                   contactPhone: phoneInput.value,
@@ -69,13 +72,19 @@ export const teamTool = (state: TeamUIState) => {
 
   document.body.appendChild(newTeamModal);
 
-  return BUI.Component.create<BUI.Button>(() => {
+  const newTeamButton = BUI.Component.create<BUI.Button>(() => {
     return BUI.html`
     <bim-button
-        @click=${() => newTeamModal.showModal()}
-        icon="pajamas:todo-done"
-        tooltip-tittle="Teams"
+    @click=${() => newTeamModal.showModal()}
+    icon="pajamas:todo-done"
+    tooltip-tittle="Teams"
     ></bim-button>
     `;
   });
+
+  teamsCreator.onDisposed.add(() => {
+    newTeamModal.remove();
+  });
+
+  return newTeamButton;
 };

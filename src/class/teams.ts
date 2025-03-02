@@ -18,8 +18,16 @@ export interface ITeam {
   contactPhone: string;
   teamProjectId: string;
   id?: string;
-  ifcGuids?: string;
-  camera?: string;
+  ifcGuids: string;
+  camera: string;
+}
+
+export interface TeamModalData {
+  teamName: string;
+  teamRole: TeamRole;
+  teamDescription: string;
+  contactName: string;
+  contactPhone: string;
 }
 
 // Class representing a team
@@ -33,8 +41,8 @@ export class Team implements ITeam {
   teamProjectId: string;
 
   id: string;
-  ifcGuids?: string;
-  camera?: string;
+  ifcGuids: string;
+  camera: string;
 
   constructor(data: ITeam, id = uuidv4()) {
     for (const key in data) {
