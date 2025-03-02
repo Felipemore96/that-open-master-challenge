@@ -26,7 +26,7 @@ export class TeamsCreator extends OBC.Component implements OBC.Disposable {
   }
 
   addTeam(data: TeamModalData) {
-    if (!this.enabled) return;
+    // if (!this.enabled) return;
 
     const fragments = this.components.get(OBC.FragmentsManager);
     const highlighter = this.components.get(OBCF.Highlighter);
@@ -57,7 +57,7 @@ export class TeamsCreator extends OBC.Component implements OBC.Disposable {
   }
 
   async highlightTeam(team: ITeam) {
-    if (!this.enabled) return;
+    // if (!this.enabled) return;
 
     const fixesGuids = JSON.parse(team.ifcGuids);
     const fixedCamera = JSON.parse(team.camera);

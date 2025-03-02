@@ -5,8 +5,9 @@ import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
 import { FragmentsGroup } from "@thatopen/fragments";
-import { SimpleQTO } from "../bim-components/SimpleQTO";
+import { SimpleQTO } from "../bim-components/SimpleQTO/src/SimpleQTO";
 import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
+import { qtoTool } from "../bim-components/SimpleQTO/src/Template";
 
 interface Props {
   project: Project;
@@ -26,6 +27,8 @@ export function IFCViewer(props: Props) {
       components: components!,
       classifications: [],
     });
+
+  const floatingGridRef = React.useRef<BUI.Grid | null>(null);
 
   async function loadModelCheck() {
     let propsRoute: string | undefined;
@@ -342,6 +345,8 @@ export function IFCViewer(props: Props) {
       `;
     });
 
+    floatingGridRef.current = floatingGrid;
+
     const elementPropertyPanel = BUI.Component.create<BUI.Panel>(() => {
       const [propsTable, updatePropsTable] = CUI.tables.elementProperties({
         components,
@@ -412,6 +417,8 @@ export function IFCViewer(props: Props) {
     });
 
     const onClassifier = () => {
+      if (!components || !fragmentModel) return;
+
       if (!floatingGrid) return;
       if (floatingGrid.layout !== "classifier") {
         floatingGrid.layout = "classifier";
@@ -431,6 +438,38 @@ export function IFCViewer(props: Props) {
             >
                 <bim-label>Classifications</bim-label>
                 ${classificationsTree}
+            </bim-panel-section>
+        </bim-panel>
+      `;
+    });
+
+    const onShowQuantity = async () => {
+      if (!components || !fragmentModel) return;
+
+      const highlighter = components.get(OBCF.Highlighter);
+      const selection = highlighter.selection.select;
+      const simpleQto = components.get(SimpleQTO);
+      await simpleQto.sumQuantities(selection);
+
+      if (!floatingGrid) return;
+      if (floatingGrid.layout !== "qtos") {
+        floatingGrid.layout = "qtos";
+      } else {
+        floatingGrid.layout = "main";
+      }
+    };
+
+    const qtoTable = qtoTool({ components });
+    const qtoPanel = BUI.Component.create<BUI.Panel>(() => {
+      return BUI.html`
+        <bim-panel>
+            <bim-panel-section
+             name="qto"
+             label="Quantities"
+             icon="solar:document-bold"
+             fixed
+            >
+                ${qtoTable}
             </bim-panel-section>
         </bim-panel>
       `;
@@ -507,6 +546,11 @@ export function IFCViewer(props: Props) {
                     icon="clarity:list-line"
                     @click=${onShowProperty}
                 ></bim-button>
+                <bim-button 
+                    tooltip-title="Quantities" 
+                    icon="mdi:summation"
+                    @click=${onShowQuantity}
+                ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Groups">
                 <bim-button 
@@ -563,6 +607,17 @@ export function IFCViewer(props: Props) {
           classifierPanel,
         },
       },
+      qtos: {
+        template: `
+        "empty qtoPanel" 1fr
+        "toolbar toolbar" auto
+        /1fr 20rem
+        `,
+        elements: {
+          toolbar,
+          qtoPanel,
+        },
+      },
     };
 
     floatingGrid.layout = "main";
@@ -579,6 +634,10 @@ export function IFCViewer(props: Props) {
 
       if (components) {
         components.dispose();
+      }
+
+      if (floatingGridRef.current) {
+        floatingGridRef.current.layout = "main";
       }
 
       setViewer();

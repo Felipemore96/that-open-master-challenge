@@ -84,6 +84,7 @@ export const teamTool = (state: TeamUIState) => {
 
   teamsCreator.onDisposed.add(() => {
     newTeamModal.remove();
+    console.log("TeamsCreator disposed");
   });
 
   return newTeamButton;
