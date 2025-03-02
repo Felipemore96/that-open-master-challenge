@@ -74,7 +74,6 @@ export function TeamElement(props: Props) {
   };
 
   let modelLoaded: boolean = false;
-  // const { world, components } = React.useContext(WorldContext);
 
   const onTeamClicked = (team: Team) => {
     // if (world && components) {

@@ -126,7 +126,6 @@ export function IFCViewer(props: Props) {
 
       if (model.hasProperties) {
         await processModel(model);
-        // setWorld(world);
       }
 
       // for (const fragment of model.items) {
@@ -573,12 +572,13 @@ export function IFCViewer(props: Props) {
 
   React.useEffect(() => {
     const loadAndSetup = async () => {
-      if (!components) return;
-      console.log("load and setup");
-
       if (fragmentModel) {
         fragmentModel.dispose();
         fragmentModel = undefined;
+      }
+
+      if (components) {
+        components.dispose();
       }
 
       setViewer();
@@ -587,14 +587,18 @@ export function IFCViewer(props: Props) {
     };
 
     loadAndSetup();
+
     return () => {
+      if (components) {
+        components.dispose();
+      }
+
       if (fragmentModel) {
         fragmentModel.dispose();
-        console.log("fragment disposed 2");
         fragmentModel = undefined;
       }
     };
-  }, [props.project]); // Re-run when props.project changes
+  }, [props.project.id]); // Re-run when props.project changes
 
   return (
     <bim-viewport

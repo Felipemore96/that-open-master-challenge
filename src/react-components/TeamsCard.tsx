@@ -30,7 +30,15 @@ export function TeamsCard(props: Props) {
   const components = props.components;
   const teamsContainer = React.useRef<HTMLDivElement>(null);
   const teamsCreator = components.get(TeamsCreator);
-  teamsCreator.onTeamCreated.add((data) => submitNewTeam(data));
+
+  React.useEffect(() => {
+    const handleTeamCreated = (data: TeamCreatorData) => submitNewTeam(data);
+    teamsCreator.onTeamCreated.add(handleTeamCreated);
+
+    return () => {
+      teamsCreator.onTeamCreated.remove(handleTeamCreated);
+    };
+  }, [teamsCreator]);
 
   const getFirestoreTeams = async () => {
     const teamsCollection = getCollection<ITeam>("/teams");
@@ -55,6 +63,8 @@ export function TeamsCard(props: Props) {
 
   React.useEffect(() => {
     getFirestoreTeams();
+    const teamsButton = teamTool({ components });
+    teamsContainer.current?.appendChild(teamsButton);
   }, []);
 
   const filterTeams = () => {
@@ -80,16 +90,12 @@ export function TeamsCard(props: Props) {
     );
   });
 
-  // const world = [];
-  let modelLoaded: boolean = false;
-
   const onCloseErrorPopup = () => {
     toggleModal("error-popup");
   };
 
   const submitNewTeam = async (data: TeamCreatorData) => {
     const currentProjectId = props.project.id;
-    modelLoaded = true;
 
     const teamData: ITeam = {
       teamName: data.teamName as string,
@@ -97,113 +103,21 @@ export function TeamsCard(props: Props) {
       teamDescription: data.teamDescription as string,
       contactName: data.contactName as string,
       contactPhone: data.contactName as string,
-      teamProjectId: currentProjectId,
-      ifcGuids: data.ifcGuids,
-      camera: data.camera,
+      teamProjectId: currentProjectId as string,
+      camera: data.camera ? JSON.stringify(data.camera) : undefined,
+      ifcGuids: data.ifcGuids ? JSON.stringify(data.ifcGuids) : undefined,
     };
     try {
       const teamsCollection = getCollection<ITeam>("/teams");
-      const firebaseTeamData = {
-        ...teamData,
-        camera: data.camera
-          ? {
-              position: {
-                x: data.camera.position.x,
-                y: data.camera.position.y,
-                z: data.camera.position.z,
-              },
-              target: {
-                x: data.camera.target.x,
-                y: data.camera.target.y,
-                z: data.camera.target.z,
-              },
-            }
-          : undefined,
-      };
-      const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
+      const docRef = await Firestore.addDoc(teamsCollection, teamData);
       const teamId = docRef.id;
-      const team = props.projectsManager.createTeam(teamData, teamId);
+      props.projectsManager.createTeam(teamData, teamId);
       filterTeams();
     } catch (err) {
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;
     }
   };
-
-  const onSubmitNewTeam = async (e: React.FormEvent) => {
-    // e.preventDefault();
-    // const teamForm = document.getElementById(
-    //   "new-team-form"
-    // ) as HTMLFormElement;
-    // const formData = new FormData(teamForm);
-    // const currentProjectId = props.project.id;
-    // let guids: string[] = [];
-    // let data.camera:
-    //   | { position: THREE.Vector3; target: THREE.Vector3 }
-    //   | undefined = undefined;
-    // if (world && components) {
-    //   const camera = world.camera;
-    //   if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-    //     throw new Error(
-    //       "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
-    //     );
-    //   }
-    //   modelLoaded = true;
-    //   const fragments = components.get(OBC.FragmentsManager);
-    //   const highlighter = components.get(OBCF.Highlighter);
-    //   guids = fragments.fragmentIdMapToGuids(highlighter.selection.select);
-    //   const position = new THREE.Vector3();
-    //   camera.controls.getPosition(position);
-    //   const target = new THREE.Vector3();
-    //   camera.controls.getTarget(target);
-    //   data.camera = { position, target };
-    // }
-    // const teamData: ITeam = {
-    //   teamName: formData.get("teamName") as string,
-    //   teamRole: formData.get("teamRole") as TeamRole,
-    //   teamDescription: formData.get("teamDescription") as string,
-    //   contactName: formData.get("contactName") as string,
-    //   contactPhone: formData.get("contactPhone") as string,
-    //   teamProjectId: currentProjectId,
-    //   ifcGuids: guids,
-    //   camera: data.camera,
-    // };
-    // try {
-    //   const teamsCollection = getCollection<ITeam>("/teams");
-    //   const firebaseTeamData = {
-    //     ...teamData,
-    //     camera: data.camera
-    //       ? {
-    //           position: {
-    //             x: data.camera.position.x,
-    //             y: data.camera.position.y,
-    //             z: data.camera.position.z,
-    //           },
-    //           target: {
-    //             x: data.camera.target.x,
-    //             y: data.camera.target.y,
-    //             z: data.camera.target.z,
-    //           },
-    //         }
-    //       : undefined,
-    //   };
-    //   const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
-    //   const teamId = docRef.id;
-    //   const team = props.projectsManager.createTeam(teamData, teamId);
-    //   teamForm.reset();
-    //   toggleModal("new-team-modal");
-    //   filterTeams();
-    // } catch (err) {
-    //   const errorMessage = document.getElementById("err") as HTMLElement;
-    //   errorMessage.textContent = err;
-    //   toggleModal("error-popup");
-    // }
-  };
-
-  React.useEffect(() => {
-    const teamsButton = teamTool({ components });
-    teamsContainer.current?.appendChild(teamsButton);
-  }, []);
 
   return (
     <div className="dashboard-card">
