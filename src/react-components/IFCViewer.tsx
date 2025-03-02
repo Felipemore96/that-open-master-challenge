@@ -310,29 +310,29 @@ export function IFCViewer(props: Props) {
     hider.set(true);
   };
 
-  const onShowProperty = async () => {
-    if (!components) return;
-    if (!fragmentModel) return;
+  // const getProperties = async () => {
+  //   if (!components) return;
+  //   if (!fragmentModel) return;
 
-    const highlighter = components.get(OBCF.Highlighter);
-    const selection = highlighter.selection.select;
-    const indexer = components.get(OBC.IfcRelationsIndexer);
-    for (const fragmentID in selection) {
-      const expressIDs = selection[fragmentID];
-      for (const id of Array.from(expressIDs)) {
-        const psets = indexer.getEntityRelations(
-          fragmentModel,
-          id,
-          "ContainedInStructure"
-        );
-        if (psets) {
-          for (const expressId of psets) {
-            const prop = await fragmentModel.getProperties(expressId);
-          }
-        }
-      }
-    }
-  };
+  //   const highlighter = components.get(OBCF.Highlighter);
+  //   const selection = highlighter.selection.select;
+  //   const indexer = components.get(OBC.IfcRelationsIndexer);
+  //   for (const fragmentID in selection) {
+  //     const expressIDs = selection[fragmentID];
+  //     for (const id of Array.from(expressIDs)) {
+  //       const psets = indexer.getEntityRelations(
+  //         fragmentModel,
+  //         id,
+  //         "ContainedInStructure"
+  //       );
+  //       if (psets) {
+  //         for (const expressId of psets) {
+  //           const prop = await fragmentModel.getProperties(expressId);
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
 
   const setupUI = () => {
     const viewerContainer = document.getElementById("viewer-container");
@@ -356,7 +356,7 @@ export function IFCViewer(props: Props) {
 
       highlighter.events.select.onHighlight.add(async (fragmentIdMap) => {
         if (!floatingGrid) return;
-        floatingGrid.layout = "second";
+        floatingGrid.layout = "main";
         updatePropsTable({ fragmentIdMap });
         propsTable.expanded = false;
 
@@ -415,6 +415,17 @@ export function IFCViewer(props: Props) {
         </bim-panel>
       `;
     });
+
+    const onShowProperty = () => {
+      if (!components || !fragmentModel) return;
+
+      if (!floatingGrid) return;
+      if (floatingGrid.layout !== "second") {
+        floatingGrid.layout = "second";
+      } else {
+        floatingGrid.layout = "main";
+      }
+    };
 
     const onClassifier = () => {
       if (!components || !fragmentModel) return;

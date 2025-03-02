@@ -15,6 +15,16 @@ export const qtoTool = (state: QTOUIState) => {
           <bim-table></bim-table>
       `;
   });
+
+  qtoTable.dataTransform = {
+    Value: (value: string | number | boolean) => {
+      if (typeof value === "number") {
+        return value.toFixed(2);
+      }
+      return value;
+    },
+  };
+
   simpleQto.table = qtoTable;
 
   // simpleQto.onDisposed.add(() => {
