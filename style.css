@@ -469,3 +469,12 @@ bim-panel {
     margin-block: 10px;
   }
 }
+
+.router-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.router-link:hover {
+  text-decoration: none;
+}
