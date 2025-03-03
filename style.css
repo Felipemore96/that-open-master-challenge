@@ -333,6 +333,10 @@ select:focus {
 .homepage {
   width: 100vw;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .homepage-header {
@@ -352,13 +356,16 @@ select:focus {
 
 .projects-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
+  padding: 15px;
   width: 100%;
-  height: 75%;
+  max-width: 1200px;
+  min-height: 60vh;
   overflow-y: auto;
   background: var(--background-100);
-  padding: 15px;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 #homepage-new-project-btn {
@@ -369,23 +376,96 @@ select:focus {
 
 .homepage-project-card {
   background-color: var(--background-200);
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 100px);
-  padding: 15px;
-  max-width: 25vw;
+  padding: 20px;
+  max-width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  color: inherit;
+  text-decoration: none;
+}
+
+.homepage-project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .homepage-card-content {
   display: flex;
   flex-direction: column;
-  row-gap: 10px;
-  align-items: start;
+  row-gap: 15px;
+}
+
+.homepage-card-property {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--background-100);
+}
+
+.homepage-card-property:last-child {
+  border-bottom: none;
+}
+
+.homepage-card-property h5 {
+  margin: 0;
   font-size: var(--font-base);
-  padding: 8px;
+  color: #969696;
+}
+
+#project-name {
+  font-size: var(--font-2xl);
+  margin: 0;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.progress-label {
+  font-size: var(--font-sm);
+  color: #969696;
+}
+
+.progress-track {
+  background-color: #404040;
+  border-radius: 9999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background-color: var(--primary-300);
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.progress-percentage {
+  font-size: var(--font-sm);
+  color: var(--primary);
+  text-align: right;
 }
 
 bim-option {
   padding: 4px;
+}
+
+bim-panel {
+  bim-text-input,
+  bim-dropdown,
+  bim-button {
+    margin-inline: 20px;
+    margin-block: 10px;
+  }
 }
