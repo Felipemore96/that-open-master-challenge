@@ -67,6 +67,10 @@ export function TeamsCard(props: Props) {
     teamsCreator.onDisposed.add(() => {
       teamsButton.remove();
     });
+
+    return () => {
+      teamsButton.remove();
+    };
   }, []);
 
   const filterTeams = () => {
@@ -133,16 +137,7 @@ export function TeamsCard(props: Props) {
               columnGap: 15,
             }}
           >
-            <div
-              // onClick={onNewTeam}
-              id="new-team-btn"
-              className="btn-secondary"
-              ref={teamsContainer}
-            >
-              <span style={{ width: "100%" }} className="material-icons-round">
-                add
-              </span>
-            </div>
+            <div id="new-team-btn" ref={teamsContainer}></div>
           </div>
         </div>
         {teams.length > 0 ? (

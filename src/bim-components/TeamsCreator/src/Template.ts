@@ -81,14 +81,16 @@ export const teamTool = (state: TeamUIState) => {
     return BUI.html`
     <bim-button
     @click=${() => newTeamModal.showModal()}
-    icon="pajamas:todo-done"
+    icon="pajamas:plus"
     tooltip-tittle="Teams"
+    class="btn-secondary"
     ></bim-button>
     `;
   });
 
   teamsCreator.onDisposed.add(() => {
     newTeamModal.remove();
+    newTeamButton.remove();
     console.log("TeamsCreator disposed");
   });
 
