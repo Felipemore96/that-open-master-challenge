@@ -3,9 +3,7 @@ import * as OBC from "@thatopen/components";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-import { useNavigate } from "react-router-dom";
 import { deleteDocument, updateDocument } from "../firebase";
-import * as OBCF from "@thatopen/components-front";
 import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
 
 interface Props {
@@ -17,7 +15,6 @@ interface Props {
 }
 
 export function TeamElement(props: Props) {
-  const navigate = useNavigate();
   const components = props.components;
   const teamsCreator = components.get(TeamsCreator);
 
@@ -76,8 +73,6 @@ export function TeamElement(props: Props) {
         return "";
     }
   };
-
-  let modelLoaded: boolean = false;
 
   const onSubmitEditedTeam = async (e) => {
     e.preventDefault();

@@ -15,6 +15,7 @@ interface Props {
 }
 
 export function IFCViewer(props: Props) {
+  const floatingGridRef = React.useRef<BUI.Grid | null>(null);
   const components = props.components;
 
   let defaultProject: boolean = false;
@@ -27,8 +28,6 @@ export function IFCViewer(props: Props) {
       components: components!,
       classifications: [],
     });
-
-  const floatingGridRef = React.useRef<BUI.Grid | null>(null);
 
   async function loadModelCheck() {
     let propsRoute: string | undefined;
@@ -585,6 +584,14 @@ export function IFCViewer(props: Props) {
           toolbar,
         },
       },
+      dispose: {
+        template: `
+        "empty" 1fr
+        "empty" auto
+        /1fr
+        `,
+        elements: {},
+      },
       second: {
         template: `
         "empty elementPropertyPanel" 1fr
@@ -648,7 +655,7 @@ export function IFCViewer(props: Props) {
       }
 
       if (floatingGridRef.current) {
-        floatingGridRef.current.layout = "main";
+        floatingGridRef.current.layout = "dispose";
       }
 
       setViewer();
