@@ -70,7 +70,7 @@ export class TeamsCreator extends OBC.Component implements OBC.Disposable {
       throw new Error("No world found");
     }
 
-    const camera = this._world.camera;
+    const camera = this._world.camera as OBC.OrthoPerspectiveCamera;
     if (!camera.hasCameraControls()) {
       throw new Error("The world camera doesn't have camera controls");
     }

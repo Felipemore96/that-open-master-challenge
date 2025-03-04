@@ -70,8 +70,8 @@ export function IFCViewer(props: Props) {
     const sceneComponent = new OBC.SimpleScene(components);
 
     world.scene = sceneComponent;
-    (world.scene as OBC.SimpleScene).setup();
-    (world.scene as OBC.SimpleScene).three.background = null;
+    world.scene.setup();
+    world.scene.three.background = null;
 
     const viewerContainer = document.getElementById(
       "viewer-container"
@@ -87,17 +87,9 @@ export function IFCViewer(props: Props) {
 
     components.init();
 
-    (world.renderer as OBCF.PostproductionRenderer).postproduction.enabled =
-      true;
-    (world.camera as OBC.OrthoPerspectiveCamera).controls.setLookAt(
-      3,
-      3,
-      3,
-      0,
-      0,
-      0
-    );
-    (world.camera as OBC.OrthoPerspectiveCamera).updateAspect();
+    world.renderer.postproduction.enabled = true;
+    world.camera.controls.setLookAt(30, 30, 30, 0, 0, 0);
+    world.camera.updateAspect();
 
     const ifcLoader = components.get(OBC.IfcLoader);
     ifcLoader.setup();
@@ -115,12 +107,9 @@ export function IFCViewer(props: Props) {
       cameraComponent.updateAspect();
     });
 
-    (world.camera as OBC.OrthoPerspectiveCamera).controls.addEventListener(
-      "controlend",
-      () => {
-        culler.needsUpdate = true;
-      }
-    );
+    world.camera.controls.addEventListener("controlend", () => {
+      culler.needsUpdate = true;
+    });
 
     const fragmentsManager = components.get(OBC.FragmentsManager);
     fragmentsManager.onFragmentsLoaded.add(async (model) => {
