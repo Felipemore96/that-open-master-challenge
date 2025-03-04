@@ -2,6 +2,7 @@ import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 import * as FRAGS from "@thatopen/fragments";
 import * as WEBIFC from "web-ifc";
+import { qtoTool } from "./Template";
 
 type QtoResult = { [setName: string]: { [qtoName: string]: number } };
 
@@ -13,7 +14,7 @@ type TableGroupData = {
 export class SimpleQTO extends OBC.Component implements OBC.Disposable {
   static uuid = "7ec21568-e809-4392-a810-50b16b3777c4";
   enabled = true;
-  onDisposed: OBC.Event<any>;
+  onDisposed: OBC.Event<any> = new OBC.Event();
   private _qtoResult: QtoResult = {};
   table: BUI.Table;
 

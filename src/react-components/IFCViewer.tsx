@@ -354,8 +354,6 @@ export function IFCViewer(props: Props) {
       const highlighter = components.get(OBCF.Highlighter);
 
       highlighter.events.select.onHighlight.add(async (fragmentIdMap) => {
-        if (!floatingGrid) return;
-        floatingGrid.layout = "main";
         updatePropsTable({ fragmentIdMap });
         propsTable.expanded = false;
 
@@ -365,11 +363,16 @@ export function IFCViewer(props: Props) {
 
       highlighter.events.select.onClear.add(() => {
         updatePropsTable({ fragmentIdMap: {} });
-        if (!floatingGrid) return;
-        floatingGrid.layout = "main";
 
         const simpleQto = components.get(SimpleQTO);
         simpleQto.resetQuantities();
+
+        if (!floatingGrid) return;
+        setTimeout(() => {
+          if (Object.keys(highlighter.selection.select).length === 0) {
+            floatingGrid.layout = "main";
+          }
+        }, 50);
       });
 
       const search = (e: Event) => {
