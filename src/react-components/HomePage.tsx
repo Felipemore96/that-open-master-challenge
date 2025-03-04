@@ -53,7 +53,11 @@ export function HomePage(props: Props) {
 
   const projectCards = projects.map((project) => {
     return (
-      <Router.Link to={`/project/${project.id}`} key={project.id}>
+      <Router.Link
+        to={`/project/${project.id}`}
+        key={project.id}
+        className="router-link"
+      >
         <HomePageProjectCard project={project} />
       </Router.Link>
     );

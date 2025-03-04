@@ -6,6 +6,7 @@ import { DetailsPageHeader } from "./DetailsPageHeader";
 import { DetailsCard } from "./DetailsCard";
 import { IFCViewer } from "./IFCViewer";
 import { TeamsCard } from "./TeamsCard";
+import * as OBC from "@thatopen/components";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -15,6 +16,7 @@ export function DetailsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
     props.projectsManager.projectsList
   );
+  const components = new OBC.Components();
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.projectsList]);
   };
@@ -43,10 +45,11 @@ export function DetailsPage(props: Props) {
           <TeamsCard
             project={currentProject}
             projectsManager={props.projectsManager}
+            components={components}
           />
         </div>
 
-        <IFCViewer project={currentProject} />
+        <IFCViewer project={currentProject} components={components} />
       </div>
     </div>
   );

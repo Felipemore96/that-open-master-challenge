@@ -6,13 +6,15 @@ import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
 import { TeamElement } from "./TeamElement";
-import { WorldContext } from "./IFCViewer";
 import { getCollection } from "../firebase";
 import * as Firestore from "firebase/firestore";
+import { teamTool } from "../bim-components/TeamsCreator/src/Template";
+import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
 
 interface Props {
   project: Project;
   projectsManager: ProjectsManager;
+  components: OBC.Components;
 }
 
 export function TeamsCard(props: Props) {
@@ -22,6 +24,19 @@ export function TeamsCard(props: Props) {
   props.projectsManager.onTeamCreated = () => {
     setTeams([...props.projectsManager.teamsList]);
   };
+  const components = props.components;
+  const teamsContainer = React.useRef<HTMLDivElement>(null);
+  const teamsCreator = components.get(TeamsCreator);
+  const currentProjectId = props.project.id;
+
+  React.useEffect(() => {
+    const handleTeamCreated = (data: ITeam) => submitNewTeam(data);
+    teamsCreator.onTeamCreated.add(handleTeamCreated);
+
+    return () => {
+      teamsCreator.onTeamCreated.remove(handleTeamCreated);
+    };
+  }, [teamsCreator]);
 
   const getFirestoreTeams = async () => {
     const teamsCollection = getCollection<ITeam>("/teams");
@@ -46,6 +61,16 @@ export function TeamsCard(props: Props) {
 
   React.useEffect(() => {
     getFirestoreTeams();
+    const teamsButton = teamTool({ components });
+    teamsContainer.current?.appendChild(teamsButton);
+
+    teamsCreator.onDisposed.add(() => {
+      teamsButton.remove();
+    });
+
+    return () => {
+      teamsButton.remove();
+    };
   }, []);
 
   const filterTeams = () => {
@@ -67,101 +92,35 @@ export function TeamsCard(props: Props) {
         project={props.project}
         projectsManager={props.projectsManager}
         filterTeams={filterTeams}
+        components={components}
       />
     );
   });
-
-  const { world, components } = React.useContext(WorldContext);
-  let modelLoaded: boolean = false;
-
-  const onNewTeam = () => {
-    toggleModal("new-team-modal");
-  };
 
   const onCloseErrorPopup = () => {
     toggleModal("error-popup");
   };
 
-  const onCancelNewTeam = () => {
-    const teamForm = document.getElementById(
-      "new-team-form"
-    ) as HTMLFormElement;
-    teamForm.reset();
-    toggleModal("new-team-modal");
-  };
-
-  const onSubmitNewTeam = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const teamForm = document.getElementById(
-      "new-team-form"
-    ) as HTMLFormElement;
-
-    const formData = new FormData(teamForm);
-    const currentProjectId = props.project.id;
-
-    let guids: string[] = [];
-    let teamCamera:
-      | { position: THREE.Vector3; target: THREE.Vector3 }
-      | undefined = undefined;
-
-    if (world && components) {
-      const camera = world.camera;
-      if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-        throw new Error(
-          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
-        );
-      }
-      modelLoaded = true;
-      const fragments = components.get(OBC.FragmentsManager);
-      const highlighter = components.get(OBCF.Highlighter);
-      guids = fragments.fragmentIdMapToGuids(highlighter.selection.select);
-
-      const position = new THREE.Vector3();
-      camera.controls.getPosition(position);
-      const target = new THREE.Vector3();
-      camera.controls.getTarget(target);
-      teamCamera = { position, target };
-    }
+  const submitNewTeam = async (data: ITeam) => {
     const teamData: ITeam = {
-      teamName: formData.get("teamName") as string,
-      teamRole: formData.get("teamRole") as TeamRole,
-      teamDescription: formData.get("teamDescription") as string,
-      contactName: formData.get("contactName") as string,
-      contactPhone: formData.get("contactPhone") as string,
-      teamProjectId: currentProjectId,
-      ifcGuids: guids,
-      camera: teamCamera,
+      teamName: data.teamName as string,
+      teamRole: data.teamRole as unknown as TeamRole,
+      teamDescription: data.teamDescription as string,
+      contactName: data.contactName as string,
+      contactPhone: data.contactName as string,
+      teamProjectId: currentProjectId as string,
+      camera: data.camera as string,
+      ifcGuids: data.ifcGuids as string,
     };
-
     try {
       const teamsCollection = getCollection<ITeam>("/teams");
-      const firebaseTeamData = {
-        ...teamData,
-        camera: teamCamera
-          ? {
-              position: {
-                x: teamCamera.position.x,
-                y: teamCamera.position.y,
-                z: teamCamera.position.z,
-              },
-              target: {
-                x: teamCamera.target.x,
-                y: teamCamera.target.y,
-                z: teamCamera.target.z,
-              },
-            }
-          : undefined,
-      };
-      const docRef = await Firestore.addDoc(teamsCollection, firebaseTeamData);
+      const docRef = await Firestore.addDoc(teamsCollection, teamData);
       const teamId = docRef.id;
-      const team = props.projectsManager.createTeam(teamData, teamId);
-      teamForm.reset();
-      toggleModal("new-team-modal");
+      props.projectsManager.createTeam(teamData, teamId);
       filterTeams();
     } catch (err) {
       const errorMessage = document.getElementById("err") as HTMLElement;
       errorMessage.textContent = err;
-      toggleModal("error-popup");
     }
   };
 
@@ -178,15 +137,7 @@ export function TeamsCard(props: Props) {
               columnGap: 15,
             }}
           >
-            <button
-              onClick={onNewTeam}
-              id="new-team-btn"
-              className="btn-secondary"
-            >
-              <span style={{ width: "100%" }} className="material-icons-round">
-                add
-              </span>
-            </button>
+            <div id="new-team-btn" ref={teamsContainer}></div>
           </div>
         </div>
         {teams.length > 0 ? (
@@ -202,82 +153,7 @@ export function TeamsCard(props: Props) {
           </h4>
         )}
       </div>
-      <dialog id="new-team-modal">
-        <form id="new-team-form">
-          <h2>New Team</h2>
-          <div className="input-list">
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">apartment</span>Name
-              </label>
-              <input
-                name="teamName"
-                type="text"
-                placeholder="Name of the Company"
-              />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">assignment_ind</span>Role
-              </label>
-              <select name="teamRole">
-                <option>BIM Manager</option>
-                <option>Structural</option>
-                <option>MEP</option>
-                <option>Architect</option>
-                <option>Contractor</option>
-              </select>
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">subject</span>Description
-              </label>
-              <textarea
-                name="teamDescription"
-                cols={30}
-                rows={5}
-                placeholder="General description or the role"
-                defaultValue={""}
-              />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">person</span>Contact
-              </label>
-              <div
-                style={{ display: "flex", flexDirection: "column", rowGap: 2 }}
-              >
-                <input name="contactName" placeholder="Contact Name" />
-                <input name="contactPhone" placeholder="Phone Number" />
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                margin: "10px 0px 10px auto",
-                columnGap: 10,
-              }}
-            >
-              <button
-                onClick={onCancelNewTeam}
-                id="cancel-new-team-btn"
-                type="button"
-                style={{ backgroundColor: "transparent" }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={(e) => onSubmitNewTeam(e)}
-                id="submit-new-team-btn"
-                type="button"
-                style={{ backgroundColor: "rgb(18, 145, 18)" }}
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        </form>
-      </dialog>
+
       <dialog id="error-popup">
         <div id="error-message">
           <p id="err" />

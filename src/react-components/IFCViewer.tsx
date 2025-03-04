@@ -5,71 +5,18 @@ import * as BUI from "@thatopen/ui";
 import * as CUI from "@thatopen/ui-obc";
 import { Project } from "../class/projects";
 import { FragmentsGroup } from "@thatopen/fragments";
-import { SimpleQTO } from "../bim-components/SimpleQTO";
+import { SimpleQTO } from "../bim-components/SimpleQTO/src/SimpleQTO";
+import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
+import { qtoTool } from "../bim-components/SimpleQTO/src/Template";
 
 interface Props {
   project: Project;
-}
-
-interface IWorldContext {
-  world: OBC.World | null;
-  setWorld: (world: OBC.World | null) => void;
-  components: OBC.Components | null;
-  setComponents: (viewer: OBC.Components | null) => void;
-}
-
-export const WorldContext = React.createContext<IWorldContext>({
-  world: null,
-  setWorld: () => {},
-  components: null,
-  setComponents: () => {},
-});
-
-export function WorldProvider(props: { children: React.ReactNode }) {
-  const [world, setWorld] = React.useState<OBC.World | null>(null);
-  const [components, setComponents] = React.useState<OBC.Components | null>(
-    null
-  );
-
-  React.useEffect(() => {
-    const components = new OBC.Components();
-    console.log("new components 1");
-    setComponents(components);
-
-    const worlds = components.get(OBC.Worlds);
-    const world = worlds.create<
-      OBC.SimpleScene,
-      OBC.OrthoPerspectiveCamera,
-      OBCF.PostproductionRenderer
-    >();
-    console.log("new world 1");
-    setWorld(world);
-
-    // Cleanup on unmount
-    return () => {
-      if (world) {
-        world.dispose();
-        console.log("dispose world 1");
-      }
-      if (components) {
-        components.dispose();
-        console.log("dispose components 1");
-      }
-    };
-  }, []);
-
-  return (
-    <WorldContext.Provider
-      value={{ world, setWorld, components, setComponents }}
-    >
-      {props.children}
-    </WorldContext.Provider>
-  );
+  components: OBC.Components;
 }
 
 export function IFCViewer(props: Props) {
-  const { world, components, setWorld, setComponents } =
-    React.useContext(WorldContext);
+  const floatingGridRef = React.useRef<BUI.Grid | null>(null);
+  const components = props.components;
 
   let defaultProject: boolean = false;
   if (props.project.fragRoute) {
@@ -113,31 +60,12 @@ export function IFCViewer(props: Props) {
   }
 
   const setViewer = () => {
-    console.log("set viewer");
-    console.log("components:", components, "world:", world);
-
-    if (!components) {
-      const components = new OBC.Components();
-      console.log("new components 3");
-      setComponents(components);
-    }
-    if (!world) {
-      if (!components) return;
-      const worlds = components.get(OBC.Worlds);
-      const world = worlds.create<
-        OBC.SimpleScene,
-        OBC.OrthoPerspectiveCamera,
-        OBCF.PostproductionRenderer
-      >();
-      console.log("new world 3");
-      setWorld(world);
-    }
-
-    if (!components || !world) return;
-
-    // OBC.SimpleScene,
-    // OBC.OrthoPerspectiveCamera,
-    // OBCF.PostproductionRenderer
+    const worlds = components.get(OBC.Worlds);
+    const world = worlds.create<
+      OBC.SimpleScene,
+      OBC.OrthoPerspectiveCamera,
+      OBCF.PostproductionRenderer
+    >();
 
     const sceneComponent = new OBC.SimpleScene(components);
 
@@ -200,7 +128,6 @@ export function IFCViewer(props: Props) {
 
       if (model.hasProperties) {
         await processModel(model);
-        // setWorld(world);
       }
 
       // for (const fragment of model.items) {
@@ -210,6 +137,9 @@ export function IFCViewer(props: Props) {
 
       fragmentModel = model;
     });
+
+    const teamsCreator = components.get(TeamsCreator);
+    teamsCreator.world = world;
   };
 
   const processModel = async (model: FragmentsGroup) => {
@@ -379,29 +309,29 @@ export function IFCViewer(props: Props) {
     hider.set(true);
   };
 
-  const onShowProperty = async () => {
-    if (!components) return;
-    if (!fragmentModel) return;
+  // const getProperties = async () => {
+  //   if (!components) return;
+  //   if (!fragmentModel) return;
 
-    const highlighter = components.get(OBCF.Highlighter);
-    const selection = highlighter.selection.select;
-    const indexer = components.get(OBC.IfcRelationsIndexer);
-    for (const fragmentID in selection) {
-      const expressIDs = selection[fragmentID];
-      for (const id of Array.from(expressIDs)) {
-        const psets = indexer.getEntityRelations(
-          fragmentModel,
-          id,
-          "ContainedInStructure"
-        );
-        if (psets) {
-          for (const expressId of psets) {
-            const prop = await fragmentModel.getProperties(expressId);
-          }
-        }
-      }
-    }
-  };
+  //   const highlighter = components.get(OBCF.Highlighter);
+  //   const selection = highlighter.selection.select;
+  //   const indexer = components.get(OBC.IfcRelationsIndexer);
+  //   for (const fragmentID in selection) {
+  //     const expressIDs = selection[fragmentID];
+  //     for (const id of Array.from(expressIDs)) {
+  //       const psets = indexer.getEntityRelations(
+  //         fragmentModel,
+  //         id,
+  //         "ContainedInStructure"
+  //       );
+  //       if (psets) {
+  //         for (const expressId of psets) {
+  //           const prop = await fragmentModel.getProperties(expressId);
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
 
   const setupUI = () => {
     const viewerContainer = document.getElementById("viewer-container");
@@ -414,6 +344,8 @@ export function IFCViewer(props: Props) {
       `;
     });
 
+    floatingGridRef.current = floatingGrid;
+
     const elementPropertyPanel = BUI.Component.create<BUI.Panel>(() => {
       const [propsTable, updatePropsTable] = CUI.tables.elementProperties({
         components,
@@ -422,8 +354,6 @@ export function IFCViewer(props: Props) {
       const highlighter = components.get(OBCF.Highlighter);
 
       highlighter.events.select.onHighlight.add(async (fragmentIdMap) => {
-        if (!floatingGrid) return;
-        floatingGrid.layout = "second";
         updatePropsTable({ fragmentIdMap });
         propsTable.expanded = false;
 
@@ -433,11 +363,16 @@ export function IFCViewer(props: Props) {
 
       highlighter.events.select.onClear.add(() => {
         updatePropsTable({ fragmentIdMap: {} });
-        if (!floatingGrid) return;
-        floatingGrid.layout = "main";
 
         const simpleQto = components.get(SimpleQTO);
         simpleQto.resetQuantities();
+
+        if (!floatingGrid) return;
+        setTimeout(() => {
+          if (Object.keys(highlighter.selection.select).length === 0) {
+            floatingGrid.layout = "main";
+          }
+        }, 50);
       });
 
       const search = (e: Event) => {
@@ -483,7 +418,20 @@ export function IFCViewer(props: Props) {
       `;
     });
 
+    const onShowProperty = () => {
+      if (!components || !fragmentModel) return;
+
+      if (!floatingGrid) return;
+      if (floatingGrid.layout !== "second") {
+        floatingGrid.layout = "second";
+      } else {
+        floatingGrid.layout = "main";
+      }
+    };
+
     const onClassifier = () => {
+      if (!components || !fragmentModel) return;
+
       if (!floatingGrid) return;
       if (floatingGrid.layout !== "classifier") {
         floatingGrid.layout = "classifier";
@@ -503,6 +451,38 @@ export function IFCViewer(props: Props) {
             >
                 <bim-label>Classifications</bim-label>
                 ${classificationsTree}
+            </bim-panel-section>
+        </bim-panel>
+      `;
+    });
+
+    const onShowQuantity = async () => {
+      if (!components || !fragmentModel) return;
+
+      const highlighter = components.get(OBCF.Highlighter);
+      const selection = highlighter.selection.select;
+      const simpleQto = components.get(SimpleQTO);
+      await simpleQto.sumQuantities(selection);
+
+      if (!floatingGrid) return;
+      if (floatingGrid.layout !== "qtos") {
+        floatingGrid.layout = "qtos";
+      } else {
+        floatingGrid.layout = "main";
+      }
+    };
+
+    const qtoTable = qtoTool({ components });
+    const qtoPanel = BUI.Component.create<BUI.Panel>(() => {
+      return BUI.html`
+        <bim-panel>
+            <bim-panel-section
+             name="qto"
+             label="Quantities"
+             icon="solar:document-bold"
+             fixed
+            >
+                ${qtoTable}
             </bim-panel-section>
         </bim-panel>
       `;
@@ -579,6 +559,11 @@ export function IFCViewer(props: Props) {
                     icon="clarity:list-line"
                     @click=${onShowProperty}
                 ></bim-button>
+                <bim-button 
+                    tooltip-title="Quantities" 
+                    icon="mdi:summation"
+                    @click=${onShowQuantity}
+                ></bim-button>
             </bim-toolbar-section>
             <bim-toolbar-section label="Groups">
                 <bim-button 
@@ -601,6 +586,14 @@ export function IFCViewer(props: Props) {
         elements: {
           toolbar,
         },
+      },
+      dispose: {
+        template: `
+        "empty" 1fr
+        "empty" auto
+        /1fr
+        `,
+        elements: {},
       },
       second: {
         template: `
@@ -635,6 +628,17 @@ export function IFCViewer(props: Props) {
           classifierPanel,
         },
       },
+      qtos: {
+        template: `
+        "empty qtoPanel" 1fr
+        "toolbar toolbar" auto
+        /1fr 20rem
+        `,
+        elements: {
+          toolbar,
+          qtoPanel,
+        },
+      },
     };
 
     floatingGrid.layout = "main";
@@ -644,13 +648,17 @@ export function IFCViewer(props: Props) {
 
   React.useEffect(() => {
     const loadAndSetup = async () => {
-      if (!world || !components) return;
-      console.log("load and setup");
-
       if (fragmentModel) {
         fragmentModel.dispose();
-        console.log("fragment disposed");
         fragmentModel = undefined;
+      }
+
+      if (components) {
+        components.dispose();
+      }
+
+      if (floatingGridRef.current) {
+        floatingGridRef.current.layout = "dispose";
       }
 
       setViewer();
@@ -659,22 +667,18 @@ export function IFCViewer(props: Props) {
     };
 
     loadAndSetup();
+
     return () => {
-      if (fragmentModel) {
-        fragmentModel.dispose();
-        console.log("fragment disposed 2");
-        fragmentModel = undefined;
-      }
-      if (world) {
-        world.dispose();
-        console.log("dispose world 2");
-      }
       if (components) {
         components.dispose();
-        console.log("dispose components 2");
+      }
+
+      if (fragmentModel) {
+        fragmentModel.dispose();
+        fragmentModel = undefined;
       }
     };
-  }, [props.project]); // Re-run when props.project changes
+  }, [props.project.id]); // Re-run when props.project changes
 
   return (
     <bim-viewport

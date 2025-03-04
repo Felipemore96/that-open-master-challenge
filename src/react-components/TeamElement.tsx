@@ -3,20 +3,20 @@ import * as OBC from "@thatopen/components";
 import { Project, toggleModal } from "../class/projects";
 import { ITeam, Team, TeamRole } from "../class/teams";
 import { ProjectsManager } from "../class/projectsManager";
-import { WorldContext } from "./IFCViewer";
-import { useNavigate } from "react-router-dom";
 import { deleteDocument, updateDocument } from "../firebase";
-import * as OBCF from "@thatopen/components-front";
+import { TeamsCreator } from "../bim-components/TeamsCreator/src/TeamsCreator";
 
 interface Props {
   team: Team;
   project: Project;
   projectsManager: ProjectsManager;
   filterTeams: () => void;
+  components: OBC.Components;
 }
 
 export function TeamElement(props: Props) {
-  const navigate = useNavigate();
+  const components = props.components;
+  const teamsCreator = components.get(TeamsCreator);
 
   props.projectsManager.onTeamDeleted = async (id) => {
     await deleteDocument("/teams", id);
@@ -74,42 +74,6 @@ export function TeamElement(props: Props) {
     }
   };
 
-  let modelLoaded: boolean = false;
-  const { world, components } = React.useContext(WorldContext);
-
-  const onTeamClicked = (team: Team) => {
-    if (world && components) {
-      const camera = world.camera;
-      if (!(camera instanceof OBC.OrthoPerspectiveCamera)) {
-        throw new Error(
-          "TeamsCreator needs the OrthoPerspectiveCamera in order to work"
-        );
-      }
-      modelLoaded = true;
-      const fragments = components.get(OBC.FragmentsManager);
-      const highlighter = components.get(OBCF.Highlighter);
-      const guids = fragments.fragmentIdMapToGuids(
-        highlighter.selection.select
-      );
-
-      if (team.camera) {
-        camera.controls.setLookAt(
-          team.camera.position.x,
-          team.camera.position.y,
-          team.camera.position.z,
-          team.camera.target.x,
-          team.camera.target.y,
-          team.camera.target.z,
-          true
-        );
-      }
-      if (team.ifcGuids && Object.keys(team.ifcGuids).length > 0) {
-        const fragmentIdMap = fragments.guidToFragmentIdMap(team.ifcGuids);
-        highlighter.highlightByID("select", fragmentIdMap, true, false);
-      }
-    }
-  };
-
   const onSubmitEditedTeam = async (e) => {
     e.preventDefault();
     const editTeamForm = document.getElementById(
@@ -124,17 +88,11 @@ export function TeamElement(props: Props) {
       contactPhone: formData.get("contact-phone") as string,
       teamProjectId: props.team.teamProjectId,
       id: props.team.id,
+      ifcGuids: props.team.ifcGuids,
+      camera: props.team.camera,
     };
     try {
-      const updatedTeam = props.projectsManager.editTeam(
-        {
-          ...newTeamData,
-          ifcGuids: props.team.ifcGuids,
-          camera: props.team.camera,
-        },
-        props.team
-      );
-      console.log(updatedTeam);
+      props.projectsManager.editTeam(newTeamData, props.team);
       editTeamForm.reset();
       props.filterTeams();
       toggleModal(`edit-info-modal-${props.team.id}`);
@@ -148,7 +106,10 @@ export function TeamElement(props: Props) {
 
   return (
     <div>
-      <div className="team-card" onClick={() => onTeamClicked(props.team)}>
+      <div
+        className="team-card"
+        onClick={() => teamsCreator.highlightTeam(props.team)}
+      >
         <div>
           <div
             style={{

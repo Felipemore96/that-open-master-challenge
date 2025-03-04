@@ -18,13 +18,16 @@ export interface ITeam {
   contactPhone: string;
   teamProjectId: string;
   id?: string;
-  ifcGuids?: string[];
-  camera?:
-    | { position: THREE.Vector3; target: THREE.Vector3 }
-    | {
-        position: { x: number; y: number; z: number };
-        target: { x: number; y: number; z: number };
-      };
+  ifcGuids: string;
+  camera: string;
+}
+
+export interface TeamModalData {
+  teamName: string;
+  teamRole: TeamRole;
+  teamDescription: string;
+  contactName: string;
+  contactPhone: string;
 }
 
 // Class representing a team
@@ -38,8 +41,8 @@ export class Team implements ITeam {
   teamProjectId: string;
 
   id: string;
-  ifcGuids?: string[];
-  camera?: { position: THREE.Vector3; target: THREE.Vector3 };
+  ifcGuids: string;
+  camera: string;
 
   constructor(data: ITeam, id = uuidv4()) {
     for (const key in data) {
@@ -52,7 +55,7 @@ export class Team implements ITeam {
 
   get numberOfElements(): number {
     if (!this.ifcGuids) return 0;
-    const totalElements = this.ifcGuids.length;
+    const totalElements = JSON.parse(this.ifcGuids).length;
 
     return totalElements;
   }

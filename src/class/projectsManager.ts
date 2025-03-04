@@ -9,13 +9,6 @@ export class ProjectsManager {
   onTeamCreated = (team: Team) => {};
   onTeamDeleted = (id: string) => {};
 
-  // filterProjects(value: string) {
-  //   const filteredProjects = this.projectsList.filter((project) => {
-  //     return project.projectName;
-  //   });
-  //   return filteredProjects;
-  // }
-
   getProject(id: string) {
     const project = this.projectsList.find((project) => {
       return project.id === id;
